@@ -61,16 +61,16 @@ int pacer_queue_push(pacer_queue_t* que, packet_event_t* ev)
         val.ptr = packet;
         skiplist_insert(que->cache, key, val);
 
-        /*½«·¢ËÍµÄpacket°´Ê±¼äË³ÐòÑ¹Èëlist*/
+        /*å°†å‘é€çš„packetæŒ‰æ—¶é—´é¡ºåºåŽ‹å…¥list*/
         list_push(que->l, packet);
-        /*Ôö¼Ó×Ö½ÚÍ³¼Æ*/
+        /*å¢žåŠ å­—èŠ‚ç»Ÿè®¡*/
         que->total_size += packet->size;
         ret = 0;
     }
     else
     {
         packet = iter->val.ptr;
-        if (packet->sent == 1)  /*ÓÐ¿ÉÄÜ°üÒÑ¾­±»·¢ËÍÁË£¬µ«ÊÇÃ»ÓÐÉ¾³ý£¬Õâ¸öÊ±ºò½øÐÐÖØ´«ÐèÒªÖØÐÂ³ÉÉèÖÃÎ´·¢ËÍ±ê¼Ç*/
+        if (packet->sent == 1)  /*æœ‰å¯èƒ½åŒ…å·²ç»è¢«å‘é€äº†ï¼Œä½†æ˜¯æ²¡æœ‰åˆ é™¤ï¼Œè¿™ä¸ªæ—¶å€™è¿›è¡Œé‡ä¼ éœ€è¦é‡æ–°æˆè®¾ç½®æœªå‘é€æ ‡è®°*/
         {
             packet->sent = 0;
             que->total_size += packet->size;
@@ -92,7 +92,7 @@ packet_event_t* pacer_queue_front(pacer_queue_t* que)
     if (skiplist_size(que->cache) == 0)
         return ret;
 
-    /*È¡Ò»¸öÎ´·¢ËÍµÄpacket*/
+    /*å–ä¸€ä¸ªæœªå‘é€çš„packet*/
     iter = skiplist_first(que->cache);
     while(iter != NULL)
     {
@@ -111,7 +111,7 @@ void pacer_queue_final(pacer_queue_t* que)
     packet_event_t* packet;
     skiplist_item_t key;
 
-    /*É¾³ýÒÑ¾­·¢ËÍµÄ±¨ÎÄ*/
+    /*åˆ é™¤å·²ç»å‘é€çš„æŠ¥æ–‡*/
     while (que->l->size > 0)
     {
         packet = list_front(que->l);
@@ -125,7 +125,7 @@ void pacer_queue_final(pacer_queue_t* que)
             break;
     }
 
-    /*cache¶ÓÁÐÖÐÃ»ÓÐ°ü£¬ÉèÖÃÎª³õÊ¼×´Ì¬*/
+    /*cacheé˜Ÿåˆ—ä¸­æ²¡æœ‰åŒ…ï¼Œè®¾ç½®ä¸ºåˆå§‹çŠ¶æ€*/
     if (que->l->size == 0)
     {
         skiplist_clear(que->cache);
@@ -150,17 +150,17 @@ void pacer_queue_sent_by_id(pacer_queue_t* que, uint32_t id)
         pacer_queue_sent(que, iter->val.ptr);
 }
 
-/*É¾³ýµÚÒ»¸öµ¥Ôª*/
+/*åˆ é™¤ç¬¬ä¸€ä¸ªå•å…ƒ*/
 void pacer_queue_sent(pacer_queue_t* que, packet_event_t* ev)
 {
-    ev->sent = 1;               /*±ê¼ÇÎªÒÑ¾­·¢ËÍ×´Ì¬*/
+    ev->sent = 1;               /*æ ‡è®°ä¸ºå·²ç»å‘é€çŠ¶æ€*/
 
     if (que->total_size >= ev->size)
         que->total_size -= ev->size;
     else
         que->total_size = 0;
 
-    /*É¾³ý×îÀÏÇÒÒÑ¾­·¢ËÍµÄ°ü*/
+    /*åˆ é™¤æœ€è€ä¸”å·²ç»å‘é€çš„åŒ…*/
     pacer_queue_final(que);
 }
 
@@ -197,7 +197,7 @@ uint32_t pacer_queue_target_bitrate_kbps(pacer_queue_t* que, int64_t now_ts)
     else
         space = que->max_que_ms - 1;
 
-    /*¼ÆËã»º³åÇøÔÚ500ºÁÃëÖ®ÄÚÒª·¢ËÍÍê±ÏËùÐèµÄ´ø¿í*/
+    /*è®¡ç®—ç¼“å†²åŒºåœ¨500æ¯«ç§’ä¹‹å†…è¦å‘é€å®Œæ¯•æ‰€éœ€çš„å¸¦å®½*/
     if (skiplist_size(que->cache) > 0 && que->total_size > 0)
         ret = que->total_size * 8 / space;
 

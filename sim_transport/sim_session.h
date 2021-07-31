@@ -12,41 +12,41 @@ struct __sim_session
 
     uint32_t        scid;               /*sender call id*/
     uint32_t        rcid;               /*receiver call id*/
-    uint32_t        uid;                /*±¾¶ËÓÃ»§ID*/
+    uint32_t        uid;                /*æœ¬ç«¯ç”¨æˆ·ID*/
 
-    uint32_t        rtt;                /*rttÖµ*/
-    uint32_t        rtt_var;            /*rttÎó²îĞŞÕıÖµ*/
-    uint8_t         loss_fraction;      /*¶ª°üÂÊ, 0 ~ 255Ö®¼äµÄÊı£¬100% = 255*/
+    uint32_t        rtt;                /*rttå€¼*/
+    uint32_t        rtt_var;            /*rttè¯¯å·®ä¿®æ­£å€¼*/
+    uint8_t         loss_fraction;      /*ä¸¢åŒ…ç‡, 0 ~ 255ä¹‹é—´çš„æ•°ï¼Œ100% = 255*/
     uint32_t        fir_seq;
 
-    int             state;              /*×´Ì¬*/
-    int             interrupt;          /*ÖĞ¶Ï*/
+    int             state;              /*çŠ¶æ€*/
+    int             interrupt;          /*ä¸­æ–­*/
 
-    int             transport_type;     /*ÓµÈû¿ØÖÆµÄÀàĞÍ*/
-    int             padding;            /*ccÊÇ·ñ²ÉÓÃÌî³äÄ£Ê½*/
-    int             fec;                /*ÊÇ·ñÆô¶¯FEC*/
+    int             transport_type;     /*æ‹¥å¡æ§åˆ¶çš„ç±»å‹*/
+    int             padding;            /*ccæ˜¯å¦é‡‡ç”¨å¡«å……æ¨¡å¼*/
+    int             fec;                /*æ˜¯å¦å¯åŠ¨FEC*/
 
-    volatile int    run;                /*runÏß³Ì±êÊ¾ */
-    su_mutex        mutex;              /*ÓÃÓÚÉÏ²ã¶àÏß³Ì²Ù×÷µÄ±£»¤Ëø*/
-    su_thread       thr;                /*Ïß³ÌID*/
+    volatile int    run;                /*runçº¿ç¨‹æ ‡ç¤º */
+    su_mutex        mutex;              /*ç”¨äºä¸Šå±‚å¤šçº¿ç¨‹æ“ä½œçš„ä¿æŠ¤é”*/
+    su_thread       thr;                /*çº¿ç¨‹ID*/
 
-    sim_sender_t*   sender;             /*ÊÓÆµ·¢ËÍÆ÷*/
-    sim_receiver_t* receiver;           /*ÊÓÆµ½ÓÊÕÆ÷*/
+    sim_sender_t*   sender;             /*è§†é¢‘å‘é€å™¨*/
+    sim_receiver_t* receiver;           /*è§†é¢‘æ¥æ”¶å™¨*/
 
-    int             resend;             /*ÖØ·¢´ÎÊı*/
-    int64_t         commad_ts;          /*ĞÅÁîÊ±¼ä´Á*/
+    int             resend;             /*é‡å‘æ¬¡æ•°*/
+    int64_t         commad_ts;          /*ä¿¡ä»¤æ—¶é—´æˆ³*/
     int64_t         stat_ts;
 
-    uint64_t        rbandwidth;         /*½ÓÊÕ´ø¿í*/
-    uint64_t        sbandwidth;         /*·¢ËÍ´ø¿í*/
-    uint64_t        rcount;             /*½ÓÊÕµÄ±¨ÎÄÊıÁ¿*/
-    uint64_t        scount;             /*·¢ËÍµÄ±¨ÎÄÊıÁ¿*/
+    uint64_t        rbandwidth;         /*æ¥æ”¶å¸¦å®½*/
+    uint64_t        sbandwidth;         /*å‘é€å¸¦å®½*/
+    uint64_t        rcount;             /*æ¥æ”¶çš„æŠ¥æ–‡æ•°é‡*/
+    uint64_t        scount;             /*å‘é€çš„æŠ¥æ–‡æ•°é‡*/
     uint64_t        video_bytes;
-    uint32_t        max_frame_size;     /*ÖÜÆÚÄÚ×î´óÖ¡*/
+    uint32_t        max_frame_size;     /*å‘¨æœŸå†…æœ€å¤§å¸§*/
 
-    int             min_bitrate;        /*ÅäÖÃµÄ×îĞ¡ÂëÂÊ£¬µ¥Î»£ºbps*/
-    int             max_bitrate;        /*ÅäÖÃµÄ×î´óÂëÂÊ£¬µ¥Î»: bps*/
-    int             start_bitrate;      /*ÅäÖÃµÄÆğÊ¼ÂëÂÊ£¬µ¥Î»: bps*/
+    int             min_bitrate;        /*é…ç½®çš„æœ€å°ç ç‡ï¼Œå•ä½ï¼šbps*/
+    int             max_bitrate;        /*é…ç½®çš„æœ€å¤§ç ç‡ï¼Œå•ä½: bps*/
+    int             start_bitrate;      /*é…ç½®çš„èµ·å§‹ç ç‡ï¼Œå•ä½: bps*/
 
     sim_notify_fn   notify_cb;
     sim_change_bitrate_fn change_bitrate_cb;

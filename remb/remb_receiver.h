@@ -21,7 +21,7 @@ typedef struct
     int                         min_bitrate;
     int                         max_bitrate;
 
-    /*信息反馈函数*/
+    /*淇℃伅鍙嶉鍑芥暟*/
     void*                       handler;
     send_feedback_func          send_cb;
 

@@ -64,14 +64,14 @@ static void wrap_test_helper(inter_arrival_t* arr, uint32_t wrap_start_ts, uint3
     for (i = 0; i < 10; i++)
     {
         arrival_time += kBurstThresholdMs + 1;
-        if (unorderly_within_group == 0) /*½Ó½üÍ¬Ò»Ê±¿ÌÂÒĞò²âÊÔ*/
+        if (unorderly_within_group == 0) /*æ¥è¿‘åŒä¸€æ—¶åˆ»ä¹±åºæµ‹è¯•*/
             expect_false(arr, wrap_start_ts + (kMinStep * (9 - i)) / 1000, arrival_time, 1);
         else
             expect_false(arr, wrap_start_ts + (kMinStep * i) / 1000, arrival_time, 1);
     }
 
     g5_arrival_time = arrival_time;
-    /*ÂÒĞò²âÊÔ*/
+    /*ä¹±åºæµ‹è¯•*/
     arrival_time += kBurstThresholdMs + 1;
     expect_false(arr, wrap_start_ts - 1, arrival_time, 100);
 

@@ -40,17 +40,17 @@ typedef int(*sim_log_fn)(int level, const char* file, int line, const char* fmt,
 typedef void(*sim_change_bitrate_fn)(void* event, uint32_t bw, int lost);
 typedef void(*sim_state_fn)(void* event, const char* info);
 
-/*uidÊÇ±¾µØÓÃ»§ID£¬ portÊÇ±¾µØ¶Ë¿ÚÓÃÓÚÁ¬½Ó¶Ô·½, eventÊÇÓÃÓÚÉÏ²ã½ÓÊÕ»Øµ÷ÊÂ¼şÍ¨ÖªµÄ¶ÔÏó*/
+/*uidæ˜¯æœ¬åœ°ç”¨æˆ·IDï¼Œ portæ˜¯æœ¬åœ°ç«¯å£ç”¨äºè¿æ¥å¯¹æ–¹, eventæ˜¯ç”¨äºä¸Šå±‚æ¥æ”¶å›è°ƒäº‹ä»¶é€šçŸ¥çš„å¯¹è±¡*/
 void        sim_init(uint16_t port, void* event, sim_log_fn log_cb, sim_notify_fn notify_cb, sim_change_bitrate_fn change_bitrate_cb, sim_state_fn state_cb);
 void        sim_destroy();
 
-/*transport_type,´«ÊäµÄÓµÈû¿ØÖÆÀàĞÍ£¬0ÊÇGCC£¬1ÊÇBBR*/
+/*transport_type,ä¼ è¾“çš„æ‹¥å¡æ§åˆ¶ç±»å‹ï¼Œ0æ˜¯GCCï¼Œ1æ˜¯BBR*/
 int         sim_connect(uint32_t local_uid, const char* peer_ip, uint16_t peer_port, int transport_type, int padding, int fec);
 int         sim_disconnect();
 
-/*·¢ËÍÒ»Ö¡ÊÓÆµ*/
+/*å‘é€ä¸€å¸§è§†é¢‘*/
 int         sim_send_video(uint8_t payload_type, uint8_t ftype, const uint8_t* data, size_t size);
-/*½ÓÊÕÒ»Ö¡ÊÓÆµ£¬sizep±ØĞë³õÊ¼»¯Ò»¸ö»º³åÇø×î´óÖµ£¬·ÀÖ¹»º³åÇø¿½±´Òç³ö*/
+/*æ¥æ”¶ä¸€å¸§è§†é¢‘ï¼Œsizepå¿…é¡»åˆå§‹åŒ–ä¸€ä¸ªç¼“å†²åŒºæœ€å¤§å€¼ï¼Œé˜²æ­¢ç¼“å†²åŒºæ‹·è´æº¢å‡º*/
 int         sim_recv_video(uint8_t* data, size_t* sizep, uint8_t* payload_type);
 
 void        sim_set_bitrates(uint32_t min_bitrate, uint32_t start_bitrate, uint32_t max_bitrate);

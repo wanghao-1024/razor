@@ -56,7 +56,7 @@ void wnd_filter_update(windowed_filter_t* filter, int64_t new_sample, int64_t ne
 {
     wnd_sample_t sample = { new_sample, new_ts };
 
-    /*Èç¹ûÕâÊÇµÚÒ»¸ö¸üÐÂ¡¢filterÖÐ¼ÇÂ¼µÄÖµ¶¼¹ýÁËÊ±¼ä´°»òÕßÊÇ×î´óµÄÖµ£¬ÓÃÐÂµÄÖµ½øÐÐ¸²¸Ç¸üÐÂ*/
+    /*å¦‚æžœè¿™æ˜¯ç¬¬ä¸€ä¸ªæ›´æ–°ã€filterä¸­è®°å½•çš„å€¼éƒ½è¿‡äº†æ—¶é—´çª—æˆ–è€…æ˜¯æœ€å¤§çš„å€¼ï¼Œç”¨æ–°çš„å€¼è¿›è¡Œè¦†ç›–æ›´æ–°*/
     if (filter->estimates[0].sample == 0 || filter->comp_func(new_sample, filter->estimates[0].sample) > 0
             || new_ts - filter->estimates[2].ts > filter->wnd_size)
     {
@@ -64,25 +64,25 @@ void wnd_filter_update(windowed_filter_t* filter, int64_t new_sample, int64_t ne
         return;
     }
 
-    /*ÐÂ¸üÐÂµÄÖµÊÇµÚ¶þ´óµÄÖµ£¬¶Ô1£¬2Î»µÄÖµ½øÐÐ¸üÐÂ*/
+    /*æ–°æ›´æ–°çš„å€¼æ˜¯ç¬¬äºŒå¤§çš„å€¼ï¼Œå¯¹1ï¼Œ2ä½çš„å€¼è¿›è¡Œæ›´æ–°*/
     if (filter->comp_func(new_sample, filter->estimates[1].sample) > 0)
     {
         filter->estimates[1] = sample;
         filter->estimates[2] = sample;
     }
-    else if (filter->comp_func(new_sample, filter->estimates[2].sample) > 0) /*¸üÐÂµÄÖµÎªµÚÈý´ó£¬Ö»¶ÔÄ©Î²µÄ2½øÐÐ¸üÐÂ*/
+    else if (filter->comp_func(new_sample, filter->estimates[2].sample) > 0) /*æ›´æ–°çš„å€¼ä¸ºç¬¬ä¸‰å¤§ï¼Œåªå¯¹æœ«å°¾çš„2è¿›è¡Œæ›´æ–°*/
     {
         filter->estimates[2] = sample;
     }
 
-    /*½øÐÐ¹ýÆÚÌÔÌ­,ÏÈÅÐ¶Ï0Î»ÊÇ·ñÌÔÌ­£¬ÔÙÅÐ¶Ï1ÊÇ·ñÌÔÌ­,ÒòÎª2Î»ÉÏÔÚµÚÒ»¸öifÉÏ×öÁËÅÐ¶Ï*/
+    /*è¿›è¡Œè¿‡æœŸæ·˜æ±°,å…ˆåˆ¤æ–­0ä½æ˜¯å¦æ·˜æ±°ï¼Œå†åˆ¤æ–­1æ˜¯å¦æ·˜æ±°,å› ä¸º2ä½ä¸Šåœ¨ç¬¬ä¸€ä¸ªifä¸Šåšäº†åˆ¤æ–­*/
     if (new_ts - filter->estimates[0].ts > filter->wnd_size)
     {
         filter->estimates[0] = filter->estimates[1];
         filter->estimates[1] = filter->estimates[2];
         filter->estimates[2] = sample;
 
-        /*ÔÙ´Î¶ÔÒÆ¶¯ºóµÄfilter½øÐÐ¹ýÆÚÌÔÌ­ÅÐ¶Ï*/
+        /*å†æ¬¡å¯¹ç§»åŠ¨åŽçš„filterè¿›è¡Œè¿‡æœŸæ·˜æ±°åˆ¤æ–­*/
         if (new_ts - filter->estimates[0].ts > filter->wnd_size)
         {
             filter->estimates[0] = filter->estimates[1];
@@ -92,14 +92,14 @@ void wnd_filter_update(windowed_filter_t* filter, int64_t new_sample, int64_t ne
         return;
     }
 
-    /*°´Ê±¼ä´ÁÏÈºó½øÐÐÏàÍ¬ÖµµÄ¸üÐÂ*/
+    /*æŒ‰æ—¶é—´æˆ³å…ˆåŽè¿›è¡Œç›¸åŒå€¼çš„æ›´æ–°*/
     if (filter->estimates[0].sample == filter->estimates[1].sample
-            && new_ts - filter->estimates[1].ts > (filter->wnd_size >> 2)) /*0ºÅÎ»ÉÏ×î´óµÄÖµºÍ1ºÅÎ»ÉÏµÄÖµÏàµÈ£¬µ«1ºÅÎ»µÄÊ±¼ä´Áµã¾àÀëµ±Ç°Ê±¼äµã³¬¹ý´°¿ÚµÄ1/4,ÒâÎ¶×Å1 2ºÅÎ»µÄÐèÒª¸üÐÂµ½×îÐÂÖµÉÏÀ´*/
+            && new_ts - filter->estimates[1].ts > (filter->wnd_size >> 2)) /*0å·ä½ä¸Šæœ€å¤§çš„å€¼å’Œ1å·ä½ä¸Šçš„å€¼ç›¸ç­‰ï¼Œä½†1å·ä½çš„æ—¶é—´æˆ³ç‚¹è·ç¦»å½“å‰æ—¶é—´ç‚¹è¶…è¿‡çª—å£çš„1/4,æ„å‘³ç€1 2å·ä½çš„éœ€è¦æ›´æ–°åˆ°æœ€æ–°å€¼ä¸Šæ¥*/
     {
         filter->estimates[1] = filter->estimates[2] = sample;
     }
 
-    /*Í¬ÉÏÔ­Àí£¬¶Ô2ºÅÎ»ÉÏµÄÖµ½øÐÐ¸üÐÂ*/
+    /*åŒä¸ŠåŽŸç†ï¼Œå¯¹2å·ä½ä¸Šçš„å€¼è¿›è¡Œæ›´æ–°*/
     if (filter->estimates[1].sample == filter->estimates[2].sample
             && new_ts - filter->estimates[2].ts > (filter->wnd_size >> 1))
         filter->estimates[2] = sample;

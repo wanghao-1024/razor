@@ -58,7 +58,7 @@ void bbr_receive_on_received(bbr_receiver_t* cc, uint16_t seq, uint32_t timestam
     int64_t start_seq;
 
     now_ts = GET_SYS_MS();
-    /*Í³¼Æ¶ª°ü*/
+    /*ç»Ÿè®¡ä¸¢åŒ…*/
     loss_statistics_incoming(&cc->loss_stat, seq, now_ts);
 
     sequence = wrap_uint16(&cc->unwrapper, seq);
@@ -78,7 +78,7 @@ void bbr_receive_on_received(bbr_receiver_t* cc, uint16_t seq, uint32_t timestam
     if (skiplist_size(cc->cache) >= 2)
     {
         cc->feedback_ts = now_ts;
-        /*ÅÐ¶Ïproxy estimatorÊÇ·ñ¿ÉÒÔ·¢ËÍ±¨¸æ*/
+        /*åˆ¤æ–­proxy estimatoræ˜¯å¦å¯ä»¥å‘é€æŠ¥å‘Š*/
         msg.flag = bbr_acked_msg;
         msg.sampler_num = 0;
         start_seq = 0;
@@ -95,7 +95,7 @@ void bbr_receive_on_received(bbr_receiver_t* cc, uint16_t seq, uint32_t timestam
             }
             else
             {
-                /*ÅÐ¶Ï¶ª°üÏûÏ¢*/
+                /*åˆ¤æ–­ä¸¢åŒ…æ¶ˆæ¯*/
                 if (loss_statistics_calculate(&cc->loss_stat, now_ts, &msg.fraction_loss, &msg.packet_num) == 0)
                     msg.flag |= bbr_loss_info_msg;
 

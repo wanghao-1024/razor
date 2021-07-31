@@ -7,7 +7,7 @@
 
 #include "trendline.h"
 
-/*¼ÆËãÇúÏßĞ±ÂÊÀ´È·¶¨¹ıÔØÎÊÌâ*/
+/*è®¡ç®—æ›²çº¿æ–œç‡æ¥ç¡®å®šè¿‡è½½é—®é¢˜*/
 static double linear_fit_slope(delay_hist_t* que, int que_size)
 {
     int i;

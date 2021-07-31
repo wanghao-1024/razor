@@ -26,7 +26,7 @@ static inline void reset_group_ts(inter_arrival_t* arr)
     arr->prev_ts_group.last_sys_ts = 0;
 }
 
-/*ÅĞ¶Ï°üÊÇ·ñÊÇÂÒĞò£¬Èç¹û±¨ÎÄÊÇÇ°Ò»¸ögroupµÄĞòÁĞ£¬²»½øĞĞ´¦Àí*/
+/*åˆ¤æ–­åŒ…æ˜¯å¦æ˜¯ä¹±åºï¼Œå¦‚æœæŠ¥æ–‡æ˜¯å‰ä¸€ä¸ªgroupçš„åºåˆ—ï¼Œä¸è¿›è¡Œå¤„ç†*/
 static inline int inter_arrival_in_order(inter_arrival_t* arr, uint32_t ts)
 {
     if (arr->cur_ts_group.complete_ts == -1)
@@ -38,7 +38,7 @@ static inline int inter_arrival_in_order(inter_arrival_t* arr, uint32_t ts)
     return -1;
 }
 
-/*ÅĞ¶Ï±¨ÎÄÍ»·¢·¢ËÍ*/
+/*åˆ¤æ–­æŠ¥æ–‡çªå‘å‘é€*/
 static inline int belongs_to_burst(inter_arrival_t* arr, uint32_t ts, int64_t arrival_ts)
 {
     int64_t arrival_ts_delta;

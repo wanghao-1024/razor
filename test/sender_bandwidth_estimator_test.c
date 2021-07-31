@@ -2,7 +2,7 @@
 #include "cf_platform.h"
 #include "common_test.h"
 
-/*¶ÔrembºÍdelay base×ö²âÊÔ*/
+/*å¯¹rembå’Œdelay baseåšæµ‹è¯•*/
 static void test_probing(int use_delay_based)
 {
     sender_estimation_t* est;
@@ -73,7 +73,7 @@ static void bitrate_decrease_without_following_remb()
     EXPECT_EQ(0, est->last_fraction_loss);
     EXPECT_EQ(0, est->last_rtt);
 
-    /*Ä£ÄâreportÊÂ¼ş,·¢Éú¶ª°üÁË*/
+    /*æ¨¡æ‹Ÿreportäº‹ä»¶,å‘ç”Ÿä¸¢åŒ…äº†*/
     sender_estimation_update_block(est, k_fraction_loss, k_rtt, 100, now_ms, k_initial_bitrate_bps);
     now_ms += 1000;
     sender_estimation_update(est, now_ms, k_initial_bitrate_bps);

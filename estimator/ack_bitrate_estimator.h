@@ -10,7 +10,7 @@
 
 #include "estimator_common.h"
 
-/*通过接收端反馈的收包信息来估算本端发送的有效码率*/
+/*閫氳繃鎺ユ敹绔弽棣堢殑鏀跺寘淇℃伅鏉ヤ及绠楁湰绔彂閫佺殑鏈夋晥鐮佺巼*/
 typedef struct
 {
     int64_t         alr_ended_ts;

@@ -31,15 +31,15 @@ typedef struct
 {
     razor_sender_t              sender;
 
-    /*ÉÏÒ»´ÎÆÀ¹ÀµÄÍøÂç×´Ì¬*/
+    /*ä¸Šä¸€æ¬¡è¯„ä¼°çš„ç½‘ç»œçŠ¶æ€*/
     uint32_t                    last_bitrate_bps;
     uint8_t                     last_fraction_loss;
     uint32_t                    last_rtt;
 
     uint8_t                     loss_fraction;
 
-    void*                       trigger;                    /*ÂëÂÊ¸Ä±äºóĞèÒªÍ¨Öª¸øÍ¨ĞÅ²ãµÄtrigger*/
-    bitrate_changed_func        trigger_cb;                 /*Í¨Öªº¯Êı*/
+    void*                       trigger;                    /*ç ç‡æ”¹å˜åéœ€è¦é€šçŸ¥ç»™é€šä¿¡å±‚çš„trigger*/
+    bitrate_changed_func        trigger_cb;                 /*é€šçŸ¥å‡½æ•°*/
 
     uint32_t                    max_bitrate;
     uint32_t                    min_bitrate;

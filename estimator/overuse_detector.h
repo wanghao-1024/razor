@@ -11,7 +11,7 @@
 #include "estimator_common.h"
 #include <stdint.h>
 
-/*ÍøÂç¹ıÔØ¼ì²âÆ÷£¬ÒÆÖ²ÓÚwebRTC*/
+/*ç½‘ç»œè¿‡è½½æ£€æµ‹å™¨ï¼Œç§»æ¤äºwebRTC*/
 
 typedef struct
 {

@@ -17,7 +17,7 @@ static void sender_remb_on_change_bitrate(remb_sender_t* cc, uint32_t bitrate, u
 
     cc->pacer->factor = 1.25f;
 
-    /*´¥·¢Ò»¸öÍ¨ÐÅ²ãÍ¨Öª*/
+    /*è§¦å‘ä¸€ä¸ªé€šä¿¡å±‚é€šçŸ¥*/
     if (cc->trigger != NULL && cc->trigger_cb != NULL)
         cc->trigger_cb(cc->trigger, bitrate, fraction_loss, rtt);
 }
@@ -140,7 +140,7 @@ void remb_sender_on_feedback(remb_sender_t* s, uint8_t* feedback, int feedback_s
         s->loss_fraction = msg.fraction_loss;
     }
 
-    /*È·¶¨REMBµÄ´ø¿í*/
+    /*ç¡®å®šREMBçš„å¸¦å®½*/
     if ((msg.flag & remb_msg) == remb_msg)
     {
 

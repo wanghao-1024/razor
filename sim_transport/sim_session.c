@@ -151,7 +151,7 @@ static void sim_session_send_connect(sim_session_t* s, int64_t now_ts)
     body.cid = s->scid;
     body.token_size = 0;
     body.cc_type = (uint8_t)s->transport_type;
-    /*´Ë´¦Ö»ÊÇ²âÊÔ³ÌÐò£¬²»ÌîÐ´token*/
+    /*æ­¤å¤„åªæ˜¯æµ‹è¯•ç¨‹åºï¼Œä¸å¡«å†™token*/
 
     sim_encode_msg(&s->sstrm, &header, &body);
     sim_session_network_send(s, &s->sstrm);
@@ -249,7 +249,7 @@ int sim_session_send_video(sim_session_t* s, uint8_t payload_type, uint8_t ftype
         goto err;
     }
 
-    if (s->interrupt == net_interrupt) /*ÍøÂçÖÐ¶Ï£¬½øÐÐÖ¡¶ªÆú*/
+    if (s->interrupt == net_interrupt) /*ç½‘ç»œä¸­æ–­ï¼Œè¿›è¡Œå¸§ä¸¢å¼ƒ*/
         goto err;
 
     s->video_bytes += size;
@@ -281,7 +281,7 @@ void sim_session_set_bitrates(sim_session_t* s, uint32_t min_bitrate, uint32_t s
     s->start_bitrate = (int)(start_bitrate * (SIM_SEGMENT_HEADER_SIZE + SIM_VIDEO_SIZE) * 1.07 / SIM_VIDEO_SIZE);
     s->start_bitrate = SU_MIN(max_bitrate, s->start_bitrate);
 
-    /*Èç¹ûsenderÃ»ÓÐ´´½¨£¬ÔÚsender createµÄÊ±ºò½øÐÐÉèÖÃ*/
+    /*å¦‚æžœsenderæ²¡æœ‰åˆ›å»ºï¼Œåœ¨sender createçš„æ—¶å€™è¿›è¡Œè®¾ç½®*/
     if (s->sender != NULL)
         sim_sender_set_bitrates(s, s->sender, min_bitrate, s->start_bitrate, max_bitrate);
 }
@@ -311,7 +311,7 @@ void sim_session_calculate_rtt(sim_session_t* s, uint32_t keep_rtt)
     if (s->rtt < 10)
         s->rtt = 10;
 
-    /*Í¨ÖªRTT¸üÐÂ*/
+    /*é€šçŸ¥RTTæ›´æ–°*/
     if (s->sender != NULL)
     {
         sim_sender_update_rtt(s, s->sender);
@@ -385,7 +385,7 @@ static void process_sim_connect(sim_session_t* s, sim_header_t* header, bin_stre
     ack.cid = body.cid;
     ack.result = 0;
 
-    /*³õÊ¼»¯½ÓÊÕ¶Ë*/
+    /*åˆå§‹åŒ–æŽ¥æ”¶ç«¯*/
     if (s->receiver == NULL)
     {
         s->receiver = sim_receiver_create(s, body.cc_type);
@@ -428,7 +428,7 @@ static void process_sim_connect_ack(sim_session_t* s, sim_header_t* header, bin_
     else
     {
         s->state = session_connected;
-        /*´´½¨sender*/
+        /*åˆ›å»ºsender*/
         if (s->sender == NULL)
         {
             s->sender = sim_sender_create(s, s->transport_type, s->padding, s->fec);
@@ -438,10 +438,10 @@ static void process_sim_connect_ack(sim_session_t* s, sim_header_t* header, bin_
         sim_sender_active(s, s->sender);
 
 
-        /*½«ÍøÂçÉèÖÃÎª»Ö¸´×´Ì¬*/
+        /*å°†ç½‘ç»œè®¾ç½®ä¸ºæ¢å¤çŠ¶æ€*/
         s->interrupt = net_recover;
 
-        /*ÉèÖÃÅäÖÃµÄÂëÂÊ×´Ì¬*/
+        /*è®¾ç½®é…ç½®çš„ç çŽ‡çŠ¶æ€*/
         sim_sender_set_bitrates(s, s->sender, s->min_bitrate, s->start_bitrate, s->max_bitrate);
 
         sim_info("sender actived!!!\n");
@@ -517,7 +517,7 @@ static void process_sim_pong(sim_session_t* s, sim_header_t* header, bin_stream_
     if (now_ts > pong.ts + 5)
         keep_rtt = (uint32_t)(now_ts - pong.ts);
 
-    /*¼ÆËãrtt*/
+    /*è®¡ç®—rtt*/
     sim_session_calculate_rtt(s, keep_rtt);
 }
 
@@ -614,7 +614,7 @@ static void sim_session_process(sim_session_t* s, bin_stream_t* strm, su_addr* a
     if (s->interrupt == net_interrupt)
     {
         s->interrupt = net_recover;
-        s->notify_cb(s->event, net_recover_notify, 0); /*Í¨Öª±àÂëÆ÷¿ÉÒÔ½øÐÐ±àÂë*/
+        s->notify_cb(s->event, net_recover_notify, 0); /*é€šçŸ¥ç¼–ç å™¨å¯ä»¥è¿›è¡Œç¼–ç */
     }
 
     s->resend = 0;
@@ -685,7 +685,7 @@ static void sim_session_send_ping(sim_session_t* s, int64_t now_ts)
     s->commad_ts = now_ts;
     s->resend++;
 
-    /*ÍøÂç³¬Ê±3ÃëÁË£¬²»½øÐÐ·¢ËÍ±¨ÎÄ*/
+    /*ç½‘ç»œè¶…æ—¶3ç§’äº†ï¼Œä¸è¿›è¡Œå‘é€æŠ¥æ–‡*/
     if (s->resend >= 4)
     {
         if (s->sender != NULL && s->sender->cc != NULL)

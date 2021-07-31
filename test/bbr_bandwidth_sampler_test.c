@@ -122,7 +122,7 @@ static void test_send_paced()
 
     sample_tester_destroy(&test);
 }
-/*¶ª°ü²âÊÔ*/
+/*ä¸¢åŒ…æµ‹è¯•*/
 static void test_send_loss()
 {
     bbr_bandwidth_sample_t ret;
@@ -167,7 +167,7 @@ static void test_send_loss()
 
     sample_tester_destroy(&test);
 }
-/*¶¶¶¯²âÊÔ*/
+/*æŠ–åŠ¨æµ‹è¯•*/
 static void test_compress_ack()
 {
     bbr_bandwidth_sample_t ret;
@@ -193,7 +193,7 @@ static void test_compress_ack()
 
     sample_tester_destroy(&test);
 }
-/*ÂÒĞò²âÊÔ*/
+/*ä¹±åºæµ‹è¯•*/
 static void test_reorder_ack()
 {
     bbr_bandwidth_sample_t ret;
@@ -238,7 +238,7 @@ static void test_app_limited()
 
     send_40_packets_ack_20(&test, delta_time);
 
-    /*ÉèÖÃapp limited*/
+    /*è®¾ç½®app limited*/
     sampler_on_app_limited(test.sampler);
 
     for (i = 21; i <= 40; i++)

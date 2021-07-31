@@ -11,31 +11,31 @@
 #include "cf_skiplist.h"
 #include "cf_list.h"
 
-#define k_max_pace_queue_ms         250         /*pacer queue»º³åµÄ×î´óÑÓ³Ù*/
+#define k_max_pace_queue_ms         250         /*pacer queueç¼“å†²çš„æœ€å¤§å»¶è¿Ÿ*/
 
 typedef struct
 {
-    uint32_t        seq;            /*Í¨ĞÅÖĞµÄ¾ø¶Ôseq£¬Ïàµ±ÓÚÖ¡µÄÏÈºóË³Ğò£¬webRTCÕâ¿é×öµÄ·Ç³£¸´ÔÓ£¬×öÁËÓÅÏÈµÈ¼¶£¬¶ÔÓÚÊÓÆµÀ´Ëµ£¬¾ø¶ÔµÄSEQ´óĞ¡±íÃ÷ÁËÏÈºó¹ØÏµ£¬Ã»ÓĞ±ØÒª×ö¸÷ÖÖµÈ¼¶Çø·Ö*/
-    int             retrans;        /*ÊÇ·ñÊÇÖØ´«*/
-    size_t          size;           /*±¨ÎÄ´óĞ¡*/
-    int64_t         que_ts;         /*·ÅÈëpacer queueµÄÊ±¼ä´Á*/
-    int             sent;           /*ÊÇ·ñÒÑ¾­·¢ËÍ*/
+    uint32_t        seq;            /*é€šä¿¡ä¸­çš„ç»å¯¹seqï¼Œç›¸å½“äºå¸§çš„å…ˆåé¡ºåºï¼ŒwebRTCè¿™å—åšçš„éå¸¸å¤æ‚ï¼Œåšäº†ä¼˜å…ˆç­‰çº§ï¼Œå¯¹äºè§†é¢‘æ¥è¯´ï¼Œç»å¯¹çš„SEQå¤§å°è¡¨æ˜äº†å…ˆåå…³ç³»ï¼Œæ²¡æœ‰å¿…è¦åšå„ç§ç­‰çº§åŒºåˆ†*/
+    int             retrans;        /*æ˜¯å¦æ˜¯é‡ä¼ */
+    size_t          size;           /*æŠ¥æ–‡å¤§å°*/
+    int64_t         que_ts;         /*æ”¾å…¥pacer queueçš„æ—¶é—´æˆ³*/
+    int             sent;           /*æ˜¯å¦å·²ç»å‘é€*/
 } packet_event_t;
 
 typedef struct
 {
-    uint32_t        max_que_ms;     /*pacer¿ÉÒÔ½ÓÊÜ×î´óµÄÑÓ³Ù*/
+    uint32_t        max_que_ms;     /*pacerå¯ä»¥æ¥å—æœ€å¤§çš„å»¶è¿Ÿ*/
     size_t          total_size;
-    int64_t         oldest_ts;      /*×îÔçÖ¡µÄÊ±¼ä´Á*/
-    skiplist_t*     cache;          /*°´¾ø¶ÔSEQÅÅ¶ÓµÄ¶ÓÁĞ*/
-    base_list_t*    l;              /*°´Ê±¼äÏÈºóµÄ¶ÓÁĞ*/
+    int64_t         oldest_ts;      /*æœ€æ—©å¸§çš„æ—¶é—´æˆ³*/
+    skiplist_t*     cache;          /*æŒ‰ç»å¯¹SEQæ’é˜Ÿçš„é˜Ÿåˆ—*/
+    base_list_t*    l;              /*æŒ‰æ—¶é—´å…ˆåçš„é˜Ÿåˆ—*/
 } pacer_queue_t;
 
 void                    pacer_queue_init(pacer_queue_t* que, uint32_t que_ms);
 void                    pacer_queue_destroy(pacer_queue_t* que);
 
 int                     pacer_queue_push(pacer_queue_t* que, packet_event_t* ev);
-/*»ñÈ¡queÖĞ×îĞ¡seqµÄ°ü£¬°´Ë³Ğò·¢³ö£¬ÕâÑù·ÀÖ¹³öÏÖ´ó·¶Î§µÄ¶¶¶¯*/
+/*è·å–queä¸­æœ€å°seqçš„åŒ…ï¼ŒæŒ‰é¡ºåºå‘å‡ºï¼Œè¿™æ ·é˜²æ­¢å‡ºç°å¤§èŒƒå›´çš„æŠ–åŠ¨*/
 packet_event_t*         pacer_queue_front(pacer_queue_t* que);
 void                    pacer_queue_sent_by_id(pacer_queue_t* que, uint32_t id);
 void                    pacer_queue_sent(pacer_queue_t* que, packet_event_t* ev);
@@ -43,7 +43,7 @@ void                    pacer_queue_sent(pacer_queue_t* que, packet_event_t* ev)
 int                     pacer_queue_empty(pacer_queue_t* que);
 size_t                  pacer_queue_bytes(pacer_queue_t* que);
 int64_t                 pacer_queue_oldest(pacer_queue_t* que);
-/*¼ÆËãqueĞèÒªµÄÂëÂÊ*/
+/*è®¡ç®—queéœ€è¦çš„ç ç‡*/
 uint32_t                pacer_queue_target_bitrate_kbps(pacer_queue_t* que, int64_t now_ts);
 
 #endif

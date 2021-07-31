@@ -13,7 +13,7 @@
 
 typedef void(*pacer_send_notify_cb)(void* handler, int size);
 
-/*ÕâÀïÃ»ÓĞÀûÓÃgccÖĞµÄpacerµÄÔ­ÒòÊÇÒòÎªBBRÊÇ»ùÓÚ·¢ËÍ´°¿ÚºÍpacing rateÀ´¿ØÖÆ·¢ËÍÆµÂÊµÄ£¬²»ÏñGCCÖ»ÊÇµ¥´¿Ê¹ÓÃestimator rateÀ´¿ØÖÆ·¢ËÍÆµÂÊ*/
+/*è¿™é‡Œæ²¡æœ‰åˆ©ç”¨gccä¸­çš„pacerçš„åŸå› æ˜¯å› ä¸ºBBRæ˜¯åŸºäºå‘é€çª—å£å’Œpacing rateæ¥æ§åˆ¶å‘é€é¢‘ç‡çš„ï¼Œä¸åƒGCCåªæ˜¯å•çº¯ä½¿ç”¨estimator rateæ¥æ§åˆ¶å‘é€é¢‘ç‡*/
 
 typedef struct
 {
@@ -24,14 +24,14 @@ typedef struct
     int64_t             last_update_ts;
     int                 padding;
 
-    pacer_queue_t       que;                        /*ÅÅ¶Ó¶ÓÁĞ*/
+    pacer_queue_t       que;                        /*æ’é˜Ÿé˜Ÿåˆ—*/
 
-    interval_budget_t   media_budget;               /*ÕıÊ½µÄÃ½Ìå±¨ÎÄµÄ·¢ËÍËÙ¶È¿ØÖÆÆ÷*/
-    interval_budget_t   padding_budget;             /*Ìî³äµÄ·¢ËÍËÙ¶È¿ØÖÆÆ÷*/
-    size_t              congestion_window_size;     /*ÓµÈû´°¿Ú´óĞ¡*/
-    size_t              outstanding_bytes;          /*ÕıÔÚÂ·ÉÏ·¢ËÍµÄÊı¾İ*/
-    float               factor;                     /*pacing rate·Å´óÒò×Ó*/
-    /*·¢°ü»Øµ÷º¯Êı*/
+    interval_budget_t   media_budget;               /*æ­£å¼çš„åª’ä½“æŠ¥æ–‡çš„å‘é€é€Ÿåº¦æ§åˆ¶å™¨*/
+    interval_budget_t   padding_budget;             /*å¡«å……çš„å‘é€é€Ÿåº¦æ§åˆ¶å™¨*/
+    size_t              congestion_window_size;     /*æ‹¥å¡çª—å£å¤§å°*/
+    size_t              outstanding_bytes;          /*æ­£åœ¨è·¯ä¸Šå‘é€çš„æ•°æ®*/
+    float               factor;                     /*pacing rateæ”¾å¤§å› å­*/
+    /*å‘åŒ…å›è°ƒå‡½æ•°*/
     void*               handler;
     pace_send_func      send_cb;
 
@@ -55,9 +55,9 @@ int                         bbr_pacer_insert_packet(bbr_pacer_t* pace, uint32_t 
 int64_t                     bbr_pacer_queue_ms(bbr_pacer_t* pace);
 size_t                      bbr_pacer_queue_size(bbr_pacer_t* pace);
 
-/*³¢ÊÔ·¢ËÍ*/
+/*å°è¯•å‘é€*/
 void                        bbr_pacer_try_transmit(bbr_pacer_t* pace, int64_t now_ts);
-/*Ô¤¼Æ·¢ËÍµôqueueÖĞÊı¾İµÄÊ±¼ä*/
+/*é¢„è®¡å‘é€æ‰queueä¸­æ•°æ®çš„æ—¶é—´*/
 int64_t                     bbr_pacer_expected_queue_ms(bbr_pacer_t* pace);
 #endif
 

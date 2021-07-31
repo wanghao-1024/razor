@@ -50,14 +50,14 @@ void aimd_set_start_bitrate(aimd_rate_controller_t* aimd, uint32_t bitrate)
 #define MIN_FELLBACK_INTERVAL 200
 int64_t aimd_get_feelback_interval(aimd_rate_controller_t* aimd)
 {
-    /*¼ÆËãfeelbackÖ»Õ¼5%µÄ´ø¿í¸ººÉÏÂ£¬·¢ËÍfeelbackµÄÊ±¼ä¼ä¸ô*/
+    /*è®¡ç®—feelbackåªå 5%çš„å¸¦å®½è´Ÿè·ä¸‹ï¼Œå‘é€feelbackçš„æ—¶é—´é—´éš”*/
     int64_t interval = (int64_t)(DEFAULT_FEELBACK_SIZE * 8 * 1000 / ((0.05 * aimd->curr_rate) + 0.5));
     interval = SU_MAX(SU_MIN(MAX_FEELBACK_INTERVAL, interval), MIN_FELLBACK_INTERVAL);
 
     return interval;
 }
 
-/*ÅÐ¶Ïaimd¿ØÖÆÆ÷ÊÇ·ñ¿ÉÒÔ½øÐÐÍøÂç´ø¿íµ÷½Ú*/
+/*åˆ¤æ–­aimdæŽ§åˆ¶å™¨æ˜¯å¦å¯ä»¥è¿›è¡Œç½‘ç»œå¸¦å®½è°ƒèŠ‚*/
 int aimd_time_reduce_further(aimd_rate_controller_t* aimd, int64_t cur_ts, uint32_t incoming_rate)
 {
     int64_t reduce_interval = SU_MAX(SU_MIN(200, aimd->rtt), 10);
@@ -97,7 +97,7 @@ static uint32_t clamp_bitrate(aimd_rate_controller_t* aimd, uint32_t new_bitrate
     return SU_MIN(SU_MAX(new_bitrate, aimd->min_rate), aimd->max_rate);
 }
 
-/*¼ÆËãÒ»´Î´ø¿íµÄÔöÁ¿,Ò»°ãÊÇÓÃÓÚ³õÆÚÔö³¤½×¶Î£¬ÓÐµãÏóÂýÆô¶¯*/
+/*è®¡ç®—ä¸€æ¬¡å¸¦å®½çš„å¢žé‡,ä¸€èˆ¬æ˜¯ç”¨äºŽåˆæœŸå¢žé•¿é˜¶æ®µï¼Œæœ‰ç‚¹è±¡æ…¢å¯åŠ¨*/
 static uint32_t multiplicative_rate_increase(int64_t cur_ts, int64_t last_ts, uint32_t curr_bitrate)
 {
     double alpha = 1.08;
@@ -124,7 +124,7 @@ int aimd_get_near_max_inc_rate(aimd_rate_controller_t* aimd)
     return (int)(SU_MAX(8000, (avg_packet_size_bits * 1000) / response_time));
 }
 
-/*¼ÆËãÒ»¸öÔÚÎÈ¶¨ÆÚ¼äµÄ´ø¿íÔöÁ¿*/
+/*è®¡ç®—ä¸€ä¸ªåœ¨ç¨³å®šæœŸé—´çš„å¸¦å®½å¢žé‡*/
 static uint32_t additive_rate_increase(aimd_rate_controller_t* aimd, int64_t cur_ts, int64_t last_ts)
 {
     return (uint32_t)((cur_ts - last_ts) * aimd_get_near_max_inc_rate(aimd) / 1000.0);
@@ -199,15 +199,15 @@ static uint32_t aimd_change_bitrate(aimd_rate_controller_t* aimd, uint32_t new_b
             break;
 
         case kRcIncrease:
-            if (aimd->avg_max_bitrate_kbps >= 0 && incoming_kbitrate > aimd->avg_max_bitrate_kbps + 3 * max_kbitrate)  /*µ±Ç°ÂëÂÊ±ÈÆ½¾ù×î´óÂëÂÊ´óºÜ¶à£¬½øÐÐ±¶ÊýÔö*/
+            if (aimd->avg_max_bitrate_kbps >= 0 && incoming_kbitrate > aimd->avg_max_bitrate_kbps + 3 * max_kbitrate)  /*å½“å‰ç çŽ‡æ¯”å¹³å‡æœ€å¤§ç çŽ‡å¤§å¾ˆå¤šï¼Œè¿›è¡Œå€æ•°å¢ž*/
             {
                 aimd_change_region(aimd, kRcMaxUnknown);
                 aimd->avg_max_bitrate_kbps = -1.0f;
             }
 
-            if (aimd->region == kRcNearMax) /*½øÐÐ¼ÓÐÔÔö*/
+            if (aimd->region == kRcNearMax) /*è¿›è¡ŒåŠ æ€§å¢ž*/
                 new_bitrate += additive_rate_increase(aimd, cur_ts, aimd->time_last_bitrate_change);
-            else /*ÆðÊ¼½×¶Î£¬½øÐÐ±¶ÊýÐÔÔö*/
+            else /*èµ·å§‹é˜¶æ®µï¼Œè¿›è¡Œå€æ•°æ€§å¢ž*/
                 new_bitrate += multiplicative_rate_increase(cur_ts, aimd->time_last_bitrate_change, new_bitrate);
 
             aimd->time_last_bitrate_change = cur_ts;
@@ -249,18 +249,18 @@ static uint32_t aimd_change_bitrate(aimd_rate_controller_t* aimd, uint32_t new_b
     return clamp_bitrate(aimd, new_bitrate, input->incoming_bitrate);
 }
 
-/*¸üÐÂÒ»´ÎÊäÈëµÄ´ø¿í£¬½øÐÐaimd´ø¿íµ÷Õû*/
+/*æ›´æ–°ä¸€æ¬¡è¾“å…¥çš„å¸¦å®½ï¼Œè¿›è¡Œaimdå¸¦å®½è°ƒæ•´*/
 #define k_initialization_ts 5000
 uint32_t aimd_update(aimd_rate_controller_t* aimd, rate_control_input_t* input, int64_t cur_ts)
 {
     if (aimd->inited == -1)
     {
-        if (aimd->time_first_incoming_estimate < 0)  /*È·¶¨µÚÒ»´ÎupdateµÄÊ±¼ä´Á*/
+        if (aimd->time_first_incoming_estimate < 0)  /*ç¡®å®šç¬¬ä¸€æ¬¡updateçš„æ—¶é—´æˆ³*/
         {
             if (input->incoming_bitrate > 0)
                 aimd->time_first_incoming_estimate = cur_ts;
         }
-        else if (cur_ts - aimd->time_first_incoming_estimate > k_initialization_ts && input->incoming_bitrate > 0)  /*5Ãëºó½øÐÐ½«Í³¼Æµ½µÄ´ø¿í×÷Îª³õÊ¼»¯´ø¿í*/
+        else if (cur_ts - aimd->time_first_incoming_estimate > k_initialization_ts && input->incoming_bitrate > 0)  /*5ç§’åŽè¿›è¡Œå°†ç»Ÿè®¡åˆ°çš„å¸¦å®½ä½œä¸ºåˆå§‹åŒ–å¸¦å®½*/
         {
             aimd->curr_rate = input->incoming_bitrate;
             aimd->inited = 0;

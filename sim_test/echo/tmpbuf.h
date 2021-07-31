@@ -11,7 +11,7 @@
 #include <stdlib.h>
 
 /*
-´Ó vc7 <atlaloc.h> ÀïÃæ¿½±´³öÀ´µÄ£¬Ôö¼ÓÁËÒ»¸ö data() ·µ»Ø buffer Ö¸Õë
+ä»Ž vc7 <atlaloc.h> é‡Œé¢æ‹·è´å‡ºæ¥çš„ï¼Œå¢žåŠ äº†ä¸€ä¸ª data() è¿”å›ž buffer æŒ‡é’ˆ
 */
 
 class CRTAllocator

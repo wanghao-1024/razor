@@ -53,7 +53,7 @@ void ack_estimator_set_alrended(ack_bitrate_estimator_t* est, int64_t ts)
 
 static inline void ack_estimator_mybe_expect_fast_change(ack_bitrate_estimator_t* est, int64_t packet_send_ts)
 {
-    /*½«ÂëÂÊÉèÖÃµ½Ò»¸ö±ä»¯±È½Ï´óµÄ·¶Î§Òò×Ó£¬Õâ¸öºÍpacerÓĞ¹Ø*/
+    /*å°†ç ç‡è®¾ç½®åˆ°ä¸€ä¸ªå˜åŒ–æ¯”è¾ƒå¤§çš„èŒƒå›´å› å­ï¼Œè¿™ä¸ªå’Œpaceræœ‰å…³*/
     if (est->alr_ended_ts >= 0 && packet_send_ts > est->alr_ended_ts)
     {
         est->bitrate_estimate_var += 200;
@@ -74,7 +74,7 @@ static float ack_estimator_update_window(ack_bitrate_estimator_t* est, int64_t n
     if (est->prev_ts >= 0)
     {
         est->curr_win_ms += now_ts - est->prev_ts;
-        /*ÌøÔ¾Ê±¼ä³¬¹ıÁËÒ»¸ö´°¿ÚÖÜÆÚ£¬½«Í³¼ÆÊı¾İÇé¿öÖØĞÂ¼ÆËã*/
+        /*è·³è·ƒæ—¶é—´è¶…è¿‡äº†ä¸€ä¸ªçª—å£å‘¨æœŸï¼Œå°†ç»Ÿè®¡æ•°æ®æƒ…å†µé‡æ–°è®¡ç®—*/
         if (now_ts - est->prev_ts > rate_wnd_ms)
         {
             est->sum = 0;
@@ -84,7 +84,7 @@ static float ack_estimator_update_window(ack_bitrate_estimator_t* est, int64_t n
 
     est->prev_ts = now_ts;
     bitrate_sample = -1.0f;
-    if (est->curr_win_ms >= rate_wnd_ms)  /*¸ÕºÃÒ»¸ö´°¿ÚÖÜÆÚ£¬½øĞĞÂëÂÊ¼ÆËã*/
+    if (est->curr_win_ms >= rate_wnd_ms)  /*åˆšå¥½ä¸€ä¸ªçª—å£å‘¨æœŸï¼Œè¿›è¡Œç ç‡è®¡ç®—*/
     {
         bitrate_sample = 8.0f * est->sum / rate_wnd_ms;
         est->curr_win_ms -= rate_wnd_ms;
@@ -114,7 +114,7 @@ static void ack_estimator_update(ack_bitrate_estimator_t* est, int64_t arrival_t
         return;
     }
 
-    /*ÒıÈë±Æ½ü¼ÆËã*/
+    /*å¼•å…¥é€¼è¿‘è®¡ç®—*/
     sample_uncertainty = 10.0f * SU_ABS(est->bitrate_estimate, bitrate_sample) / est->bitrate_estimate;
     sample_var = sample_uncertainty * sample_uncertainty;
 
@@ -128,7 +128,7 @@ void ack_estimator_incoming(ack_bitrate_estimator_t* est, packet_feedback_t pack
 {
     int i;
 
-    /*¸ù¾İ½ÓÊÕ·½µÄestimator proxy·´À¡¹ıÀ´µÄfeedbackÀ´µü´úÂëÂÊ*/
+    /*æ ¹æ®æ¥æ”¶æ–¹çš„estimator proxyåé¦ˆè¿‡æ¥çš„feedbackæ¥è¿­ä»£ç ç‡*/
     for (i = 0; i < size; i++)
     {
         if (packets[i].send_ts >= 0)

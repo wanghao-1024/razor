@@ -97,7 +97,7 @@ void bbr_feedback_on_feedback(bbr_fb_adapter_t* adapter, bbr_feedback_msg_t* msg
     {
         for (; seq != msg->samplers[i].seq; seq++)
         {
-            /*¶ªÊ§µÄ±¨ÎÄ*/
+            /*ä¸¢å¤±çš„æŠ¥æ–‡*/
             if (sender_history_get(adapter->hist, seq, &p, 0) == 0)
             {
                 adapter->feedback.packets[adapter->feedback.packets_num].seq = seq;

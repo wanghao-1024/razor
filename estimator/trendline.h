@@ -10,7 +10,7 @@
 
 #include "cf_platform.h"
 
-/*Í¨¹ıÑÓ³ÙµÄÔö³¤Ç÷ÊÆÈ·¶¨¹ıÔØ²ÎÊı*/
+/*é€šè¿‡å»¶è¿Ÿçš„å¢é•¿è¶‹åŠ¿ç¡®å®šè¿‡è½½å‚æ•°*/
 
 typedef struct
 {
@@ -33,7 +33,7 @@ typedef struct
     double      trendline;
 
     int         index;
-    delay_hist_t* que;      /*×î½üµÄÇúÏßÇ÷ÊÆÀúÊ·µãÊı¾İ*/
+    delay_hist_t* que;      /*æœ€è¿‘çš„æ›²çº¿è¶‹åŠ¿å†å²ç‚¹æ•°æ®*/
 
 } trendline_estimator_t;
 

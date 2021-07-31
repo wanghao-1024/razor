@@ -13,7 +13,7 @@
 #include <tchar.h>
 #include <windows.h>
 #include "tmpbuf.h"
-// ÄÚ²¿·ÖÅäÄÚ´æ. ĞèÒªÔÚÍâÃæÊÍ·Å
+// å†…éƒ¨åˆ†é…å†…å­˜. éœ€è¦åœ¨å¤–é¢é‡Šæ”¾
 #pragma warning(disable: 4996)
 namespace helper
 {
@@ -80,9 +80,9 @@ inline std::string app2net_s(const wchar_t* w, int cp = CP_UTF8)
     if (!w) return std::string();
     // utf16 -> utf8
     TempBuffer<char> str;
-    // ¼ÆËã´óĞ¡
+    // è®¡ç®—å¤§å°
     int size = WideCharToMultiByte(cp, 0, w, -1, NULL, NULL, NULL, NULL);
-    // ×ª»»
+    // è½¬æ¢
     WideCharToMultiByte(cp, 0, w, -1, str.Allocate(size), size, NULL, NULL);
     return std::string(str.data());
 }
@@ -93,7 +93,7 @@ inline std::string app2net(const std::wstring& str, int cp = CP_UTF8)
 }
 
 
-// get_ ·½·¨ÖĞ´¦Àí¸¨Öú£¬²»ÄÜ°ÑÄÚ²¿µÄ XSTRING ¸ø³öÈ¥¡£
+// get_ æ–¹æ³•ä¸­å¤„ç†è¾…åŠ©ï¼Œä¸èƒ½æŠŠå†…éƒ¨çš„ XSTRING ç»™å‡ºå»ã€‚
 inline std::wstring& net2app(const std::string& net, std::wstring& io)
 {
     PPSTRB app;

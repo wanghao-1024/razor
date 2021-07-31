@@ -61,7 +61,7 @@ typedef struct
     float                   high_loss_threshold;
     uint32_t                bitrate_threshold;
 
-    /*Ò»¸öÒ»ÃëÖÓÖ®ÄÚ´ø¿í×îĞ¡ÖµÀúÊ·¼ÇÂ¼*/
+    /*ä¸€ä¸ªä¸€ç§’é’Ÿä¹‹å†…å¸¦å®½æœ€å°å€¼å†å²è®°å½•*/
     uint32_t                begin_index;
     uint32_t                end_index;
     min_bitrate_t           min_bitrates[MIN_HISTORY_ARR_SIZE];

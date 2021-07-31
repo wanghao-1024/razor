@@ -5,39 +5,39 @@
 * See the file LICENSE for redistribution information.
 */
 
-/*Ò»¸önackÇëÇó°üµÄ´ø¿íÏŞÖÆÆ÷*/
+/*ä¸€ä¸ªnackè¯·æ±‚åŒ…çš„å¸¦å®½é™åˆ¶å™¨*/
 typedef struct
 {
     uint32_t*       buckets;
     uint32_t        index;
     int64_t         oldest_ts;
 
-    int             wnd_size;           /*Í³¼ÆµÄÊ±¼ä´°*/
+    int             wnd_size;           /*ç»Ÿè®¡çš„æ—¶é—´çª—*/
     uint32_t        wnd_bytes;
-    uint32_t        threshold;          /*×î´ó¿ÉÒÔ·¢ËÍµÄ×Ö½ÚÊı*/
+    uint32_t        threshold;          /*æœ€å¤§å¯ä»¥å‘é€çš„å­—èŠ‚æ•°*/
 } sim_sender_limiter_t;
 
 struct __sim_sender
 {
     int                         actived;
-    uint32_t                    base_packet_id;         /*½ÓÊÜ¶Ë±¨¸æÒÑ¾­½ÓÊÕµ½Á¬ĞøµÄ×î´ó±¨ÎÄID*/
+    uint32_t                    base_packet_id;         /*æ¥å—ç«¯æŠ¥å‘Šå·²ç»æ¥æ”¶åˆ°è¿ç»­çš„æœ€å¤§æŠ¥æ–‡ID*/
 
-    uint32_t                    packet_id_seed;         /*ÊÓÆµ±¨ÎÄID*/
-    uint32_t                    send_id_seed;           /*ÓëCCÄ£¿é¹ØÁªµÄ·¢ËÍID*/
+    uint32_t                    packet_id_seed;         /*è§†é¢‘æŠ¥æ–‡ID*/
+    uint32_t                    send_id_seed;           /*ä¸CCæ¨¡å—å…³è”çš„å‘é€ID*/
     uint32_t                    frame_id_seed;
     uint32_t                    transport_seq_seed;
 
-    int64_t                     first_ts;           /*µÚÒ»Ö¡ÆğÊ¼Ê±¼ä´Á*/
+    int64_t                     first_ts;           /*ç¬¬ä¸€å¸§èµ·å§‹æ—¶é—´æˆ³*/
 
-    skiplist_t*                 segs_cache;         /*ÊÓÆµ·ÖÆ¬cache*/
-    skiplist_t*                 fecs_cache;         /*fec·¢ËÍ´°¿Ú*/
-    skiplist_t*                 ack_cache;          /*ackÖØ´«·ÖÆ¬cache*/
+    skiplist_t*                 segs_cache;         /*è§†é¢‘åˆ†ç‰‡cache*/
+    skiplist_t*                 fecs_cache;         /*fecå‘é€çª—å£*/
+    skiplist_t*                 ack_cache;          /*acké‡ä¼ åˆ†ç‰‡cache*/
 
-    razor_sender_t*             cc;                 /*ÓµÈû¿ØÖÆ¶ÔÏó*/
+    razor_sender_t*             cc;                 /*æ‹¥å¡æ§åˆ¶å¯¹è±¡*/
 
     sim_session_t*              s;
 
-    flex_fec_sender_t*          flex;               /*flex FEC¶ÔÏó*/
+    flex_fec_sender_t*          flex;               /*flex FECå¯¹è±¡*/
     base_list_t*                out_fecs;
 
     size_t                      splits_size;

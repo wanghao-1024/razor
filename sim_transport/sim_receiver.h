@@ -32,13 +32,13 @@ typedef struct
     uint32_t            min_fid;
     uint32_t            max_fid;
     uint32_t            play_frame_ts;
-    uint32_t            max_ts;         /*»º³åÇøÖĞ×î´óµÄts*/
+    uint32_t            max_ts;         /*ç¼“å†²åŒºä¸­æœ€å¤§çš„ts*/
 
-    uint32_t            frame_ts;       /*ÒÑ¾­²¥·ÅµÄÏà¶ÔÊÓÆµÊ±¼ä´Á*/
-    uint64_t            play_ts;        /*µ±Ç°ÏµÍ³Ê±ÖÓµÄÊ±¼ä´Á*/
+    uint32_t            frame_ts;       /*å·²ç»æ’­æ”¾çš„ç›¸å¯¹è§†é¢‘æ—¶é—´æˆ³*/
+    uint64_t            play_ts;        /*å½“å‰ç³»ç»Ÿæ—¶é’Ÿçš„æ—¶é—´æˆ³*/
 
-    uint32_t            frame_timer;    /*Ö¡¼ä¸ôÊ±¼ä*/
-    uint32_t            wait_timer;     /*cache»º³åÊ±¼ä£¬ÒÔºÁÃëÎªµ¥Î»£¬Õâ¸öcacheµÄÊ±¼ä³¤¶ÈÓ¦¸ÃÊÇ> rtt + 2 * rtt_val,¸ù¾İÖØ·¢±¨ÎÄµÄ´ÎÊıÀ´¾ö¶¨*/
+    uint32_t            frame_timer;    /*å¸§é—´éš”æ—¶é—´*/
+    uint32_t            wait_timer;     /*cacheç¼“å†²æ—¶é—´ï¼Œä»¥æ¯«ç§’ä¸ºå•ä½ï¼Œè¿™ä¸ªcacheçš„æ—¶é—´é•¿åº¦åº”è¯¥æ˜¯> rtt + 2 * rtt_val,æ ¹æ®é‡å‘æŠ¥æ–‡çš„æ¬¡æ•°æ¥å†³å®š*/
 
     int                 state;
     int                 loss_flag;
@@ -64,7 +64,7 @@ struct __sim_receiver
     uint32_t            max_ts;
 
     skiplist_t*         loss;
-    int                 loss_count;             /*µ¥Î»Ê±¼äÄÚ³öÏÖ¶ª°üµÄ´ÎÊı*/
+    int                 loss_count;             /*å•ä½æ—¶é—´å†…å‡ºç°ä¸¢åŒ…çš„æ¬¡æ•°*/
 
     sim_frame_cache_t*  cache;
 
@@ -79,16 +79,16 @@ struct __sim_receiver
 
     int                 actived;
 
-    /*ºÍFIRÓĞ¹ØµÄ²ÎÊı*/
-    uint32_t            fir_seq;            /*ÇëÇó¹Ø¼üÖ¡µÄÏûÏ¢seq*/
-    int                 fir_state;          /*µ±Ç°firµÄ×´Ì¬£¬*/
+    /*å’ŒFIRæœ‰å…³çš„å‚æ•°*/
+    uint32_t            fir_seq;            /*è¯·æ±‚å…³é”®å¸§çš„æ¶ˆæ¯seq*/
+    int                 fir_state;          /*å½“å‰firçš„çŠ¶æ€ï¼Œ*/
 
     int                 cc_type;
 
     razor_receiver_t*   cc;
     sim_session_t*      s;
 
-    sim_receiver_fec_t* recover;            /*FEC±¨ÎÄ»Ö¸´¶ÔÏó*/
+    sim_receiver_fec_t* recover;            /*FECæŠ¥æ–‡æ¢å¤å¯¹è±¡*/
 };
 
 

@@ -15,7 +15,7 @@
 #define k_alr_stop_buget_percent        50
 #define k_alr_banwidth_useage_percent   60
 
-/*alr detector是一个根据当前评估出来的码率和时间来决定发送数据大小一个窗口机制，这个机制防止单位时间内发送了太多的包造成网络风暴*/
+/*alr detector鏄竴涓牴鎹綋鍓嶈瘎浼板嚭鏉ョ殑鐮佺巼鍜屾椂闂存潵鍐冲畾鍙戦�佹暟鎹ぇ灏忎竴涓獥鍙ｆ満鍒讹紝杩欎釜鏈哄埗闃叉鍗曚綅鏃堕棿鍐呭彂閫佷簡澶鐨勫寘閫犳垚缃戠粶椋庢毚*/
 typedef struct
 {
     interval_budget_t   budget;

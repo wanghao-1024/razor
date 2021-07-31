@@ -34,10 +34,10 @@ void sim_init(uint16_t port, void* event, sim_log_fn log_cb, sim_notify_fn notif
 
     g_log_func = log_cb;
 
-    /*³õÊ¼»¯razorµÄÈÕÖ¾½Ó¿Ú*/
+    /*åˆå§‹åŒ–razorçš„æ—¥å¿—æ¥å£*/
     razor_setup_log(log_cb);
 
-    /*´´½¨session*/
+    /*åˆ›å»ºsession*/
     g_session = sim_session_create(port, event, notify_cb, change_bitrate_cb, state_cb);
 }
 

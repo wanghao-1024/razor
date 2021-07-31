@@ -15,7 +15,7 @@
 
 static void sim_receiver_send_fir(sim_session_t* s, sim_receiver_t* r);
 
-/************************************************²¥·Å»º³åÇøµÄ¶¨Òå**********************************************************/
+/************************************************æ’­æ”¾ç¼“å†²åŒºçš„å®šä¹‰**********************************************************/
 static sim_frame_cache_t* open_real_video_cache(sim_session_t* s)
 {
     sim_frame_cache_t* cache = calloc(1, sizeof(sim_frame_cache_t));
@@ -75,7 +75,7 @@ static int evict_gop_frame(sim_session_t* s, sim_frame_cache_t* c)
     sim_frame_t* frame = NULL;
 
     key_frame_id = 0;
-    /*µÚÒ»Ö¡È·¶¨±»ÇýÖð£¬´ÓµÚ¶þÖ¡¿ªÊ¼¼ì²é*/
+    /*ç¬¬ä¸€å¸§ç¡®å®šè¢«é©±é€ï¼Œä»Žç¬¬äºŒå¸§å¼€å§‹æ£€æŸ¥*/
     for (i = c->min_fid + 2; i < c->max_fid; ++i)
     {
         frame = &c->frames[INDEX(i)];
@@ -235,7 +235,7 @@ static int real_video_cache_put(sim_session_t* s, sim_frame_cache_t* c, sim_segm
     if (seg->fid > c->max_fid)
     {
         if (c->max_fid > 0)
-            real_video_evict_frame(s, c, seg->fid); /*½øÐÐ¹ýÆÚ²ÛÎ»Çå³ý*/
+            real_video_evict_frame(s, c, seg->fid); /*è¿›è¡Œè¿‡æœŸæ§½ä½æ¸…é™¤*/
         else if (c->min_fid == 0 && c->max_fid == 0)
         {
             c->min_fid = seg->fid - 1;
@@ -339,7 +339,7 @@ static uint32_t real_video_ready_ms(sim_session_t* s, sim_frame_cache_t* c)
     return ret;
 }
 
-/*ÅÐ¶ÏÊÇ·ñ·¢ÆðFIRÇëÇó*/
+/*åˆ¤æ–­æ˜¯å¦å‘èµ·FIRè¯·æ±‚*/
 static int real_video_check_fir(sim_session_t* s, sim_frame_cache_t* c)
 {
     uint32_t pos;
@@ -348,11 +348,11 @@ static int real_video_check_fir(sim_session_t* s, sim_frame_cache_t* c)
     pos = INDEX(c->min_fid + 1);
     frame = &c->frames[pos];
 
-    /*µÚÒ»Ö¡ÊÇÍêÕûµÄ£¬²»×öF.I.RÖØ´«*/
+    /*ç¬¬ä¸€å¸§æ˜¯å®Œæ•´çš„ï¼Œä¸åšF.I.Ré‡ä¼ */
     if (real_video_cache_check_frame_full(s, frame) == 0)
         return -1;
 
-    /*»º³åÇø³¤¶ÈÐ¡ÓÚ3Ãë£¬¼ÌÐøµÈ´ý*/
+    /*ç¼“å†²åŒºé•¿åº¦å°äºŽ3ç§’ï¼Œç»§ç»­ç­‰å¾…*/
     if (c->play_frame_ts + MAX_EVICT_DELAY_MS * 3 / 5 > c->max_ts)
         return -1;
 
@@ -386,7 +386,7 @@ static int real_video_cache_get(sim_session_t* s, sim_frame_cache_t* c, uint8_t*
 
     space = SU_MAX(c->wait_timer, c->frame_timer);
 
-    /*¼ÆËã²¥·ÅÊ±¼äÍ¬²½*/
+    /*è®¡ç®—æ’­æ”¾æ—¶é—´åŒæ­¥*/
 
     play_ready_ts = real_video_ready_ms(s, c);
 
@@ -400,7 +400,7 @@ static int real_video_cache_get(sim_session_t* s, sim_frame_cache_t* c, uint8_t*
 
     real_video_cache_sync_timestamp(s, c);
 
-    /*¼ÆËãÄÜ²¥·ÅµÄÖ¡Ê±¼ä*/
+    /*è®¡ç®—èƒ½æ’­æ”¾çš„å¸§æ—¶é—´*/
     if (c->play_frame_ts + SU_MAX(MIN_EVICT_DELAY_MS, SU_MIN(MAX_EVICT_DELAY_MS, 4 * c->wait_timer)) < c->max_ts)
     {
         evict_gop_frame(s, c);
@@ -412,14 +412,14 @@ static int real_video_cache_get(sim_session_t* s, sim_frame_cache_t* c, uint8_t*
     frame = &c->frames[pos];
     if ((c->min_fid + 1 == frame->fid || frame->frame_type == 1) && real_video_cache_check_frame_full(s, frame) == 0)
     {
-        /*½øÐÐ¼äÐªÐÔ¿ì½ø*/
+        /*è¿›è¡Œé—´æ­‡æ€§å¿«è¿›*/
         if (frame->ts > c->frame_ts + SU_MAX(500, 2 * space) && play_ready_ts > space)
             c->frame_ts = frame->ts - space;
         else if (frame->ts <= c->frame_ts)
         {
             for (i = 0; i < frame->seg_number; ++i)
             {
-                if (size + frame->segments[i]->data_size <= buffer_size && frame->segments[i]->data_size <= SIM_VIDEO_SIZE)  /*Êý¾Ý¿½±´*/
+                if (size + frame->segments[i]->data_size <= buffer_size && frame->segments[i]->data_size <= SIM_VIDEO_SIZE)  /*æ•°æ®æ‹·è´*/
                 {
                     memcpy(data + size, frame->segments[i]->data, frame->segments[i]->data_size);
                     size += frame->segments[i]->data_size;
@@ -431,7 +431,7 @@ static int real_video_cache_get(sim_session_t* s, sim_frame_cache_t* c, uint8_t*
                     break;
                 }
             }
-            /*µÈ´ý»º³åµÄÊ±¼ä*/
+            /*ç­‰å¾…ç¼“å†²çš„æ—¶é—´*/
             if (c->frame_timer * 2 < play_ready_ts)
                 c->frame_ts = frame->ts + 5;
             else
@@ -467,12 +467,12 @@ static uint32_t real_video_cache_delay(sim_session_t* s, sim_frame_cache_t* c)
     return c->max_ts - c->play_frame_ts;
 }
 
-/*********************************************ÊÓÆµ½ÓÊÕ¶Ë´¦Àí*************************************************/
+/*********************************************è§†é¢‘æŽ¥æ”¶ç«¯å¤„ç†*************************************************/
 typedef struct
 {
     int64_t             loss_ts;
-    int64_t             ts;                 /*¶ª°üÇëÇóÊ±¿Ì£¬Ò»°ãÒª¹ýÒ»¸öÖÜÆÚ²Å½øÐÐÖØÐÂÇëÇó£¬Õâ¸öÖÜÆÚÒ»°ãÊÇRTTµÄ±¶Êý¹ØÏµ*/
-    int                 count;              /*¶ª°üÇëÇóÊ±¿Ì*/
+    int64_t             ts;                 /*ä¸¢åŒ…è¯·æ±‚æ—¶åˆ»ï¼Œä¸€èˆ¬è¦è¿‡ä¸€ä¸ªå‘¨æœŸæ‰è¿›è¡Œé‡æ–°è¯·æ±‚ï¼Œè¿™ä¸ªå‘¨æœŸä¸€èˆ¬æ˜¯RTTçš„å€æ•°å…³ç³»*/
+    int                 count;              /*ä¸¢åŒ…è¯·æ±‚æ—¶åˆ»*/
 } sim_loss_t;
 
 static void loss_free(skiplist_item_t key, skiplist_item_t val, void* args)
@@ -481,7 +481,7 @@ static void loss_free(skiplist_item_t key, skiplist_item_t val, void* args)
         free(val.ptr);
 }
 
-/*½ÓÊÕ¶Ë½øÐÐfeedback£¬ ½«feedback·¢ËÍµ½·¢ËÍ¶Ë*/
+/*æŽ¥æ”¶ç«¯è¿›è¡Œfeedbackï¼Œ å°†feedbackå‘é€åˆ°å‘é€ç«¯*/
 static void send_sim_feedback(void* handler, const uint8_t* payload, int payload_size)
 {
     sim_header_t header;
@@ -518,7 +518,7 @@ sim_receiver_t* sim_receiver_create(sim_session_t* s, int transport_type)
     r->s = s;
     r->fir_state = fir_normal;
 
-    /*´´½¨Ò»¸ö½ÓÊÕ¶ËµÄÓµÈû¿ØÖÆ¶ÔÏó*/
+    /*åˆ›å»ºä¸€ä¸ªæŽ¥æ”¶ç«¯çš„æ‹¥å¡žæŽ§åˆ¶å¯¹è±¡*/
     r->cc_type = transport_type;
     r->cc = razor_receiver_create(r->cc_type, MIN_BITRATE, MAX_BITRATE, SIM_SEGMENT_HEADER_SIZE, r, send_sim_feedback);
 
@@ -536,7 +536,7 @@ void sim_receiver_destroy(sim_session_t* s, sim_receiver_t* r)
     skiplist_destroy(r->loss);
     close_real_video_cache(s, r->cache);
 
-    /*Ïú»Ù½ÓÊÕ¶ËµÄÓµÈû¿ØÖÆ¶ÔÏó*/
+    /*é”€æ¯æŽ¥æ”¶ç«¯çš„æ‹¥å¡žæŽ§åˆ¶å¯¹è±¡*/
     if (r->cc != NULL)
     {
         razor_receiver_destroy(r->cc);
@@ -571,7 +571,7 @@ void sim_receiver_reset(sim_session_t* s, sim_receiver_t* r, int transport_type)
     if (r->recover != NULL)
         sim_fec_reset(s, r->recover);
 
-    /*ÖØÐÂ´´½¨Ò»¸öCC¶ÔÏó*/
+    /*é‡æ–°åˆ›å»ºä¸€ä¸ªCCå¯¹è±¡*/
     if (r->cc != NULL)
     {
         razor_receiver_destroy(r->cc);
@@ -590,7 +590,7 @@ int sim_receiver_active(sim_session_t* s, sim_receiver_t* r, uint32_t uid)
         return -1;
 
     r->actived = 1;
-    r->cache->frame_timer = 50;     /*ÌîÐ´Ò»¸öÄ¬ÈÏµÄ²¥·ÅÖ¡¼ä¸ô*/
+    r->cache->frame_timer = 50;     /*å¡«å†™ä¸€ä¸ªé»˜è®¤çš„æ’­æ”¾å¸§é—´éš”*/
 
     r->base_uid = uid;
     r->active_ts = GET_SYS_MS();
@@ -656,7 +656,7 @@ static void sim_receiver_update_loss(sim_session_t* s, sim_receiver_t* r, uint32
             if (iter == NULL)
             {
                 sim_loss_t* l = calloc(1, sizeof(sim_loss_t));
-                l->ts = now_ts - space;                     /*ÉèÖÃÏÂÒ»¸öÇëÇóÖØ´«µÄÊ±¿Ì*/
+                l->ts = now_ts - space;                     /*è®¾ç½®ä¸‹ä¸€ä¸ªè¯·æ±‚é‡ä¼ çš„æ—¶åˆ»*/
                 l->loss_ts = now_ts;
                 l->count = 0;
                 val.ptr = l;
@@ -712,7 +712,7 @@ static void video_real_update_base(sim_session_t* s, sim_receiver_t* r)
     }
 }
 
-/*½øÐÐackºÍnackÈ·ÈÏ£¬²¢¼ÆËã»º³åÇøµÄµÈ´ýÊ±¼ä*/
+/*è¿›è¡Œackå’Œnackç¡®è®¤ï¼Œå¹¶è®¡ç®—ç¼“å†²åŒºçš„ç­‰å¾…æ—¶é—´*/
 #define ACK_REAL_TIME   20
 #define ACK_HB_TIME     200
 static void video_real_ack(sim_session_t* s, sim_receiver_t* r, int hb, uint32_t seq)
@@ -729,7 +729,7 @@ static void video_real_ack(sim_session_t* s, sim_receiver_t* r, int hb, uint32_t
     int i, evict_count = 0;
 
     cur_ts = GET_SYS_MS();
-    /*Èç¹ûÊÇÐÄÌø´¥·¢*/
+    /*å¦‚æžœæ˜¯å¿ƒè·³è§¦å‘*/
     if ((hb == 0 && r->ack_ts + ACK_REAL_TIME < cur_ts) || (r->ack_ts + ACK_HB_TIME < cur_ts))
     {
 
@@ -746,7 +746,7 @@ static void video_real_ack(sim_session_t* s, sim_receiver_t* r, int hb, uint32_t
             if (iter->key.u32 <= r->base_seq)
                 continue;
 
-            space_factor = SU_MAX(10, s->rtt + s->rtt_var) + l->count * SU_MIN(100, SU_MAX(10, s->rtt_var)); /*ÓÃÓÚ¼òµ¥µÄÓµÈûÏÞÁ÷£¬·ÀÖ¹GETºéË®*/
+            space_factor = SU_MAX(10, s->rtt + s->rtt_var) + l->count * SU_MIN(100, SU_MAX(10, s->rtt_var)); /*ç”¨äºŽç®€å•çš„æ‹¥å¡žé™æµï¼Œé˜²æ­¢GETæ´ªæ°´*/
             if (l->count >= 15 || l->loss_ts + MIN_EVICT_DELAY_MS / 2 < cur_ts)
             {
                 if (evict_count < NACK_NUM)
@@ -777,7 +777,7 @@ static void video_real_ack(sim_session_t* s, sim_receiver_t* r, int hb, uint32_t
 
         r->ack_ts = cur_ts;
 
-        /*¸ù¾Ý¶ª°üÖØ´«È·¶¨ÊÓÆµ»º³åÇøÐèÒªµÄ»º³åÊ±¼ä*/
+        /*æ ¹æ®ä¸¢åŒ…é‡ä¼ ç¡®å®šè§†é¢‘ç¼“å†²åŒºéœ€è¦çš„ç¼“å†²æ—¶é—´*/
         if (max_count >= 1)
             delay = (max_count + 7) * (s->rtt + s->rtt_var) / 8;
         else
@@ -833,7 +833,7 @@ static void sim_receiver_recover(sim_session_t* s, sim_receiver_t* r)
     skiplist_t* recover_map;
     sim_segment_t* seg, *in_seg;
 
-    /*½«ÒÑ¾­»Ö¸´µÄ°ü½øÐÐ´¦Àí*/
+    /*å°†å·²ç»æ¢å¤çš„åŒ…è¿›è¡Œå¤„ç†*/
     recover_map = r->recover->recover_packets;
     while (skiplist_size(recover_map) > 0)
     {
@@ -848,7 +848,7 @@ static void sim_receiver_recover(sim_session_t* s, sim_receiver_t* r)
         if (sim_receiver_internal_put(s, r, in_seg) == 0)
         {
             sim_debug("fec recover video segment, packet id = %u\n", in_seg->packet_id);
-            sim_fec_put_segment(s, r->recover, in_seg); /*½«»Ö¸´µÄ°ü²åÈëµ½FEC¼ÌÐø»Ö¸´ÆäËû±¨ÎÄ*/
+            sim_fec_put_segment(s, r->recover, in_seg); /*å°†æ¢å¤çš„åŒ…æ’å…¥åˆ°FECç»§ç»­æ¢å¤å…¶ä»–æŠ¥æ–‡*/
         }
         else
             free(in_seg);
@@ -859,7 +859,7 @@ int sim_receiver_put(sim_session_t* s, sim_receiver_t* r, sim_segment_t* seg)
 {
     int rc;
 
-    /*ÓµÈû±¨¸æ*/
+    /*æ‹¥å¡žæŠ¥å‘Š*/
     if (r->cc != NULL)
         r->cc->on_received(r->cc, seg->transport_seq, seg->timestamp + seg->send_ts, seg->data_size + SIM_SEGMENT_HEADER_SIZE, seg->remb);
 
@@ -868,7 +868,7 @@ int sim_receiver_put(sim_session_t* s, sim_receiver_t* r, sim_segment_t* seg)
         return rc;
 
     /*sim_debug("put video segment, packet id = %u\n", seg->packet_id);*/
-    /*½øÐÐFEC »Ö¸´*/
+    /*è¿›è¡ŒFEC æ¢å¤*/
     if (r->recover != NULL && seg->fec_id > 0)
     {
         sim_fec_put_segment(s, r->recover, seg);
@@ -896,14 +896,14 @@ int sim_receiver_put_fec(sim_session_t* s, sim_receiver_t* r, sim_fec_t* fec)
 
 int sim_receiver_padding(sim_session_t* s, sim_receiver_t* r, uint16_t transport_seq, uint32_t send_ts, size_t data_size)
 {
-    /*ÓµÈû±¨¸æ*/
+    /*æ‹¥å¡žæŠ¥å‘Š*/
     if (r->cc != NULL)
         r->cc->on_received(r->cc, transport_seq, send_ts, data_size + SIM_SEGMENT_HEADER_SIZE, 1);
 
     return 0;
 }
 
-/*»ñÈ¡ÊÓÆµÖ¡Êý¾Ý*/
+/*èŽ·å–è§†é¢‘å¸§æ•°æ®*/
 int sim_receiver_get(sim_session_t* s, sim_receiver_t* r, uint8_t* data, size_t* sizep, uint8_t* payload_type)
 {
     if (r == NULL || r->actived == 0)
@@ -916,7 +916,7 @@ void sim_receiver_timer(sim_session_t* s, sim_receiver_t* r, int64_t now_ts)
 {
     video_real_ack(s, r, 1, 0);
 
-    /*Ã¿1Ãë³¢ÊÔËõÒ»´Î»º³åÇøµÈ´ýÊ±¼ä*/
+    /*æ¯1ç§’å°è¯•ç¼©ä¸€æ¬¡ç¼“å†²åŒºç­‰å¾…æ—¶é—´*/
     if (r->cache_ts + SU_MAX(s->rtt + s->rtt_var, 500) < now_ts)
     {
         if (r->loss_count == 0)
@@ -928,7 +928,7 @@ void sim_receiver_timer(sim_session_t* s, sim_receiver_t* r, int64_t now_ts)
         r->loss_count = 0;
     }
 
-    /*ÓµÈû¿ØÖÆÐÄÌø*/
+    /*æ‹¥å¡žæŽ§åˆ¶å¿ƒè·³*/
     if (r->cc != NULL)
         r->cc->heartbeat(r->cc);
 

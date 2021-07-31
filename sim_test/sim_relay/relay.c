@@ -62,7 +62,7 @@ static void peer_relay(const char* addr_str1, const char* addr_str2)
     su_socket_destroy(fd);
 }
 
-/*Õâ¸öÊÇÖĞ×ª²âÊÔ³ÌĞò£¬ÓÃÓÚÄ£Äâ¶ª°üºÍÑÓ³ÙÓÃµÄ£¬³ÌĞòÔËĞĞÔÚlinuxÏÂ£¬ÅäºÏsim_senderºÍsim_receiver½øĞĞ²âÊÔ£¬ËûÃÇµÄµØÖ·ÉèÖÃµ½ÕâÀï*/
+/*è¿™ä¸ªæ˜¯ä¸­è½¬æµ‹è¯•ç¨‹åºï¼Œç”¨äºæ¨¡æ‹Ÿä¸¢åŒ…å’Œå»¶è¿Ÿç”¨çš„ï¼Œç¨‹åºè¿è¡Œåœ¨linuxä¸‹ï¼Œé…åˆsim_senderå’Œsim_receiverè¿›è¡Œæµ‹è¯•ï¼Œä»–ä»¬çš„åœ°å€è®¾ç½®åˆ°è¿™é‡Œ*/
 int main(int argc, const char* argv[])
 {
     su_platform_init();
@@ -74,7 +74,7 @@ int main(int argc, const char* argv[])
     else
     {
         printf("run param:\n");
-        printf("  peer			sim_relay [addr1] [addr2], addr=ip:port\n");       /*Åä¶ÔµØÖ·£¬ÕâÁ½¸öµØÖ·Ö®¼äÖĞ×ªÊı¾İ*/
+        printf("  peer			sim_relay [addr1] [addr2], addr=ip:port\n");       /*é…å¯¹åœ°å€ï¼Œè¿™ä¸¤ä¸ªåœ°å€ä¹‹é—´ä¸­è½¬æ•°æ®*/
         printf("  echo			sim_relay\n");
     }
 

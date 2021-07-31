@@ -25,7 +25,7 @@ typedef struct
 
     cc_loss_statistics_t        loss_stat;
 
-    /*ĞÅÏ¢·´À¡º¯Êı*/
+    /*ä¿¡æ¯åé¦ˆå‡½æ•°*/
     void*                       handler;
     send_feedback_func          send_cb;
 } receiver_cc_t;
@@ -35,7 +35,7 @@ receiver_cc_t*                  receiver_cc_create(int min_bitrate, int max_bitr
 void                            receiver_cc_destroy(receiver_cc_t* cc);
 
 void                            receiver_cc_heartbeat(receiver_cc_t* cc);
-/*´«ÊäÍ¨µÀÖĞÊÕµ½Ò»¸öĞÂ±¨ÎÄ£¬ĞèÒªÁ¢¼´½«±¨ÎÄÖĞµÄ·¢ËÍtimestampºÍÊı¾İ´óĞ¡´«Èëµ½ÓµÈûÆÀ¹ÀÄ£¿é, rembÊÇ½ÓÊÕ¶Ë½øĞĞÂëÂÊÆÀ¹À£¬Õâ¸ö±êÊ¾ÊÇÍ¨¹ı·¢ËÍ¶ËµÄÏûÏ¢ÀïµÄ±êÖ¾À´ÅĞ¶ÏµÄ*/
+/*ä¼ è¾“é€šé“ä¸­æ”¶åˆ°ä¸€ä¸ªæ–°æŠ¥æ–‡ï¼Œéœ€è¦ç«‹å³å°†æŠ¥æ–‡ä¸­çš„å‘é€timestampå’Œæ•°æ®å¤§å°ä¼ å…¥åˆ°æ‹¥å¡è¯„ä¼°æ¨¡å—, rembæ˜¯æ¥æ”¶ç«¯è¿›è¡Œç ç‡è¯„ä¼°ï¼Œè¿™ä¸ªæ ‡ç¤ºæ˜¯é€šè¿‡å‘é€ç«¯çš„æ¶ˆæ¯é‡Œçš„æ ‡å¿—æ¥åˆ¤æ–­çš„*/
 void                            receiver_cc_on_received(receiver_cc_t* cc, uint16_t seq, uint32_t timestamp, size_t size, int remb);
 
 void                            receiver_cc_update_rtt(receiver_cc_t* cc, int32_t rtt);

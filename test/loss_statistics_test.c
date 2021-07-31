@@ -85,7 +85,7 @@ static void test_lost_packet()
             loss_statistics_incoming(&loss_stat, seq, now_ts);
     }
 
-    /*µÚÒ»¸öÖÜÆÚÍ³¼Æ*/
+    /*ç¬¬ä¸€ä¸ªå‘¨æœŸç»Ÿè®¡*/
     fraction_loss = 0;
     num = 0;
     loss_statistics_calculate(&loss_stat, now_ts, &fraction_loss, &num);
@@ -100,7 +100,7 @@ static void test_lost_packet()
             loss_statistics_incoming(&loss_stat, seq, now_ts);
     }
 
-    /*ÔÚ·¢ÆğÒ»¸öÖÜÆÚÍ³¼Æ*/
+    /*åœ¨å‘èµ·ä¸€ä¸ªå‘¨æœŸç»Ÿè®¡*/
     fraction_loss = 0;
     num = 0;
     loss_statistics_calculate(&loss_stat, now_ts, &fraction_loss, &num);

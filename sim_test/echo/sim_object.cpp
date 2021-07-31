@@ -74,7 +74,7 @@ void SimFramework::init(uint16_t port, uint32_t conf_min_bitrate, uint32_t conf_
         return;
     }
 
-    /*³õÊ¼»¯sim transportÄ£Äâ´«ÊäÄ£¿é*/
+    /*åˆå§‹åŒ–sim transportæ¨¡æ‹Ÿä¼ è¾“æ¨¡å—*/
     sim_init(port, this, log_win_write, notify_callback, notify_change_bitrate, notify_state);
     sim_set_bitrates(conf_min_bitrate, conf_start_bitrate, conf_max_bitrate);
 
@@ -106,7 +106,7 @@ int SimFramework::connect(int transport_type, int padding, int fec, uint32_t use
     if (state_ != eframe_inited)
         return -1;
 
-    //Á¬½Ó½ÓÊÕ¶Ë
+    //è¿æ¥æ¥æ”¶ç«¯
     if (sim_connect(user_id, receiver_ip, receiver_port, transport_type, padding, fec) != 0)
     {
         printf("sim connect failed!\n");
@@ -120,7 +120,7 @@ int SimFramework::connect(int transport_type, int padding, int fec, uint32_t use
 
 void SimFramework::disconnect()
 {
-    //Í£Ö¹Â¼ÖÆºÍ²¥·ÅÏß³Ì
+    //åœæ­¢å½•åˆ¶å’Œæ’­æ”¾çº¿ç¨‹
     stop_recorder();
 
     if (state_ == eframe_connecting || state_ == eframe_connected)

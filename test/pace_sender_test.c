@@ -85,7 +85,7 @@ static void test_max_bitrate()
             pace_insert_packet(pace, seq++, -1, k_packet_size, now_ts);
             send_total_size += k_packet_size;
 
-            /*模拟一个带宽增加量*/
+            /*妯℃嫙涓�涓甫瀹藉鍔犻噺*/
             if (pace_expected_queue_ms(pace) > k_delay_ms * 4)
             {
                 cur_bitrate = cur_bitrate + cur_bitrate / 64;

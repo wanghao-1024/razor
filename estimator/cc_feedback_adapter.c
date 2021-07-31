@@ -79,16 +79,16 @@ int cc_feedback_on_feedback(feedback_adapter_t* adapter, feedback_msg_t* msg)
     adapter->num = 0;
     for (i = 0; i < msg->samples_num; i++)
     {
-        /*¸ù¾Ý·´À¡µÄSEQ»ñÈ¡¶ÔÓ¦µÄ±¨ÎÄ·¢ËÍÐÅÏ¢£¬¼ÆËã·´À¡RTT,¸üÐÂ±¨ÎÄµ½´ïÊ±¿Ì*/
+        /*æ ¹æ®åé¦ˆçš„SEQèŽ·å–å¯¹åº”çš„æŠ¥æ–‡å‘é€ä¿¡æ¯ï¼Œè®¡ç®—åé¦ˆRTT,æ›´æ–°æŠ¥æ–‡åˆ°è¾¾æ—¶åˆ»*/
         if (sender_history_get(adapter->hist, msg->samples[i].seq, &adapter->packets[adapter->num], 1) == 0)
         {
-            /*¸üÐÂµ½´ïµÄÖµ*/
+            /*æ›´æ–°åˆ°è¾¾çš„å€¼*/
             adapter->packets[adapter->num].arrival_ts = msg->samples[i].ts;
             adapter->num++;
         }
     }
 
-    /*½øÐÐ°´µ½´ïÊ±¼äµÄÏÈºóË³Ðò½øÐÐÅÅÐò*/
+    /*è¿›è¡ŒæŒ‰åˆ°è¾¾æ—¶é—´çš„å…ˆåŽé¡ºåºè¿›è¡ŒæŽ’åº*/
     feedback_qsort(adapter);
 
     return adapter->num;

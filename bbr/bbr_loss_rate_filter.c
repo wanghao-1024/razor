@@ -22,7 +22,7 @@ void bbr_loss_filter_update(bbr_loss_rate_filter_t* filter, int64_t feedback_ts,
     filter->lost_count += packets_lost;
     filter->total_count += packets_sent;
 
-    /*¶Ô¶ª°ü±ÈÀý½øÐÐ¼ÆËã*/
+    /*å¯¹ä¸¢åŒ…æ¯”ä¾‹è¿›è¡Œè®¡ç®—*/
     if (filter->next_loss_update_ms + kUpdateIntervalMs < feedback_ts && filter->total_count > kLimitNumPackets)
     {
         filter->loss_rate_estimate = 1.0f * filter->lost_count / filter->total_count;

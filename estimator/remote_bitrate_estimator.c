@@ -24,7 +24,7 @@ remote_bitrate_estimator_t* rbe_create()
     rbe->last_update_ts = GET_SYS_MS();
     rbe->last_packet_ts = -1;
 
-    /*³õÊ¼»¯´ø¿íÍ³¼ÆÆ÷*/
+    /*åˆå§‹åŒ–å¸¦å®½ç»Ÿè®¡å™¨*/
     rbe->last_incoming_bitrate = -1;
     rate_stat_init(&rbe->incoming_bitrate, k_rate_window_size, k_rate_scale);
 
@@ -70,7 +70,7 @@ void rbe_destroy(remote_bitrate_estimator_t* est)
     free(est);
 }
 
-/*ÖØÖÃ¹ıÔØÆÀ¹ÀÆÀ¹ÀÆ÷*/
+/*é‡ç½®è¿‡è½½è¯„ä¼°è¯„ä¼°å™¨*/
 static void rbe_reset(remote_bitrate_estimator_t* est)
 {
     if (est->detector != NULL)
@@ -129,7 +129,7 @@ int rbe_heartbeat(remote_bitrate_estimator_t* est, int64_t now_ts, uint32_t* rem
         if (est->last_packet_ts > 0 && est->last_packet_ts + k_max_update_timeout > now_ts)
             rbe_update_estimate(est, now_ts);
 
-        /*½øĞĞREMBµÄ·¢ËÍ*/
+        /*è¿›è¡ŒREMBçš„å‘é€*/
         if (rbe_last_estimate(est, &bitrate) == 0)
         {
             *remb = bitrate;
@@ -147,7 +147,7 @@ void rbe_incoming_packet(remote_bitrate_estimator_t* est, uint32_t timestamp, in
 
     int incoming_rate, prev_state, delta_size;
 
-    /*¾ÍËãµ±Ç°½ÓÊÕµ½Êı¾İµÄ´ø¿íÂëÂÊ,µ±Ç°½ÓÊÕµ½µÄÊı¾İÂëÂÊĞèÒª×÷ÎªÊäÈë²ÎÊıÊäÈëµ½aimd½øĞĞ´ø¿íµ÷Õû*/
+    /*å°±ç®—å½“å‰æ¥æ”¶åˆ°æ•°æ®çš„å¸¦å®½ç ç‡,å½“å‰æ¥æ”¶åˆ°çš„æ•°æ®ç ç‡éœ€è¦ä½œä¸ºè¾“å…¥å‚æ•°è¾“å…¥åˆ°aimdè¿›è¡Œå¸¦å®½è°ƒæ•´*/
     incoming_rate = rate_stat_rate(&est->incoming_bitrate, now_ts);
     if (incoming_rate >= 0)
     {
@@ -160,7 +160,7 @@ void rbe_incoming_packet(remote_bitrate_estimator_t* est, uint32_t timestamp, in
     }
     rate_stat_update(&est->incoming_bitrate, payload_size, now_ts);
 
-    /*¸üĞÂ½ÓÊÕÊ±¼ä*/
+    /*æ›´æ–°æ¥æ”¶æ—¶é—´*/
     est->last_packet_ts = now_ts;
 
     prev_state = est->detector->state;
@@ -168,7 +168,7 @@ void rbe_incoming_packet(remote_bitrate_estimator_t* est, uint32_t timestamp, in
     delta_ts = 0;
     delta_size = 0;
 
-    /*½øĞĞkalman filterÅĞ¶ÏÍøÂçÊÇ·ñ¹ıÔØ*/
+    /*è¿›è¡Œkalman filteråˆ¤æ–­ç½‘ç»œæ˜¯å¦è¿‡è½½*/
     if (inter_arrival_compute_deltas(est->inter_arrival, timestamp, arrival_ts, now_ts, payload_size, &delta_ts, &delta_arrival, &delta_size) == 0)
     {
         kalman_filter_update(est->kalman, delta_arrival, delta_ts, delta_size, est->detector->state, now_ts);
@@ -178,7 +178,7 @@ void rbe_incoming_packet(remote_bitrate_estimator_t* est, uint32_t timestamp, in
     if (est->detector->state == kBwOverusing)
     {
         incoming_rate = rate_stat_rate(&est->incoming_bitrate, now_ts);
-        /*ÍøÂçµÄ¹ıÔØ×´Ì¬·¢Éú±ä»¯ÁË£¬±ØĞëÁ¢¼´ÏÂµ÷ÂëÂÊ*/
+        /*ç½‘ç»œçš„è¿‡è½½çŠ¶æ€å‘ç”Ÿå˜åŒ–äº†ï¼Œå¿…é¡»ç«‹å³ä¸‹è°ƒç ç‡*/
         if (incoming_rate > 0 && (prev_state != kBwOverusing || aimd_time_reduce_further(est->aimd, now_ts, incoming_rate) == 0))
             rbe_update_estimate(est, now_ts);
     }
@@ -194,7 +194,7 @@ static void rbe_update_estimate(remote_bitrate_estimator_t* est, int64_t now_ts)
     uint32_t target_bitrate;
 
     state = kBwNormal;
-    if (now_ts > est->last_packet_ts + k_max_update_timeout) /*Ì«³¤Ê±¼äÃ»ÊÕ·¢ËÍ·½µÄ±¨ÎÄ£¬¿ÉÒÔÈÏÎªÊÇ¼äĞªĞÔ¶Ï¿ª£¬²¢½øĞĞÖØÖÃ*/
+    if (now_ts > est->last_packet_ts + k_max_update_timeout) /*å¤ªé•¿æ—¶é—´æ²¡æ”¶å‘é€æ–¹çš„æŠ¥æ–‡ï¼Œå¯ä»¥è®¤ä¸ºæ˜¯é—´æ­‡æ€§æ–­å¼€ï¼Œå¹¶è¿›è¡Œé‡ç½®*/
         rbe_reset(est);
     else
     {
@@ -202,7 +202,7 @@ static void rbe_update_estimate(remote_bitrate_estimator_t* est, int64_t now_ts)
         state = est->detector->state;
     }
 
-    /*½øĞĞaimd bitrateµ÷½Ú*/
+    /*è¿›è¡Œaimd bitrateè°ƒèŠ‚*/
     input.noise_var = sum_var_noise;
     input.incoming_bitrate = rate_stat_rate(&est->incoming_bitrate, now_ts);
     input.state = state;

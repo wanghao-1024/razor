@@ -20,7 +20,7 @@ typedef struct
     int         sample;
 } rate_bucket_t;
 
-/*µ¥Î»Ê±¼ä´ø¿íÍ³¼ÆÆ÷*/
+/*å•ä½æ—¶é—´å¸¦å®½ç»Ÿè®¡å™¨*/
 typedef struct
 {
     int64_t         oldest_ts;

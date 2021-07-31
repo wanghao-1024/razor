@@ -11,7 +11,7 @@
 #include "cf_platform.h"
 #include <stdint.h>
 
-/*µ¥Î»Ê±¼äÄÚµÄ·¢ËÍ×Ö½Ú¹ÜÀí*/
+/*å•ä½æ—¶é—´å†…çš„å‘é€å­—èŠ‚ç®¡ç†*/
 typedef struct
 {
     int target_rate_kbps;
@@ -23,9 +23,9 @@ typedef struct
 void            init_interval_budget(interval_budget_t* budget, int initial_target_rate_kbps, int can_build_up_underuse);
 void            set_target_rate_kbps(interval_budget_t* budget, int target_rate_kbps);
 
-/*Ôö¼ÓÊ±¼ä¼ä¸ô*/
+/*å¢åŠ æ—¶é—´é—´éš”*/
 void            increase_budget(interval_budget_t* budget, int delta_ts);
-/*·¢ËÍÁËÊı¾İ£¬½øĞĞbudget×Ö½Ú¼ÆËã*/
+/*å‘é€äº†æ•°æ®ï¼Œè¿›è¡Œbudgetå­—èŠ‚è®¡ç®—*/
 void            use_budget(interval_budget_t* budget, int bytes);
 
 int             budget_level_precent(interval_budget_t* budget);

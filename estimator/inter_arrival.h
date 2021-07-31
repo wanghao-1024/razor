@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-/*Ò»×éÍøÂç±¨ÎÄµÄÊÕ·¢Ê±¼ä´Á, Õâ¸ö¼ä¸ôÍ³¼ÆËã·¨ÊÇÒÆÖ²ÁËwebRTCÖĞµÄGCC,ÕâÀïµÄÊ±¼ä´Á¶¼ÊÇÓÃºÁÃëÊı¼ÆËã£¬Ã»ÓĞ²ÉÓÃwebRTCÖĞµÄASTºÍRTPÊ±¼ä´ÁÀ´¼ÆËã*/
+/*ä¸€ç»„ç½‘ç»œæŠ¥æ–‡çš„æ”¶å‘æ—¶é—´æˆ³, è¿™ä¸ªé—´éš”ç»Ÿè®¡ç®—æ³•æ˜¯ç§»æ¤äº†webRTCä¸­çš„GCC,è¿™é‡Œçš„æ—¶é—´æˆ³éƒ½æ˜¯ç”¨æ¯«ç§’æ•°è®¡ç®—ï¼Œæ²¡æœ‰é‡‡ç”¨webRTCä¸­çš„ASTå’ŒRTPæ—¶é—´æˆ³æ¥è®¡ç®—*/
 typedef struct
 {
     size_t              size;
@@ -28,7 +28,7 @@ typedef struct
     int                 num_consecutive;
     int                 burst;
 
-    uint32_t            time_group_len_ticks; /*Ò»¸ögroupµÄ×î´óÊ±¼ä·¶Î§£¬ Ä¬ÈÏÊÇ5ºÁÃë*/
+    uint32_t            time_group_len_ticks; /*ä¸€ä¸ªgroupçš„æœ€å¤§æ—¶é—´èŒƒå›´ï¼Œ é»˜è®¤æ˜¯5æ¯«ç§’*/
 } inter_arrival_t;
 
 

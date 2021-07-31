@@ -79,7 +79,7 @@ static int64_t play_video(uint8_t* video_frame, size_t size)
         return -1;
 
     pos = video_frame;
-    /*Ð£ÑéÊý¾ÝµÄÍêÕûÐÔ*/
+    /*æ ¡éªŒæ•°æ®çš„å®Œæ•´æ€§*/
 
     memcpy(&frame_size, pos, sizeof(frame_size));
     pos += sizeof(frame_size);
@@ -146,12 +146,12 @@ static void main_loop_event()
             su_mutex_unlock(main_mutex);
         }
 
-        /*ÊÕÊÓÆµÄ£ÄâµÄÆµÊý¾Ý*/
+        /*æ”¶è§†é¢‘æ¨¡æ‹Ÿçš„é¢‘æ•°æ®*/
         if (play_flag == 1)
         {
             frame_ts = play_video(frame, size);
 
-            /*½øÐÐÊý¾ÝºÏ·¨ÐÔÐ£Ñé*/
+            /*è¿›è¡Œæ•°æ®åˆæ³•æ€§æ ¡éªŒ*/
             if (now_ts >= frame_ts && frame_ts > 0)
             {
                 delay = (uint32_t)(now_ts - frame_ts);

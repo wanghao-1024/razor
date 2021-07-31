@@ -11,7 +11,7 @@
 #include "cf_platform.h"
 #include "cf_list.h"
 
-/*�����ӳټ���kalman filterʵ�֣���Ҫ��ͨ��kalman filter��ȷ��δ�������Ŷ��ӳ٣�ͨ������Ŷ��ӳٲ����ж����縺��״̬*/
+/*基于延迟间距的kalman filter实现，主要是通过kalman filter来确定未来网络排队延迟，通过这个排队延迟参数判断网络负载状态*/
 
 #define HISTORY_FRAME_SIZE 60
 

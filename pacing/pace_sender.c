@@ -8,8 +8,8 @@
 #include "pace_sender.h"
 #include "razor_log.h"
 
-#define k_min_packet_limit_ms       5           /*·¢°ü×îÐ¡¼ä¸ô*/
-#define k_max_interval_ms           50          /*·¢°ü×î´óÊ±¼ä²î£¬³¤Ê±¼ä²»·¢ËÍ±¨ÎÄÒ»´Î·¢ËÍºÜ¶àÊý¾Ý³öÈ¥Ôì³ÉÍøÂç·ç±©*/
+#define k_min_packet_limit_ms       5           /*å‘åŒ…æœ€å°é—´éš”*/
+#define k_max_interval_ms           50          /*å‘åŒ…æœ€å¤§æ—¶é—´å·®ï¼Œé•¿æ—¶é—´ä¸å‘é€æŠ¥æ–‡ä¸€æ¬¡å‘é€å¾ˆå¤šæ•°æ®å‡ºåŽ»é€ æˆç½‘ç»œé£Žæš´*/
 #define k_default_pace_factor       3
 #define k_min_pacing_bitrate        (50 * 1000 * 8)
 
@@ -56,7 +56,7 @@ void pace_set_estimate_bitrate(pace_sender_t* pace, uint32_t bitrate_bps)
     razor_debug("set pacer bitrate, bitrate = %ubps\n", bitrate_bps);
 }
 
-/*ÉèÖÃ×îÐ¡´ø¿íÏÞÖÆ*/
+/*è®¾ç½®æœ€å°å¸¦å®½é™åˆ¶*/
 void pace_set_bitrate_limits(pace_sender_t* pace, uint32_t min_sent_bitrate_pbs)
 {
     pace->min_sender_bitrate_kpbs = k_min_pacing_bitrate / 1000;
@@ -65,7 +65,7 @@ void pace_set_bitrate_limits(pace_sender_t* pace, uint32_t min_sent_bitrate_pbs)
     razor_info("set pacer min bitrate, bitrate = %ubps\n", min_sent_bitrate_pbs);
 }
 
-/*½«Ò»¸ö¼´½«Òª·¢ËÍµÄ±¨ÎÄ·ÅÈëÅÅ¶Ó¶ÓÁÐÖÐ*/
+/*å°†ä¸€ä¸ªå³å°†è¦å‘é€çš„æŠ¥æ–‡æ”¾å…¥æŽ’é˜Ÿé˜Ÿåˆ—ä¸­*/
 int pace_insert_packet(pace_sender_t* pace, uint32_t seq, int retrans, size_t size, int64_t now_ts)
 {
     packet_event_t ev;
@@ -102,11 +102,11 @@ int64_t pace_get_limited_start_time(pace_sender_t* pace)
 
 static int pace_send(pace_sender_t* pace, packet_event_t* ev)
 {
-    /*½øÐÐ·¢ËÍ¿ØÖÆ*/
+    /*è¿›è¡Œå‘é€æŽ§åˆ¶*/
     if (budget_remaining(&pace->media_budget) == 0)
         return -1;
 
-    /*µ÷ÓÃÍâ²¿½Ó¿Ú½øÐÐÊý¾Ý·¢ËÍ*/
+    /*è°ƒç”¨å¤–éƒ¨æŽ¥å£è¿›è¡Œæ•°æ®å‘é€*/
     if (pace->send_cb != NULL)
         pace->send_cb(pace->handler, ev->seq, ev->retrans, ev->size, 0);
 
@@ -129,7 +129,7 @@ void pace_try_transmit(pace_sender_t* pace, int64_t now_ts)
 
     elapsed_ms = SU_MIN(elapsed_ms, k_max_interval_ms);
 
-    /*¼ÆËãmedia budgetÖÐÐèÒªµÄÂëÂÊ,²¢¸üÐÂµ½media budgetÖ®ÖÐ*/
+    /*è®¡ç®—media budgetä¸­éœ€è¦çš„ç çŽ‡,å¹¶æ›´æ–°åˆ°media budgetä¹‹ä¸­*/
     if (pacer_queue_bytes(&pace->que) > 0)
     {
         target_bitrate_kbps = pacer_queue_target_bitrate_kbps(&pace->que, now_ts);
@@ -141,7 +141,7 @@ void pace_try_transmit(pace_sender_t* pace, int64_t now_ts)
     set_target_rate_kbps(&pace->media_budget, target_bitrate_kbps);
     increase_budget(&pace->media_budget, elapsed_ms);
 
-    /*½øÐÐ·¢°ü*/
+    /*è¿›è¡Œå‘åŒ…*/
     sent_bytes = 0;
     while (pacer_queue_empty(&pace->que) != 0)
     {
@@ -162,7 +162,7 @@ void pace_try_transmit(pace_sender_t* pace, int64_t now_ts)
     pace->last_update_ts = now_ts;
     if (sent_bytes > 0)
     {
-        /*¸üÐÂÔ¤²âÆ÷,¼ÙÈçÔ¤²âÆÚ¿ÕÏÐµÄ¿Õ¼äÌ«¶à£¬½øÐÐ¼Ó´óÂëÂÊ*/
+        /*æ›´æ–°é¢„æµ‹å™¨,å‡å¦‚é¢„æµ‹æœŸç©ºé—²çš„ç©ºé—´å¤ªå¤šï¼Œè¿›è¡ŒåŠ å¤§ç çŽ‡*/
         alr_detector_bytes_sent(pace->alr, sent_bytes, elapsed_ms);
     }
 }

@@ -60,7 +60,7 @@ static void test_pacer_queue_sent()
         now_ts += 100;
     }
 
-    /*È·ÈÏ·¢ËÍÖĞ¼äµÄÁ½¸ö±¨ÎÄ*/
+    /*ç¡®è®¤å‘é€ä¸­é—´çš„ä¸¤ä¸ªæŠ¥æ–‡*/
     pacer_queue_sent_by_id(&que, 1);
     pacer_queue_sent_by_id(&que, 2);
     EXPECT_EQ(oldest_ts, pacer_queue_oldest(&que));
@@ -68,7 +68,7 @@ static void test_pacer_queue_sent()
     EXPECT_EQ(48, pacer_queue_target_bitrate_kbps(&que, now_ts));
     assert(pacer_queue_empty(&que) != 0);
 
-    /*È·ÈÏ·¢ËÍÁËµÚÒ»¸ö°ü,Õû¸ö¶ÓÁĞÏòÇ°ÒÆ¶¯£¬ËùĞèµÄ´ø¿í»Øµ½³õÊ¼·¢°üµÄËÙ¶È*/
+    /*ç¡®è®¤å‘é€äº†ç¬¬ä¸€ä¸ªåŒ…,æ•´ä¸ªé˜Ÿåˆ—å‘å‰ç§»åŠ¨ï¼Œæ‰€éœ€çš„å¸¦å®½å›åˆ°åˆå§‹å‘åŒ…çš„é€Ÿåº¦*/
     pacer_queue_sent_by_id(&que, 0);
 
     EXPECT_EQ(oldest_ts + 300, pacer_queue_oldest(&que));
@@ -76,7 +76,7 @@ static void test_pacer_queue_sent()
     EXPECT_EQ(320, pacer_queue_target_bitrate_kbps(&que, now_ts));
     assert(pacer_queue_empty(&que) != 0);
 
-    /*È·ÈÏ·¢ËÍÁË×îºóÁ½¸ö°ü£¬¶ÓÁĞÎª¿Õ*/
+    /*ç¡®è®¤å‘é€äº†æœ€åä¸¤ä¸ªåŒ…ï¼Œé˜Ÿåˆ—ä¸ºç©º*/
     pacer_queue_sent_by_id(&que, 3);
     pacer_queue_sent_by_id(&que, 4);
 

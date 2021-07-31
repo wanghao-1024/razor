@@ -99,10 +99,10 @@ static void delay_bwe_process(delay_base_bwe_t* bwe, packet_feedback_t* packet, 
     if (inter_arrival_compute_deltas(bwe->inter_arrival, timestamp, packet->arrival_ts, now_ts, packet->payload_size,
                                      &ts_delta, &t_delta, &size_delta) == 0)
     {
-        /*½øÐÐÐ±ÂÊ¼ÆËã*/
+        /*è¿›è¡Œæ–œçŽ‡è®¡ç®—*/
         trendline_update(bwe->trendline_estimator, t_delta, ts_delta, packet->arrival_ts);
 
-        /*½øÐÐ¹ýÔØ¼ì²é*/
+        /*è¿›è¡Œè¿‡è½½æ£€æŸ¥*/
         overuse_detect(bwe->detector, trendline_slope(bwe->trendline_estimator), ts_delta, bwe->trendline_estimator->num_of_deltas, packet->arrival_ts);
     }
 }
@@ -141,14 +141,14 @@ static bwe_result_t delay_bwe_maybe_update(delay_base_bwe_t* bwe, int overusing,
     bwe_result_t result;
     init_bwe_result_null(result);
 
-    if (overusing == 0)  /*¹ýÔØ±£»¤£¬½øÐÐ´ø¿íÏÂ½µ*/
+    if (overusing == 0)  /*è¿‡è½½ä¿æŠ¤ï¼Œè¿›è¡Œå¸¦å®½ä¸‹é™*/
     {
-        if (acked_bitrate > 0 && aimd_time_reduce_further(bwe->rate_control, now_ts, acked_bitrate) == 0)  /*´ø¿í¹ýÔØ£¬½øÐÐaimd·½Ê½¼õÐ¡*/
+        if (acked_bitrate > 0 && aimd_time_reduce_further(bwe->rate_control, now_ts, acked_bitrate) == 0)  /*å¸¦å®½è¿‡è½½ï¼Œè¿›è¡Œaimdæ–¹å¼å‡å°*/
         {
             result.updated = delay_bwe_upate(bwe, now_ts, acked_bitrate, overusing, &result.bitrate);
         }
         else if (acked_bitrate == 0 && bwe->rate_control->inited == 0
-                 && aimd_time_reduce_further(bwe->rate_control, now_ts, bwe->rate_control->curr_rate * 3 / 4 - 1) == 0)  /*´ø¿í¹ýÔØÇÒÃ»Í³¼Æµ½ÐÂµÄacked´ø¿í£¬½øÐÐ¼õ°ë´¦Àí*/
+                 && aimd_time_reduce_further(bwe->rate_control, now_ts, bwe->rate_control->curr_rate * 3 / 4 - 1) == 0)  /*å¸¦å®½è¿‡è½½ä¸”æ²¡ç»Ÿè®¡åˆ°æ–°çš„ackedå¸¦å®½ï¼Œè¿›è¡Œå‡åŠå¤„ç†*/
         {
             aimd_set_estimate(bwe->rate_control, bwe->rate_control->curr_rate * 3 / 4, now_ts);
             result.updated = 0;
@@ -156,7 +156,7 @@ static bwe_result_t delay_bwe_maybe_update(delay_base_bwe_t* bwe, int overusing,
             result.bitrate = bwe->rate_control->curr_rate;
         }
     }
-    else  /*Î´¹ýÔØ£¬½øÐÐaimd·½Ê½ÅÐ¶ÏÊÇ·ñÒª¼Ó´óÂëÂÊ*/
+    else  /*æœªè¿‡è½½ï¼Œè¿›è¡Œaimdæ–¹å¼åˆ¤æ–­æ˜¯å¦è¦åŠ å¤§ç çŽ‡*/
     {
         result.updated = delay_bwe_upate(bwe, now_ts, acked_bitrate, overusing, &result.bitrate);
         result.recovered_from_overuse = recovered_from_overuse;
@@ -187,7 +187,7 @@ bwe_result_t delay_bwe_incoming(delay_base_bwe_t* bwe, packet_feedback_t packets
 
         delayed_feedback = -1;
 
-        /*Í¨¹ý·¢°üºÍÊÕ°ü¼ä¸ô²î¼ÆËãÑÓ³ÙÐ±ÂÊ£¬Í¨¹ýÐ±ÂÊÅÐ¶ÏÊÇ·ñ¹ýÔØ*/
+        /*é€šè¿‡å‘åŒ…å’Œæ”¶åŒ…é—´éš”å·®è®¡ç®—å»¶è¿Ÿæ–œçŽ‡ï¼Œé€šè¿‡æ–œçŽ‡åˆ¤æ–­æ˜¯å¦è¿‡è½½*/
         delay_bwe_process(bwe, &packets[i], now_ts);
         if (prev_state == kBwUnderusing && bwe->detector->state == kBwNormal)
             recovered_from_overuse = 0;
@@ -201,13 +201,13 @@ bwe_result_t delay_bwe_incoming(delay_base_bwe_t* bwe, packet_feedback_t packets
         razor_debug("bwe state = kBwOverusing\n");
     }
 
-    if (delayed_feedback == 0)  /*Ì«¶à´ÎÍøÂçfeedbackÊÂ¼þ³öÏÖÖØ¸´£¬Ç¿ÖÆµÄ´ø¿í¼õ°ë²¢·µ»Ø*/
+    if (delayed_feedback == 0)  /*å¤ªå¤šæ¬¡ç½‘ç»œfeedbackäº‹ä»¶å‡ºçŽ°é‡å¤ï¼Œå¼ºåˆ¶çš„å¸¦å®½å‡åŠå¹¶è¿”å›ž*/
     {
         bwe->consecutive_delayed_feedbacks++;
         if (bwe->consecutive_delayed_feedbacks > k_max_failed_count)
             return delay_bwe_long_feedback_delay(bwe, packets[packets_num - 1].arrival_ts);
     }
-    else  /*½øÐÐaimd·½Ê½ÂëÂÊ¼ÆËã*/
+    else  /*è¿›è¡Œaimdæ–¹å¼ç çŽ‡è®¡ç®—*/
     {
         bwe->consecutive_delayed_feedbacks = 0;
         return delay_bwe_maybe_update(bwe, overusing, acked_bitrate, recovered_from_overuse, now_ts);

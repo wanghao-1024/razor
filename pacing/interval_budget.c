@@ -27,9 +27,9 @@ void set_target_rate_kbps(interval_budget_t* budget, int target_rate_kbps)
 void increase_budget(interval_budget_t* budget, int delta_ts)
 {
     int bytes = budget->target_rate_kbps * delta_ts / 8;
-    if (budget->bytes_remaining < 0 || budget->can_build_up_underuse == 0) /*累计计算*/
+    if (budget->bytes_remaining < 0 || budget->can_build_up_underuse == 0) /*绱璁＄畻*/
         budget->bytes_remaining = SU_MIN(budget->bytes_remaining + bytes, budget->max_bytes_in_budget);
-    else/*重新计算*/
+    else/*閲嶆柊璁＄畻*/
         budget->bytes_remaining = SU_MIN(bytes, budget->max_bytes_in_budget);
 }
 

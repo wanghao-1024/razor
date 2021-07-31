@@ -15,7 +15,7 @@
 #include "bbr_loss_rate_filter.h"
 #include "bbr_common.h"
 
-/*bbr×´Ì¬*/
+/*bbrçŠ¶æ€*/
 enum
 {
     /*Startup phase of the connection*/
@@ -41,7 +41,7 @@ enum
     GROWTH
 };
 
-/*BBRµÄÅäÖÃÏîÄ¿*/
+/*BBRçš„é…ç½®é¡¹ç›®*/
 typedef struct
 {
     double probe_bw_pacing_gain_offset;
@@ -86,16 +86,16 @@ typedef struct
     int probe_rtt_disabled_if_app_limited;
 } bbr_config_t;
 
-/*bbr¶ÔÏó*/
+/*bbrå¯¹è±¡*/
 
 typedef struct
 {
-    bbr_rtt_stat_t                  rtt_stat;                       /*rttÑÓ³ÙÆ½»¬¼ÆËãÄ£¿é*/
-    bbr_loss_rate_filter_t          loss_rate;                      /*¶ª°ü¼ÆËã*/
+    bbr_rtt_stat_t                  rtt_stat;                       /*rttå»¶è¿Ÿå¹³æ»‘è®¡ç®—æ¨¡å—*/
+    bbr_loss_rate_filter_t          loss_rate;                      /*ä¸¢åŒ…è®¡ç®—*/
     bbr_target_rate_constraint_t    constraints;
 
-    int                             mode;                           /*bbrÄ£Ê½×´Ì¬*/
-    bbr_bandwidth_sampler_t*        sampler;                        /*´ø¿í¼ÆËãÄ£ĞÍ£¬»ùÓÚ·¢ËÍºÍACKÁ½¸öÎ¬¶È½øĞĞ¼ÆËã*/
+    int                             mode;                           /*bbræ¨¡å¼çŠ¶æ€*/
+    bbr_bandwidth_sampler_t*        sampler;                        /*å¸¦å®½è®¡ç®—æ¨¡å‹ï¼ŒåŸºäºå‘é€å’ŒACKä¸¤ä¸ªç»´åº¦è¿›è¡Œè®¡ç®—*/
     int64_t                         round_trip_count;
 
     int64_t                         last_sent_packet;

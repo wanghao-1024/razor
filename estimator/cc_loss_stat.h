@@ -13,14 +13,14 @@
 #include "cf_skiplist.h"
 #include "cf_unwrapper.h"
 
-/*½ÓÊÕ¶ËÍ³¼Æ¶ª°ü£¬Ã»ÓĞ²ÉÓÃwebRTCÖĞ±È½Ï¸´ÔÓµÄ·½Ê½£¬¶øÊÇ²ÉÓÃÁËÒ»ÖÖ¼òµ¥½üËÆµÄ·½Ê½À´ÊµÏÖ*/
+/*æ¥æ”¶ç«¯ç»Ÿè®¡ä¸¢åŒ…ï¼Œæ²¡æœ‰é‡‡ç”¨webRTCä¸­æ¯”è¾ƒå¤æ‚çš„æ–¹å¼ï¼Œè€Œæ˜¯é‡‡ç”¨äº†ä¸€ç§ç®€å•è¿‘ä¼¼çš„æ–¹å¼æ¥å®ç°*/
 typedef struct
 {
     int64_t         stat_ts;
-    int64_t         max_id;             /*½ÓÊÕµ½×î´óĞòºÅ*/
+    int64_t         max_id;             /*æ¥æ”¶åˆ°æœ€å¤§åºå·*/
     skiplist_t*     list;
 
-    cf_unwrapper_t  wrapper;            /*id×ª»»Æ÷*/
+    cf_unwrapper_t  wrapper;            /*idè½¬æ¢å™¨*/
 } cc_loss_statistics_t;
 
 void            loss_statistics_init(cc_loss_statistics_t* loss_stat);

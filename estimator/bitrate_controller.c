@@ -8,7 +8,7 @@
 #include "bitrate_controller.h"
 #include "razor_log.h"
 
-/*´¥·¢ÉÏ²ãµÄpacerºÍvideosource¸Ä±äÂëÂÊ*/
+/*è§¦å‘ä¸Šå±‚çš„pacerå’Œvideosourceæ”¹å˜ç çŽ‡*/
 static void inline maybe_trigger_network_changed(bitrate_controller_t* ctrl)
 {
     uint32_t rtt, bitrate;
@@ -84,7 +84,7 @@ void bitrate_controller_set_bitrates(bitrate_controller_t* ctrl, uint32_t bitrat
 
 void bitrate_controller_reset_bitrates(bitrate_controller_t* ctrl, uint32_t bitrate, uint32_t min_bitrate, uint32_t max_bitrate)
 {
-    /*ÖØÖÃsender estimation*/
+    /*é‡ç½®sender estimation*/
     sender_estimation_destroy(ctrl->est);
     ctrl->est = sender_estimation_create(10000, 1500000);
 
@@ -140,12 +140,12 @@ void bitrate_controller_heartbeat(bitrate_controller_t* ctrl, int64_t cur_ts, ui
 
     if (ctrl->trigger != NULL && ctrl->trigger_func != NULL)
     {
-        if (bitrate_controller_get_parameter(ctrl, &bitrate, &fraction_loss, &rtt) == 0)  /*ÍøÂç×´Ì¬·¢Éú±ä¸ü£¬½øÐÐÍ¨Öª*/
+        if (bitrate_controller_get_parameter(ctrl, &bitrate, &fraction_loss, &rtt) == 0)  /*ç½‘ç»œçŠ¶æ€å‘ç”Ÿå˜æ›´ï¼Œè¿›è¡Œé€šçŸ¥*/
         {
             ctrl->trigger_func(ctrl->trigger, bitrate, fraction_loss, rtt);
             ctrl->notify_ts = cur_ts;
         }
-        else if (ctrl->notify_ts + k_normal_notify_timer <= cur_ts)  /*Ã¿2Ãë´¥·¢Ò»´Î£¬Í¨ÖªÉÏ²ã½øÐÐFECºÍ¶ª°üÖØ´«²ßÂÔµ÷Õû*/
+        else if (ctrl->notify_ts + k_normal_notify_timer <= cur_ts)  /*æ¯2ç§’è§¦å‘ä¸€æ¬¡ï¼Œé€šçŸ¥ä¸Šå±‚è¿›è¡ŒFECå’Œä¸¢åŒ…é‡ä¼ ç­–ç•¥è°ƒæ•´*/
         {
             ctrl->trigger_func(ctrl->trigger, bitrate, fraction_loss, rtt);
             ctrl->notify_ts = cur_ts;
@@ -166,7 +166,7 @@ int bitrate_controller_get_parameter(bitrate_controller_t* ctrl, uint32_t* bitra
     *fraction_loss = ctrl->est->last_fraction_loss;
     *bitrate = SU_MAX(cur_bitrate, ctrl->est->min_conf_bitrate);
 
-    /*ÅÐ¶ÏÍøÂç×´Ì¬ÊÇ·ñ·¢ÉúÁË¸Ä±ä,·¢ÉúÁË¸Ä±ä½øÐÐ·µ»Ø*/
+    /*åˆ¤æ–­ç½‘ç»œçŠ¶æ€æ˜¯å¦å‘ç”Ÿäº†æ”¹å˜,å‘ç”Ÿäº†æ”¹å˜è¿›è¡Œè¿”å›ž*/
     if (*fraction_loss != ctrl->last_fraction_loss || *rtt != ctrl->last_rtt || *bitrate != ctrl->last_bitrate_bps
             || ctrl->last_reserved_bitrate_bps != ctrl->reserved_bitrate_bps)
     {

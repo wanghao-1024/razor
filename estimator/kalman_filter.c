@@ -34,7 +34,7 @@ void kalman_filter_destroy(kalman_filter_t* kalman)
         free(kalman);
 }
 
-/*²éÕÒ×î½ü60¸öÑù±¾ÖĞ×îĞ¡µÄ±¨ÎÄÖ¡·¢ËÍ¼ä¸ô*/
+/*æŸ¥æ‰¾æœ€è¿‘60ä¸ªæ ·æœ¬ä¸­æœ€å°çš„æŠ¥æ–‡å¸§å‘é€é—´éš”*/
 static double kalman_filter_update_min_period(kalman_filter_t* kalman, double ts_delta)
 {
     double min_period = ts_delta;
@@ -53,7 +53,7 @@ static double kalman_filter_update_min_period(kalman_filter_t* kalman, double ts
     return min_period;
 }
 
-/*µ÷Õûkalman filterµÄÔëÉù²ÎÊı,ÒÆÖ²webRTCÖĞµÄ´úÂë*/
+/*è°ƒæ•´kalman filterçš„å™ªå£°å‚æ•°,ç§»æ¤webRTCä¸­çš„ä»£ç */
 static void kalman_filter_update_noise(kalman_filter_t* kalman, double residual, double ts_delta, int stable_state)
 {
     double alpha, beta;

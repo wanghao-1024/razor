@@ -8,48 +8,48 @@
 #ifndef __razor_callback_function_h__
 #define __razor_callback_function_h__
 
-/*½ÓÊÕ¶Ë·´À¡ĞÅÏ¢·¢ËÍº¯Êı£¬ÊÇ½«½ÓÊÕ¶ËµÄĞÅÏ¢·´À¡µ½·¢ËÍ¶ËÉÏ*/
+/*æ¥æ”¶ç«¯åé¦ˆä¿¡æ¯å‘é€å‡½æ•°ï¼Œæ˜¯å°†æ¥æ”¶ç«¯çš„ä¿¡æ¯åé¦ˆåˆ°å‘é€ç«¯ä¸Š*/
 typedef void(*send_feedback_func)(void* handler, const uint8_t* payload, int payload_size);
 
-/*·¢ËÍ¶Ë´ø¿í¸Ä±äº¯Êı£¬triggerÊÇÍ¨Ñ¶ÉÏ²ãµÄÂëÂÊ¿ØÖÆ·ÖÅä¶ÔÏó£¬Ëü¿ÉÒÔÅäÖÃ¸÷¸öÄ£¿éµÄÂëÂÊ²¢µ÷½Ú¶ÔÓ¦ÊÓÆµ±àÂëÆ÷ÂëÂÊ*/
+/*å‘é€ç«¯å¸¦å®½æ”¹å˜å‡½æ•°ï¼Œtriggeræ˜¯é€šè®¯ä¸Šå±‚çš„ç ç‡æ§åˆ¶åˆ†é…å¯¹è±¡ï¼Œå®ƒå¯ä»¥é…ç½®å„ä¸ªæ¨¡å—çš„ç ç‡å¹¶è°ƒèŠ‚å¯¹åº”è§†é¢‘ç¼–ç å™¨ç ç‡*/
 typedef void(*bitrate_changed_func)(void* trigger, uint32_t bitrate, uint8_t fraction_loss, uint32_t rtt);
 
-/*·¢ËÍ¶Ëpacer´¥·¢±¨ÎÄ·¢ËÍµÄ»Øµ÷º¯Êı£¬
-handler ÊÇ·¢ËÍ¶ÔÏó
-packet_idÊÇ±¨ÎÄµÄidºÅ
-retransÊÇÖØ·¢±êÖ¾
-sizeÊÇ±¨ÎÄµÄ³¤¶È
-µ÷ÓÃÕâ¸öº¯Êı»áÍ¨¹ıseqÔÚ·¢ËÍ¶ÓÁĞÖĞÕÒµ½¶ÔÓ¦µÄpacket£¬²¢½øĞĞpacket·¢ËÍ*/
+/*å‘é€ç«¯pacerè§¦å‘æŠ¥æ–‡å‘é€çš„å›è°ƒå‡½æ•°ï¼Œ
+handler æ˜¯å‘é€å¯¹è±¡
+packet_idæ˜¯æŠ¥æ–‡çš„idå·
+retransæ˜¯é‡å‘æ ‡å¿—
+sizeæ˜¯æŠ¥æ–‡çš„é•¿åº¦
+è°ƒç”¨è¿™ä¸ªå‡½æ•°ä¼šé€šè¿‡seqåœ¨å‘é€é˜Ÿåˆ—ä¸­æ‰¾åˆ°å¯¹åº”çš„packetï¼Œå¹¶è¿›è¡Œpacketå‘é€*/
 typedef void(*pace_send_func)(void* handler, uint32_t packet_id, int retrans, size_t size, int padding);
 
-/*ÈÕÖ¾Êä³ö»Øµ÷º¯Êı*/
+/*æ—¥å¿—è¾“å‡ºå›è°ƒå‡½æ•°*/
 typedef int(*razor_log_func)(int level, const char* file, int line, const char* fmt, va_list vl);
 
-/*********************************·¢ËÍ¶Ë****************************************/
+/*********************************å‘é€ç«¯****************************************/
 typedef struct __razor_sender razor_sender_t;
 
-/*·¢ËÍ¶ËÓµÈû¿ØÖÆ¶ÔÏóµÄĞÄÌøº¯Êı£¬×îºÃÊÇ5µ½10ºÁÃëµ÷ÓÃÒ»´Î*/
+/*å‘é€ç«¯æ‹¥å¡æ§åˆ¶å¯¹è±¡çš„å¿ƒè·³å‡½æ•°ï¼Œæœ€å¥½æ˜¯5åˆ°10æ¯«ç§’è°ƒç”¨ä¸€æ¬¡*/
 typedef void(*sender_heartbeat_func)(razor_sender_t* sender);
 
-/*ÉèÖÃÂëÂÊ·¶Î§*/
+/*è®¾ç½®ç ç‡èŒƒå›´*/
 typedef void(*sender_set_bitrates)(razor_sender_t* sender, uint32_t min_bitrate, uint32_t start_bitrate, uint32_t max_bitrate);
 
-/*·¢ËÍ¶ËÔö¼ÓÒ»¸ö´ı·¢ËÍµÄ±¨ÎÄ*/
+/*å‘é€ç«¯å¢åŠ ä¸€ä¸ªå¾…å‘é€çš„æŠ¥æ–‡*/
 typedef int(*sender_add_packet_func)(razor_sender_t* sender, uint32_t packet_id, int retrans, size_t size);
 
-/*ÉÏ²ã½«Ò»¸ö±¨ÎÄ·¢ËÍµ½ÍøÂçºóĞèÒª½«Æä´«ÊäµÄ×ÔÔö³¤seq idºÍ±¨ÎÄ´óĞ¡´«ÈëÓµÈû¿ØÖÆ¶ÔÏóÖĞ½øĞĞ¼ÇÂ¼£¬ÒÔ±ã×ö¶ÔÕÕ²éÑ¯*/
+/*ä¸Šå±‚å°†ä¸€ä¸ªæŠ¥æ–‡å‘é€åˆ°ç½‘ç»œåéœ€è¦å°†å…¶ä¼ è¾“çš„è‡ªå¢é•¿seq idå’ŒæŠ¥æ–‡å¤§å°ä¼ å…¥æ‹¥å¡æ§åˆ¶å¯¹è±¡ä¸­è¿›è¡Œè®°å½•ï¼Œä»¥ä¾¿åšå¯¹ç…§æŸ¥è¯¢*/
 typedef void(*sender_on_send_func)(razor_sender_t* sender, uint16_t transport_seq, size_t size);
 
-/*½ÓÊÕ¶Ë·´À¡¹ıÀ´µÄĞÅÏ¢£¬ÊäÈëµ½ÓµÈû¿ØÖÆ¶ÔÏóÖĞ½øĞĞÏàÓ¦´¦Àí*/
+/*æ¥æ”¶ç«¯åé¦ˆè¿‡æ¥çš„ä¿¡æ¯ï¼Œè¾“å…¥åˆ°æ‹¥å¡æ§åˆ¶å¯¹è±¡ä¸­è¿›è¡Œç›¸åº”å¤„ç†*/
 typedef void(*sender_on_feedback_func)(razor_sender_t* sender, uint8_t* feedback, int feedback_size);
 
-/*¸üĞÂÍøÂçrtt*/
+/*æ›´æ–°ç½‘ç»œrtt*/
 typedef void(*sender_update_rtt_func)(razor_sender_t* sender, int32_t rtt);
 
-/*»ñÈ¡·¢ËÍÓµÈû¶ÔÏóÖĞµÈ´ı·¢ËÍ¶ÓÁĞµÄÑÓ³Ù*/
+/*è·å–å‘é€æ‹¥å¡å¯¹è±¡ä¸­ç­‰å¾…å‘é€é˜Ÿåˆ—çš„å»¶è¿Ÿ*/
 typedef int(*sender_get_pacer_queue_ms_func)(razor_sender_t* sender);
 
-/*»ñÈ¡·¢ËÍµÚÒ»¸ö±¨ÎÄµÄÊ±¼ä´Á*/
+/*è·å–å‘é€ç¬¬ä¸€ä¸ªæŠ¥æ–‡çš„æ—¶é—´æˆ³*/
 typedef int64_t(*sender_get_first_ts)(razor_sender_t* sender);
 
 struct __razor_sender
@@ -66,37 +66,37 @@ struct __razor_sender
     sender_get_first_ts             get_first_timestamp;
 };
 
-/*************************************½ÓÊÕ¶Ë********************************************/
+/*************************************æ¥æ”¶ç«¯********************************************/
 typedef struct __razor_receiver razor_receiver_t;
 
-/*½ÓÊÕ¶ËÓµÈû¶ÔÏóµÄĞÄÌøº¯Êı*/
+/*æ¥æ”¶ç«¯æ‹¥å¡å¯¹è±¡çš„å¿ƒè·³å‡½æ•°*/
 typedef void(*receiver_heartbeat_func)(razor_receiver_t* receiver);
 
-/*½ÓÊÕ¶Ë½ÓÊÕµ½Ò»¸ö±¨ÎÄ£¬½øĞĞÓµÈû¼ÆËã,
-transport_seq       ·¢ËÍµÄ±¨ÎÄµÄ×ÔÔöÍ¨µÀĞòºÅ
-timestamp           ·¢ËÍ¶ËµÄÏà¶ÔÊ±¼ä´Á£¨Í¨¹ıÊÓÆµÊ±¼ä´ÁºÍ·¢ËÍÆ«ÒÆÊ±¼ä´ÁÀ´¼ÆËã£©£¬
-size                ±¨ÎÄÊı¾İ´óĞ¡£¨°üº¬UDPÍ·ºÍÓ¦ÓÃĞ­ÒéµÄÍ·´óĞ¡£©
-remb                ÊÇ·ñ²ÉÓÃremb·½Ê½¼ÆËãÂëÂÊ£¬= 0±íÊ¾ÓÃ£¬ÆäËûÖµ±íÊ¾²»ÓÃ£¬Õâ¸öÖµÀ´×ÔÓÚ½ÓÊÕµ½µÄ±¨ÎÄÍ·
+/*æ¥æ”¶ç«¯æ¥æ”¶åˆ°ä¸€ä¸ªæŠ¥æ–‡ï¼Œè¿›è¡Œæ‹¥å¡è®¡ç®—,
+transport_seq       å‘é€çš„æŠ¥æ–‡çš„è‡ªå¢é€šé“åºå·
+timestamp           å‘é€ç«¯çš„ç›¸å¯¹æ—¶é—´æˆ³ï¼ˆé€šè¿‡è§†é¢‘æ—¶é—´æˆ³å’Œå‘é€åç§»æ—¶é—´æˆ³æ¥è®¡ç®—ï¼‰ï¼Œ
+size                æŠ¥æ–‡æ•°æ®å¤§å°ï¼ˆåŒ…å«UDPå¤´å’Œåº”ç”¨åè®®çš„å¤´å¤§å°ï¼‰
+remb                æ˜¯å¦é‡‡ç”¨rembæ–¹å¼è®¡ç®—ç ç‡ï¼Œ= 0è¡¨ç¤ºç”¨ï¼Œå…¶ä»–å€¼è¡¨ç¤ºä¸ç”¨ï¼Œè¿™ä¸ªå€¼æ¥è‡ªäºæ¥æ”¶åˆ°çš„æŠ¥æ–‡å¤´
 */
 typedef void(*receiver_on_received_func)(razor_receiver_t* receiver, uint16_t transport_seq, uint32_t timestamp, size_t size, int remb);
 
-/*¸üĞÂÍøÂçµÄrtt*/
+/*æ›´æ–°ç½‘ç»œçš„rtt*/
 typedef void(*receiver_update_rtt_func)(razor_receiver_t* receiver, int32_t rtt);
 
-/*ÉèÖÃ×îĞ¡ÂëÂÊ*/
+/*è®¾ç½®æœ€å°ç ç‡*/
 typedef void(*receiver_set_min_bitrate_func)(razor_receiver_t* receiver, uint32_t bitrate);
 
-/*ÉèÖÃ×î´óÂëÂÊ*/
+/*è®¾ç½®æœ€å¤§ç ç‡*/
 typedef void(*receiver_set_max_bitrate_func)(razor_receiver_t* receiver, uint32_t bitrate);
 
 struct __razor_receiver
 {
     int                             type;
-    receiver_heartbeat_func         heartbeat;              /*½ÓÊÕ¶ËÓµÈû¶ÔÏóĞÄÌø£¬½¨ÒéÃ¿5ºÁÃëÒ»´Î*/
-    receiver_on_received_func       on_received;            /*½ÓÊÕ±¨ÎÄÊÂ¼ş*/
-    receiver_update_rtt_func        update_rtt;             /*¸üĞÂrtt*/
-    receiver_set_max_bitrate_func   set_max_bitrate;        /*ÉèÖÃÅäÖÃµÄ×î´óÂëÂÊ*/
-    receiver_set_min_bitrate_func   set_min_bitrate;        /*ÉèÖÃÅäÖÃµÄ×îĞ¡ÂëÂÊ*/
+    receiver_heartbeat_func         heartbeat;              /*æ¥æ”¶ç«¯æ‹¥å¡å¯¹è±¡å¿ƒè·³ï¼Œå»ºè®®æ¯5æ¯«ç§’ä¸€æ¬¡*/
+    receiver_on_received_func       on_received;            /*æ¥æ”¶æŠ¥æ–‡äº‹ä»¶*/
+    receiver_update_rtt_func        update_rtt;             /*æ›´æ–°rtt*/
+    receiver_set_max_bitrate_func   set_max_bitrate;        /*è®¾ç½®é…ç½®çš„æœ€å¤§ç ç‡*/
+    receiver_set_min_bitrate_func   set_min_bitrate;        /*è®¾ç½®é…ç½®çš„æœ€å°ç ç‡*/
 };
 
 #endif

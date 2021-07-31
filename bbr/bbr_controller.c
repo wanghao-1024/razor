@@ -51,7 +51,7 @@ static inline void bbr_set_default_config(bbr_config_t* config)
     config->probe_bw_pacing_gain_offset = 0.25;
     config->encoder_rate_gain = 1;
     config->encoder_rate_gain_in_probe_rtt = 1;
-    config->exit_startup_rtt_threshold_ms = 100000000; /*ÉèÖÃÒ»¸öºÜ´óµÄÖµ×÷Îª³õÊ¼Öµ£¬ÒâË¼ÊÇÕâ¸öÖµ²»×öÅĞ¶Ï*/
+    config->exit_startup_rtt_threshold_ms = 100000000; /*è®¾ç½®ä¸€ä¸ªå¾ˆå¤§çš„å€¼ä½œä¸ºåˆå§‹å€¼ï¼Œæ„æ€æ˜¯è¿™ä¸ªå€¼ä¸åšåˆ¤æ–­*/
 
     config->initial_congestion_window = kInitialCongestionWindowPackets * kDefaultTCPMSS;
     config->max_congestion_window = kDefaultMaxCongestionWindowPackets * kDefaultTCPMSS;
@@ -78,15 +78,15 @@ bbr_controller_t* bbr_create(bbr_target_rate_constraint_t* co, int32_t starting_
 {
     bbr_controller_t* bbr = calloc(1, sizeof(bbr_controller_t));
 
-    /*³õÊ¼»¯RTTÍ³¼ÆÄ£¿é*/
+    /*åˆå§‹åŒ–RTTç»Ÿè®¡æ¨¡å—*/
     bbr_rtt_init(&bbr->rtt_stat);
 
-    /*³õÊ¼»¯BBRÄ¬ÈÏÅäÖÃ²ÎÊı*/
+    /*åˆå§‹åŒ–BBRé»˜è®¤é…ç½®å‚æ•°*/
     bbr_set_default_config(&bbr->config);
 
     bbr->sampler = sampler_create();
 
-    /*´´½¨windows filter*/
+    /*åˆ›å»ºwindows filter*/
     wnd_filter_init(&bbr->max_bandwidth, kBandwidthWindowSize, max_val_func);
     wnd_filter_init(&bbr->max_ack_height, kBandwidthWindowSize, max_val_func);
     bbr->default_bandwidth = kInitialBandwidthKbps;
@@ -101,7 +101,7 @@ bbr_controller_t* bbr_create(bbr_target_rate_constraint_t* co, int32_t starting_
 
     bbr->min_rtt_timestamp = 0;
 
-    /*³õÊ¼»¯ÓµÈû´°¿Ú*/
+    /*åˆå§‹åŒ–æ‹¥å¡çª—å£*/
     bbr->congestion_window = bbr->config.initial_congestion_window;
     bbr->initial_congestion_window = bbr->config.initial_congestion_window;
     bbr->max_congestion_window = bbr->config.max_congestion_window;
@@ -182,7 +182,7 @@ static bbr_network_ctrl_update_t bbr_create_rate_upate(bbr_controller_t* bbr, in
     /*wnd_filter_print(&bbr->max_bandwidth);*/
     rtt = bbr_smoothed_rtt(&bbr->rtt_stat);
 
-    /*·µ»ØÓµÈû¿ØÖÆ´°¿Ú*/
+    /*è¿”å›æ‹¥å¡æ§åˆ¶çª—å£*/
     ret.congestion_window = bbr_get_congestion_window(bbr);
 
     if (rtt <= 0)
@@ -190,7 +190,7 @@ static bbr_network_ctrl_update_t bbr_create_rate_upate(bbr_controller_t* bbr, in
     else
         bandwidth = ret.congestion_window / rtt;
 
-    /*È·¶¨pacing rateºÍtarget rate*/
+    /*ç¡®å®špacing rateå’Œtarget rate*/
     pacing_rate = bbr_pacing_rate(bbr);
     target_rate = bbr->config.pacing_rate_as_target ? pacing_rate : bandwidth;
     if (bbr->mode == PROBE_RTT)
@@ -212,7 +212,7 @@ static bbr_network_ctrl_update_t bbr_create_rate_upate(bbr_controller_t* bbr, in
         }
     }
 
-    /*·µ»Øtarget_rateĞÅÏ¢*/
+    /*è¿”å›target_rateä¿¡æ¯*/
     ret.target_rate.at_time = at_time;
     ret.target_rate.bandwidth = bandwidth;
     ret.target_rate.rtt = SU_MAX(rtt, 8);
@@ -220,7 +220,7 @@ static bbr_network_ctrl_update_t bbr_create_rate_upate(bbr_controller_t* bbr, in
     ret.target_rate.bwe_period = rtt * kGainCycleLength;
     ret.target_rate.target_rate = target_rate;
 
-    /*·µ»ØpacerĞÅÏ¢*/
+    /*è¿”å›pacerä¿¡æ¯*/
     ret.pacer_config.at_time = at_time;
     ret.pacer_config.time_window = rtt > 20 ? (rtt / 4) : 5;
     ret.pacer_config.data_window = (size_t)(ret.pacer_config.time_window * pacing_rate);
@@ -242,7 +242,7 @@ bbr_network_ctrl_update_t bbr_on_network_availability(bbr_controller_t* bbr, bbr
 
 bbr_network_ctrl_update_t bbr_on_newwork_router_change(bbr_controller_t* bbr)
 {
-    /*ÔİÊ±Ã»ÓĞÊµÏÖ*/
+    /*æš‚æ—¶æ²¡æœ‰å®ç°*/
     return bbr_create_rate_upate(bbr, -1);
 }
 
@@ -281,7 +281,7 @@ void bbr_on_send_packet(bbr_controller_t* bbr, bbr_packet_info_t* packet)
     if (bbr->aggregation_epoch_start_time == -1)
         bbr->aggregation_epoch_start_time = packet->send_time;
 
-    /*¼ÇÂ¼·¢ËÍµÄ°üĞòÁĞĞÅÏ¢*/
+    /*è®°å½•å‘é€çš„åŒ…åºåˆ—ä¿¡æ¯*/
     sampler_on_packet_sent(bbr->sampler, packet->send_time, packet->seq, packet->size, packet->data_in_flight);
 }
 
@@ -326,7 +326,7 @@ static int32_t bbr_bandwidth_estimate(bbr_controller_t* bbr)
     return (int32_t)wnd_filter_best(&bbr->max_bandwidth);
 }
 
-/*¼ÆËãBDPµÄ·¢ËÍ´°´óĞ¡*/
+/*è®¡ç®—BDPçš„å‘é€çª—å¤§å°*/
 static size_t bbr_get_target_congestion_window(bbr_controller_t* bbr, double gain)
 {
     size_t bdp, congestion_window;
@@ -343,7 +343,7 @@ static size_t bbr_get_target_congestion_window(bbr_controller_t* bbr, double gai
     return SU_MAX(congestion_window, bbr->min_congestion_window);
 }
 
-/*»ñÈ¡ÔÚprobe_rttÄ£Ê½ÏÂµÄÓµÈû´°¿Ú´óĞ¡*/
+/*è·å–åœ¨probe_rttæ¨¡å¼ä¸‹çš„æ‹¥å¡çª—å£å¤§å°*/
 static size_t bbr_probe_rtt_congestion_window(bbr_controller_t* bbr)
 {
     if (bbr->config.probe_rtt_based_on_bdp)
@@ -352,14 +352,14 @@ static size_t bbr_probe_rtt_congestion_window(bbr_controller_t* bbr)
         return bbr->min_congestion_window;
 }
 
-/*»ñµÃbbrµ±Ç°µÄÓµÈû´°¿Ú´óĞ¡*/
+/*è·å¾—bbrå½“å‰çš„æ‹¥å¡çª—å£å¤§å°*/
 static int32_t bbr_get_congestion_window(bbr_controller_t* bbr)
 {
-    /*Èç¹ûÊÇÆÀ¹À×îĞ¡rttÄ£Ê½ÏÂ£¬ĞèÒªÈ¡×îĞ¡µÄ²¢·¢´°¿Ú*/
+    /*å¦‚æœæ˜¯è¯„ä¼°æœ€å°rttæ¨¡å¼ä¸‹ï¼Œéœ€è¦å–æœ€å°çš„å¹¶å‘çª—å£*/
     if (bbr->mode == PROBE_RTT)
         return bbr_probe_rtt_congestion_window(bbr);
 
-    /*Èç¹ûÊÇÔÚrecovery½×¶ÎÇÒÊÜrecover windowµÄÔ¼Êø£¬·µ»ØÔ¼ÊøºóµÄÖµ*/
+    /*å¦‚æœæ˜¯åœ¨recoveryé˜¶æ®µä¸”å—recover windowçš„çº¦æŸï¼Œè¿”å›çº¦æŸåçš„å€¼*/
     if (bbr_in_recovery(bbr) && !bbr->config.rate_based_recovery
             && !(bbr->mode == STARTUP && bbr->config.rate_based_startup))
         return SU_MIN(bbr->congestion_window, bbr->recovery_window);
@@ -376,23 +376,23 @@ bbr_network_ctrl_update_t bbr_on_feedback(bbr_controller_t* bbr, bbr_feedback_t*
     int is_round_start = false, min_rtt_expired = false;
 
     feedback_recv_time = feedback->feedback_time;
-    /*Ã»ÓĞ·´À¡µ¥Ôª,Ö±½Ó·µ»Ø*/
+    /*æ²¡æœ‰åé¦ˆå•å…ƒ,ç›´æ¥è¿”å›*/
     if (feedback->packets_num <= 0)
         return bbr_create_rate_upate(bbr, feedback->feedback_time);
 
-    /*Í³¼ÆRTT*/
+    /*ç»Ÿè®¡RTT*/
     last_sent_packet = &feedback->packets[feedback->packets_num - 1];
     bbr_rtt_update(&bbr->rtt_stat, last_sent_packet->recv_time - last_sent_packet->send_time, 0, feedback_recv_time);
 
     total_data_acked_before = sampler_total_data_acked(bbr->sampler);
 
-    /*¶Ô¶ª°üµÄ´¦Àí*/
+    /*å¯¹ä¸¢åŒ…çš„å¤„ç†*/
     loss_num = bbr_feedback_get_loss(feedback, loss_packets, MAX_BBR_FEELBACK_COUNT);
     bbr_discard_lost_packets(bbr, loss_packets, loss_num);
 
-    /*¶ÔackedµÄ´¦Àí*/
+    /*å¯¹ackedçš„å¤„ç†*/
     acked_num = bbr_feedback_get_received(feedback, acked_packets, MAX_BBR_FEELBACK_COUNT);
-    /*¶Ô¶ª°üËÙÂÊ½øĞĞÆÀ¹À*/
+    /*å¯¹ä¸¢åŒ…é€Ÿç‡è¿›è¡Œè¯„ä¼°*/
     bbr_loss_filter_update(&bbr->loss_rate, feedback_recv_time, feedback->packets_num, loss_num);
 
     if (acked_num > 0)
@@ -424,10 +424,10 @@ bbr_network_ctrl_update_t bbr_on_feedback(bbr_controller_t* bbr, bbr_feedback_t*
 
     bbr_maybe_exit_startup_or_drain(bbr, feedback);
 
-    /*Handle logic specific to PROBE_RTT,ÅĞ¶ÏÊÇ·ñÒª½øĞĞRTTÆÀ¹À»ò½áÊøRTTÆÀ¹À*/
+    /*Handle logic specific to PROBE_RTT,åˆ¤æ–­æ˜¯å¦è¦è¿›è¡ŒRTTè¯„ä¼°æˆ–ç»“æŸRTTè¯„ä¼°*/
     bbr_maybe_enter_or_exit_probe_rtt(bbr, feedback, is_round_start, min_rtt_expired);
 
-    /*¼ÆËãÓµÈû´°¿Ú´óĞ¡*/
+    /*è®¡ç®—æ‹¥å¡çª—å£å¤§å°*/
     data_acked_size = sampler_total_data_acked(bbr->sampler) - total_data_acked_before;
     data_lost_size = 0;
     for (i = 0; i < loss_num; ++i)
@@ -437,14 +437,14 @@ bbr_network_ctrl_update_t bbr_on_feedback(bbr_controller_t* bbr, bbr_feedback_t*
     bbr_calculate_congestion_window(bbr, data_acked_size);
     bbr_calculate_recovery_window(bbr, data_acked_size, data_lost_size, feedback->data_in_flight);
 
-    /*´ø¿íÍ³¼ÆÏòÇ°ÒÆ¶¯*/
+    /*å¸¦å®½ç»Ÿè®¡å‘å‰ç§»åŠ¨*/
     if (acked_num > 0)
         sampler_remove_old(bbr->sampler, last_acked_packet);
 
     return bbr_create_rate_upate(bbr, feedback->feedback_time);
 }
 
-/*bbr½øÈëSTARTUPÄ£Ê½*/
+/*bbrè¿›å…¥STARTUPæ¨¡å¼*/
 static void bbr_enter_startup_mode(bbr_controller_t* bbr)
 {
     bbr->mode = STARTUP;
@@ -461,7 +461,7 @@ static double bbr_get_pacing_gain(bbr_controller_t* bbr, int index)
     else
         return 1;
 }
-/*bbr½øÈë´ø¿íÆÀ¹ÀÄ£Ê½*/
+/*bbrè¿›å…¥å¸¦å®½è¯„ä¼°æ¨¡å¼*/
 static void bbr_enter_probe_bandwidth_mode(bbr_controller_t* bbr, int64_t now_ts)
 {
     bbr->mode = PROBE_BW;
@@ -482,7 +482,7 @@ static void bbr_discard_lost_packets(bbr_controller_t* bbr, bbr_packet_info_t pa
         sampler_on_packet_lost(bbr->sampler, packets[i].seq);
 }
 
-/*ÅĞ¶ÏÊÇ·ñ¹ıÁËÒ»¸öround tripÖÜÆÚ£¬Èç¹ûÊÇ£¬½øĞĞ¼ÆÊıÆ÷+1£¬²¢¸üĞÂĞÂÒ»ÆÚµÄround tripµÄÎ»ÖÃĞÅÏ¢*/
+/*åˆ¤æ–­æ˜¯å¦è¿‡äº†ä¸€ä¸ªround tripå‘¨æœŸï¼Œå¦‚æœæ˜¯ï¼Œè¿›è¡Œè®¡æ•°å™¨+1ï¼Œå¹¶æ›´æ–°æ–°ä¸€æœŸçš„round tripçš„ä½ç½®ä¿¡æ¯*/
 static int bbr_update_round_trip_counter(bbr_controller_t* bbr, int64_t last_acked_packet)
 {
     if (last_acked_packet > bbr->current_round_trip_end)
@@ -519,7 +519,7 @@ static int bbr_update_bandwidth_and_min_rtt(bbr_controller_t* bbr, int64_t now_t
         sample = sampler_on_packet_acked(bbr->sampler, packets[i].recv_time, packets[i].seq);
         bbr->last_sample_is_app_limited = sample.is_app_limited;
 
-        /*¶ÔRTTµÄ¼ÆËã*/
+        /*å¯¹RTTçš„è®¡ç®—*/
         if (sample.rtt > 0)
         {
             if (sample_rtt == -1)
@@ -532,7 +532,7 @@ static int bbr_update_bandwidth_and_min_rtt(bbr_controller_t* bbr, int64_t now_t
     if (sample_rtt == -1)
         return false;
 
-    /*½øĞĞ´ø¿íÍ³¼ÆºÍÂË²¨*/
+    /*è¿›è¡Œå¸¦å®½ç»Ÿè®¡å’Œæ»¤æ³¢*/
     if (!sample.is_app_limited || sample.bandwidth > bbr_bandwidth_estimate(bbr))
     {
         wnd_filter_update(&bbr->max_bandwidth, sample.bandwidth, bbr->round_trip_count); /*bandwidth <= bbr->constraints.min_rate ? sample.bandwidth : bandwidth*/
@@ -544,7 +544,7 @@ static int bbr_update_bandwidth_and_min_rtt(bbr_controller_t* bbr, int64_t now_t
     else
         bbr->min_rtt_since_last_probe_rtt = SU_MIN(bbr->min_rtt_since_last_probe_rtt, sample_rtt);
 
-    /*ÆÀ¹ÀÊÇ·ñÒªRTTµÄ×÷ÓÃÊ±¼äÊÇ·ñ¹ıÆÚ*/
+    /*è¯„ä¼°æ˜¯å¦è¦RTTçš„ä½œç”¨æ—¶é—´æ˜¯å¦è¿‡æœŸ*/
     min_rtt_expired = (bbr->min_rtt > 0 && now_ts > (bbr->min_rtt_timestamp + kMinRttExpiry)) ? true : false;
     if (min_rtt_expired || sample_rtt < bbr->min_rtt || bbr->min_rtt <= 0)
     {
@@ -561,7 +561,7 @@ static int bbr_update_bandwidth_and_min_rtt(bbr_controller_t* bbr, int64_t now_t
     return min_rtt_expired;
 }
 
-/*Èç¹ûÊÇÔÚprobe_bwÄ£Ê½ÏÂ£¬³¢ÊÔ½øĞĞpacing_gain²ÎÊı·Å´ó£¬ÒÔ´ËÀ´Ì½²â×î´óµÄ´ø¿í*/
+/*å¦‚æœæ˜¯åœ¨probe_bwæ¨¡å¼ä¸‹ï¼Œå°è¯•è¿›è¡Œpacing_gainå‚æ•°æ”¾å¤§ï¼Œä»¥æ­¤æ¥æ¢æµ‹æœ€å¤§çš„å¸¦å®½*/
 static void bbr_update_gain_cycle_phase(bbr_controller_t* bbr, int64_t now_ts, size_t prior_in_flight, int losses)
 {
     int gain_cycling;
@@ -596,17 +596,17 @@ static void bbr_update_gain_cycle_phase(bbr_controller_t* bbr, int64_t now_ts, s
     }
 }
 
-/*¶ÔSTARTUPºÍDRAIN×´Ì¬ÏÂµÄ´ø¿í½øĞĞÅĞ¶Ï£¬ÅĞ¶Ïµ±Ç°´ø¿íÊÇ·ñ´ïµ½Á´Â·×î¸ß£¬Èç´ïµ½×î¸ß£¬ÉèÖÃÎª´ø¿í³äÂú±êÊ¾*/
+/*å¯¹STARTUPå’ŒDRAINçŠ¶æ€ä¸‹çš„å¸¦å®½è¿›è¡Œåˆ¤æ–­ï¼Œåˆ¤æ–­å½“å‰å¸¦å®½æ˜¯å¦è¾¾åˆ°é“¾è·¯æœ€é«˜ï¼Œå¦‚è¾¾åˆ°æœ€é«˜ï¼Œè®¾ç½®ä¸ºå¸¦å®½å……æ»¡æ ‡ç¤º*/
 static void bbr_check_if_full_bandwidth_reached(bbr_controller_t* bbr)
 {
     int32_t target;
 
-    /*ÉÏ²ãÓ¦ÓÃÔİÍ£ÁËbbr¿ØÖÆÄ£Ê½*/
+    /*ä¸Šå±‚åº”ç”¨æš‚åœäº†bbræ§åˆ¶æ¨¡å¼*/
     if (bbr->last_sample_is_app_limited)
         return;
 
     target = (int32_t)(bbr->bandwidth_at_last_round * kStartupGrowthTarget);
-    if (target <= bbr_bandwidth_estimate(bbr))  /*²¢·¢´ø¿íÔö³¤´óÓÚÔ¤ÆÚµÄÔö³¤£¬ËµÃ÷´ø¿íÀûÓÃÂÊ»¹ÓĞ¿Õ¼ä£¬¼ÌĞø½øĞĞÔö³¤Ö±µ½µ½´ïfull bandwidth*/
+    if (target <= bbr_bandwidth_estimate(bbr))  /*å¹¶å‘å¸¦å®½å¢é•¿å¤§äºé¢„æœŸçš„å¢é•¿ï¼Œè¯´æ˜å¸¦å®½åˆ©ç”¨ç‡è¿˜æœ‰ç©ºé—´ï¼Œç»§ç»­è¿›è¡Œå¢é•¿ç›´åˆ°åˆ°è¾¾full bandwidth*/
     {
         bbr->bandwidth_at_last_round = bbr_bandwidth_estimate(bbr);
         bbr->rounds_without_bandwidth_gain = 0;
@@ -616,7 +616,7 @@ static void bbr_check_if_full_bandwidth_reached(bbr_controller_t* bbr)
         bbr->rounds_without_bandwidth_gain++;
 
         if (bbr->rounds_without_bandwidth_gain >= bbr->config.num_startup_rtts
-                || (bbr->config.exit_startup_on_loss && bbr_in_recovery(bbr))) /*ÔÚin recovery×´Ì¬ÏÂ¿ÉÒÔÅĞ¶¨Îªfull bandwidth*/
+                || (bbr->config.exit_startup_on_loss && bbr_in_recovery(bbr))) /*åœ¨in recoveryçŠ¶æ€ä¸‹å¯ä»¥åˆ¤å®šä¸ºfull bandwidth*/
             bbr->is_at_full_bandwidth = true;
     }
 }
@@ -627,7 +627,7 @@ static void bbr_maybe_exit_startup_or_drain(bbr_controller_t* bbr, bbr_feedback_
     int rtt_over_threshold;
 
     rtt_over_threshold = (exit_threshold_ms > 0 && bbr->last_rtt - bbr->min_rtt > exit_threshold_ms) ? true : false;
-    /*Èç¹ûÊÇstartupÄ£Ê½£¬ËüµÄ×´Ì¬ÒÑ¾­ÊÇµ½ÁË´ø¿í×î´ó»òÕßÍøÂçÑÓ³Ù³¬¹ıÁËãĞÖµ£¬ÇĞ»»ÖÁDRAINÄ£Ê½*/
+    /*å¦‚æœæ˜¯startupæ¨¡å¼ï¼Œå®ƒçš„çŠ¶æ€å·²ç»æ˜¯åˆ°äº†å¸¦å®½æœ€å¤§æˆ–è€…ç½‘ç»œå»¶è¿Ÿè¶…è¿‡äº†é˜ˆå€¼ï¼Œåˆ‡æ¢è‡³DRAINæ¨¡å¼*/
     if (bbr->mode == STARTUP && (bbr->is_at_full_bandwidth || rtt_over_threshold))
     {
         bbr->mode = DRAIN;
@@ -635,15 +635,15 @@ static void bbr_maybe_exit_startup_or_drain(bbr_controller_t* bbr, bbr_feedback_
         bbr->congestion_window_gain = kDrainGain;
     }
 
-    /*Èç¹ûÊÇdrainÄ£Ê½£¬µ«ÊÇÕıÔÚ´«ÊäµÄÊı¾İĞ¡ÓÚµ±Ç°µÄÓµÈû´°¿Ú£¬ËµÃ÷ÓĞ´ø¿í¸»Óà£¬³¢ÊÔ½øÈëprobe_bwÄ£Ê½½øĞĞ×î´ó´ø¿íÌ½²â*/
+    /*å¦‚æœæ˜¯drainæ¨¡å¼ï¼Œä½†æ˜¯æ­£åœ¨ä¼ è¾“çš„æ•°æ®å°äºå½“å‰çš„æ‹¥å¡çª—å£ï¼Œè¯´æ˜æœ‰å¸¦å®½å¯Œä½™ï¼Œå°è¯•è¿›å…¥probe_bwæ¨¡å¼è¿›è¡Œæœ€å¤§å¸¦å®½æ¢æµ‹*/
     if (bbr->mode == DRAIN && feedback->data_in_flight <= bbr_get_target_congestion_window(bbr, 1))
         bbr_enter_probe_bandwidth_mode(bbr, feedback->feedback_time);
 }
 
-/*ÅĞ¶ÏÊÇ·ñ½øÈë»òÕßÍË³öPROBE_RTTÄ£Ê½*/
+/*åˆ¤æ–­æ˜¯å¦è¿›å…¥æˆ–è€…é€€å‡ºPROBE_RTTæ¨¡å¼*/
 static void bbr_maybe_enter_or_exit_probe_rtt(bbr_controller_t* bbr, bbr_feedback_t* feedback, int is_round_start, int min_rtt_expired)
 {
-    /*×î½üÆÀ¹ÀµÄmin_rtt¹ıÆÚÇÒµ±Ç°²»ÔÚPROBE_RTTÄ£Ê½ÏÂ£¬ÇĞ»»µ½PROBE_RTTÄ£Ê½ÏÂ*/
+    /*æœ€è¿‘è¯„ä¼°çš„min_rttè¿‡æœŸä¸”å½“å‰ä¸åœ¨PROBE_RTTæ¨¡å¼ä¸‹ï¼Œåˆ‡æ¢åˆ°PROBE_RTTæ¨¡å¼ä¸‹*/
     if (min_rtt_expired && !bbr->exiting_quiescence && bbr->mode != PROBE_RTT)
     {
         bbr->mode = PROBE_RTT;
@@ -653,12 +653,12 @@ static void bbr_maybe_enter_or_exit_probe_rtt(bbr_controller_t* bbr, bbr_feedbac
 
     if (bbr->mode == PROBE_RTT)
     {
-        /*ÔİÍ£ÕıÔÚ·¢ËÍ±¨ÎÄµÄ´ø¿í¼ì²â£¬·ÀÖ¹´ø¿íÏÂ½µÌ«Âı¶ø²âÊÔmin_rtt²»×¼*/
+        /*æš‚åœæ­£åœ¨å‘é€æŠ¥æ–‡çš„å¸¦å®½æ£€æµ‹ï¼Œé˜²æ­¢å¸¦å®½ä¸‹é™å¤ªæ…¢è€Œæµ‹è¯•min_rttä¸å‡†*/
         sampler_on_app_limited(bbr->sampler);
 
         if (bbr->exit_probe_rtt_at < 0)
         {
-            /*ÕıÔÚ·¢ËÍµÄÊı¾İÊÊÅäµ½probe_rttÄ£Ê½ÏÂµÄÓµÈû´óĞ¡£¬½øĞĞ×îĞ¡RTT²É¼¯,³ÖĞø200ºÁÃë*/
+            /*æ­£åœ¨å‘é€çš„æ•°æ®é€‚é…åˆ°probe_rttæ¨¡å¼ä¸‹çš„æ‹¥å¡å¤§å°ï¼Œè¿›è¡Œæœ€å°RTTé‡‡é›†,æŒç»­200æ¯«ç§’*/
             if (feedback->data_in_flight < bbr_probe_rtt_congestion_window(bbr) + kMaxPacketSize)
             {
                 bbr->exit_probe_rtt_at = feedback->feedback_time + kProbeRttTimeMs;
@@ -667,15 +667,15 @@ static void bbr_maybe_enter_or_exit_probe_rtt(bbr_controller_t* bbr, bbr_feedbac
         }
         else
         {
-            /*¹ıÁËÒ»¸öRTTÖÜÆÚ£¬¿ÉÒÔÇĞ»»probe_rtt*/
+            /*è¿‡äº†ä¸€ä¸ªRTTå‘¨æœŸï¼Œå¯ä»¥åˆ‡æ¢probe_rtt*/
             if (is_round_start)
                 bbr->probe_rtt_round_passed = true;
 
             if (feedback->feedback_time >= bbr->exit_probe_rtt_at && bbr->probe_rtt_round_passed)
             {
-                /*probe_rttÍê±Ï£¬¼ÇÂ¼ÆÀ²âµÄÉúĞ§Ê±¼ä*/
+                /*probe_rttå®Œæ¯•ï¼Œè®°å½•è¯„æµ‹çš„ç”Ÿæ•ˆæ—¶é—´*/
                 bbr->min_rtt_timestamp = feedback->feedback_time;
-                /*ÇĞ»»BBRµÄÄ£Ê½*/
+                /*åˆ‡æ¢BBRçš„æ¨¡å¼*/
                 if (!bbr->is_at_full_bandwidth)
                     bbr_enter_startup_mode(bbr);
                 else
@@ -689,14 +689,14 @@ static void bbr_maybe_enter_or_exit_probe_rtt(bbr_controller_t* bbr, bbr_feedbac
 
 static void bbr_update_recovery_state(bbr_controller_t* bbr, int64_t last_acked_packet, int losses, int is_round_start)
 {
-    /*Èç¹û·¢Éú¶ª°ü,recovery¾Í½áÊø£¬×ª»»µ½CONSERVATION×´Ì¬£¬¼ÇÂ¼ÏÂÇĞ»»Ê±×îºóÒ»¸ö±»ACKµÄ°üĞòºÅ£¬±£Ö¤ÖØĞÂ´ÌÌ½µÄÖÜÆÚÖÁÉÙÒ»¸öFEEDBACKÊ±¼äÖÜÆÚ*/
+    /*å¦‚æœå‘ç”Ÿä¸¢åŒ…,recoveryå°±ç»“æŸï¼Œè½¬æ¢åˆ°CONSERVATIONçŠ¶æ€ï¼Œè®°å½•ä¸‹åˆ‡æ¢æ—¶æœ€åä¸€ä¸ªè¢«ACKçš„åŒ…åºå·ï¼Œä¿è¯é‡æ–°åˆºæ¢çš„å‘¨æœŸè‡³å°‘ä¸€ä¸ªFEEDBACKæ—¶é—´å‘¨æœŸ*/
     if (losses)
         bbr->end_recovery_at = last_acked_packet;
 
     switch (bbr->recovery_state)
     {
         case NOT_IN_RECOVERY:
-            /*·¢Éú¶ª°ü£¬ÇĞ»»µ½CONSERVATION,½øĞĞ¿ì»Ö¸´ÅĞ¶Ï*/
+            /*å‘ç”Ÿä¸¢åŒ…ï¼Œåˆ‡æ¢åˆ°CONSERVATION,è¿›è¡Œå¿«æ¢å¤åˆ¤æ–­*/
             if (losses)
             {
                 bbr->recovery_state = CONSERVATION;
@@ -704,7 +704,7 @@ static void bbr_update_recovery_state(bbr_controller_t* bbr, int64_t last_acked_
                     bbr->recovery_state = bbr->config.initial_conservation_in_startup;
 
                 bbr->recovery_window = 0;
-                /*±êÊ¾½áÊøÒ»¸öround tripÖÜÆÚ£¬Æô¶¯ÏÂÒ»¸öround tripÖÜÆÚ*/
+                /*æ ‡ç¤ºç»“æŸä¸€ä¸ªround tripå‘¨æœŸï¼Œå¯åŠ¨ä¸‹ä¸€ä¸ªround tripå‘¨æœŸ*/
                 bbr->current_round_trip_end = last_acked_packet;
             }
             break;
@@ -715,7 +715,7 @@ static void bbr_update_recovery_state(bbr_controller_t* bbr, int64_t last_acked_
                 bbr->recovery_state = GROWTH;
 
         case GROWTH:
-            /*¼ÙÈçÃ»ÓĞ¶ª°ü£¬¶øÇÒÔÚ±£³ÖGROWTHÖÁÉÙÒ»¸öfeedbackÖÜÆÚ£¬Í£Ö¹recovery×´Ì¬*/
+            /*å‡å¦‚æ²¡æœ‰ä¸¢åŒ…ï¼Œè€Œä¸”åœ¨ä¿æŒGROWTHè‡³å°‘ä¸€ä¸ªfeedbackå‘¨æœŸï¼Œåœæ­¢recoveryçŠ¶æ€*/
             if (!losses && (bbr->end_recovery_at == -1 || bbr->end_recovery_at < last_acked_packet))
                 bbr->recovery_state = NOT_IN_RECOVERY;
             break;
@@ -765,14 +765,14 @@ static void bbr_calculate_pacing_rate(bbr_controller_t* bbr)
         return;
     }
 
-    /*¿ªÊ¼½×¶Î£¬ÓÃ³õÊ¼»¯µÄÓµÈû´°¿Ú¼ÆËã¿ÉÒÔÓÃµÄÂëÂÊ*/
+    /*å¼€å§‹é˜¶æ®µï¼Œç”¨åˆå§‹åŒ–çš„æ‹¥å¡çª—å£è®¡ç®—å¯ä»¥ç”¨çš„ç ç‡*/
     if (bbr->pacing_rate == 0 && bbr_min_rtt(&bbr->rtt_stat) > 0)
     {
         bbr->pacing_rate = (int32_t)(bbr->initial_congestion_window / (bbr_min_rtt(&bbr->rtt_stat)));
         return;
     }
 
-    /*ÂıÆô¶¯¹ı³Ì,×öÒ»¸ö´ø¿í±¶ÊıÔö*/
+    /*æ…¢å¯åŠ¨è¿‡ç¨‹,åšä¸€ä¸ªå¸¦å®½å€æ•°å¢*/
     if (bbr->config.slower_startup && bbr->end_recovery_at > 0)
     {
         bbr->pacing_rate = (int32_t)(kStartupAfterLossGain * bbr_bandwidth_estimate(bbr));
@@ -786,7 +786,7 @@ static void bbr_calculate_congestion_window(bbr_controller_t* bbr, size_t bytes_
 {
     size_t target_window;
 
-    /*PROBE_RTTÄ£Ê½ÏÂ²»¸Ä±äÓµÈû´°¿Ú,Ò»°ãÊÇ²ÉÓÃ×îĞ¡´°¿ÚÄ£Ê½½øĞĞ*/
+    /*PROBE_RTTæ¨¡å¼ä¸‹ä¸æ”¹å˜æ‹¥å¡çª—å£,ä¸€èˆ¬æ˜¯é‡‡ç”¨æœ€å°çª—å£æ¨¡å¼è¿›è¡Œ*/
     if (bbr->mode == PROBE_RTT)
         return;
 
@@ -813,13 +813,13 @@ static void bbr_calculate_congestion_window(bbr_controller_t* bbr, size_t bytes_
     bbr->congestion_window = SU_MIN(bbr->congestion_window, bbr->max_congestion_window);
 }
 
-/*·¢Éú¶ª°ü£¬¾ÍĞèÒª½øĞĞrecovery¼ÆËã£¬¿ì»Ö¸´ÌØĞÔ*/
+/*å‘ç”Ÿä¸¢åŒ…ï¼Œå°±éœ€è¦è¿›è¡Œrecoveryè®¡ç®—ï¼Œå¿«æ¢å¤ç‰¹æ€§*/
 static void bbr_calculate_recovery_window(bbr_controller_t* bbr, size_t bytes_acked, size_t bytes_lost, size_t bytes_in_flight)
 {
     if (bbr->config.rate_based_recovery || bbr->config.rate_based_startup && bbr->mode == STARTUP)
         return;
 
-    /*²»ÔÚ»Ö¸´·¢ËÍ½×¶Î£¬²»¼ÆËãrecovery window´óĞ¡*/
+    /*ä¸åœ¨æ¢å¤å‘é€é˜¶æ®µï¼Œä¸è®¡ç®—recovery windowå¤§å°*/
     if (bbr->recovery_state == NOT_IN_RECOVERY)
         return;
 
@@ -832,7 +832,7 @@ static void bbr_calculate_recovery_window(bbr_controller_t* bbr, size_t bytes_ac
 
     bbr->recovery_window = ((bbr->recovery_window >= bytes_lost) ? (bbr->recovery_window - bytes_lost) : kMaxSegmentSize);
 
-    /*½øĞĞ×´Ì¬¼Ó³É*/
+    /*è¿›è¡ŒçŠ¶æ€åŠ æˆ*/
     if (bbr->recovery_state == GROWTH)
         bbr->recovery_window += bytes_acked;
     else if (bbr->recovery_window == MEDIUM_GROWTH)

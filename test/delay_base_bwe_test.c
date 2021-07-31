@@ -111,7 +111,7 @@ static void overuse_detection()
 
     delay_bwe_set_start_bitrate(bwe, 400 * 1000);
 
-    /*¹ıÔØ²âÊÔ*/
+    /*è¿‡è½½æµ‹è¯•*/
     delay_bwe_rtt_update(bwe, 50);
     for (i = 0; i < kNumProbesCluster0 + 60; ++i)
     {

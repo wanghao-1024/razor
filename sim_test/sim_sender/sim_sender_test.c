@@ -6,8 +6,8 @@
 */
 
 /**************************************************************************
-* sim_sender_testÊÇÒ»¸öÄ£ÄâÊÓÆµÊý¾Ý·¢ËÍµÄ¹¤³Ì£¬ÓÃÓÚµ÷ÊÔÊÕ·¢Ë«¶ËµÄÕýÈ·ÐÔ,ËüÊÇ½¨Á¢
-* ÔÚsim_transportÖ®ÉÏµÄ£¬ËùÒÔËüÒÀÀµÓÚrazorºÍsim_transport¹¤³Ì
+* sim_sender_testæ˜¯ä¸€ä¸ªæ¨¡æ‹Ÿè§†é¢‘æ•°æ®å‘é€çš„å·¥ç¨‹ï¼Œç”¨äºŽè°ƒè¯•æ”¶å‘åŒç«¯çš„æ­£ç¡®æ€§,å®ƒæ˜¯å»ºç«‹
+* åœ¨sim_transportä¹‹ä¸Šçš„ï¼Œæ‰€ä»¥å®ƒä¾èµ–äºŽrazorå’Œsim_transportå·¥ç¨‹
 **************************************************************************/
 #include "cf_platform.h"
 #include "cf_list.h"
@@ -87,7 +87,7 @@ static void notify_change_bitrate(void* event, uint32_t bitrate_kbps, int lost)
     thread_msg_t* msg = (thread_msg_t*)calloc(1, sizeof(thread_msg_t));
     msg->msg_id = el_change_bitrate;
     msg->val = bitrate_kbps;
-    /*½«ÏûÏ¢µÝµ½Ö÷Ïß³ÌÉÏ*/
+    /*å°†æ¶ˆæ¯é€’åˆ°ä¸»çº¿ç¨‹ä¸Š*/
     su_mutex_lock(main_mutex);
     list_push(main_queue, msg);
     su_mutex_unlock(main_mutex);
@@ -106,10 +106,10 @@ static void notify_state(void* event, const char* info)
 
 typedef struct
 {
-    uint32_t    bitrate_kbps;   /*µ±Ç°·¢ËÍµÄÂëÂÊ£¬kbps*/
-    int         record_flag;    /*ÊÇ·ñ¿ÉÒÔ¿ªÊ¼Â¼ÖÆ·¢ËÍ*/
-    uint32_t    frame_rate;     /*Ö¡ÂÊ*/
-    int64_t     prev_ts;        /*ÉÏÒ»´Î·¢ËÍÊÓÆµµÄÊ±¿Ì*/
+    uint32_t    bitrate_kbps;   /*å½“å‰å‘é€çš„ç çŽ‡ï¼Œkbps*/
+    int         record_flag;    /*æ˜¯å¦å¯ä»¥å¼€å§‹å½•åˆ¶å‘é€*/
+    uint32_t    frame_rate;     /*å¸§çŽ‡*/
+    int64_t     prev_ts;        /*ä¸Šä¸€æ¬¡å‘é€è§†é¢‘çš„æ—¶åˆ»*/
     int64_t     hb_ts;
 
     uint32_t    total_bytes;
@@ -151,13 +151,13 @@ static void try_send_video(video_sender_t* sender, uint64_t now_ts)
         pos += sizeof(now_ts);
 
         ftype = 0;
-        if (sender->index % (sender->frame_rate * 4) == 0) /*¹Ø¼üÖ¡*/
+        if (sender->index % (sender->frame_rate * 4) == 0) /*å…³é”®å¸§*/
             ftype = 1;
 
         sim_send_video(0, ftype, sender->frame, frame_size);
 
         ++sender->index;
-        /*Ö»·¢ËÍÒ»Ö¡ÊÔÒ»ÊÔ*/
+        /*åªå‘é€ä¸€å¸§è¯•ä¸€è¯•*/
         /*if (++sender->index > 20000)
             sender->record_flag = 0;*/
     }

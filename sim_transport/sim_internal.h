@@ -12,7 +12,7 @@
 #include "cf_skiplist.h"
 #include "sim_proto.h"
 #include "cf_stream.h"
-#include "razor_api.h"          /*razorµÄÒıÓÃÍ·ÎÄ¼ş*/
+#include "razor_api.h"          /*razorçš„å¼•ç”¨å¤´æ–‡ä»¶*/
 #include "rate_stat.h"
 #include "sim_external.h"
 
@@ -88,19 +88,19 @@ uint32_t                sim_receiver_cache_delay(sim_session_t* s, sim_receiver_
 sim_session_t*          sim_session_create(uint16_t port, void* event, sim_notify_fn notify_cb, sim_change_bitrate_fn change_bitrate_cb, sim_state_fn state_cb);
 void                    sim_session_destroy(sim_session_t* s);
 
-/*Á¬½ÓÒ»¸ö½ÓÊÕ¶Ë*/
+/*è¿æ¥ä¸€ä¸ªæ¥æ”¶ç«¯*/
 int                     sim_session_connect(sim_session_t* s, uint32_t local_uid, const char* peer_ip, uint16_t peer_port, int transport_type, int padding, int fec);
-/*¶Ï¿ªÒ»¸ö½ÓÊÕ¶Ë*/
+/*æ–­å¼€ä¸€ä¸ªæ¥æ”¶ç«¯*/
 int                     sim_session_disconnect(sim_session_t* s);
-/*·¢ËÍÊÓÆµÊı¾İ*/
+/*å‘é€è§†é¢‘æ•°æ®*/
 int                     sim_session_send_video(sim_session_t* s, uint8_t payload_type, uint8_t ftype, const uint8_t* data, size_t size);
-/*»ñÈ¡½ÓÊÕ¶ËµÄÊÓÆµÊı¾İ*/
+/*è·å–æ¥æ”¶ç«¯çš„è§†é¢‘æ•°æ®*/
 int                     sim_session_recv_video(sim_session_t* s, uint8_t* data, size_t* sizep, uint8_t* payload_type);
 
-/*ÉèÖÃÂëÂÊ·¶Î§ºÍµ±Ç°Ê¹ÓÃµÄÂëÂÊ£¬Ò»°ãÖ»ÔÚÊÓÆµ±àÂëÆ÷³õÊ¼»¯µÄÊ±ºòµ÷ÓÃ*/
+/*è®¾ç½®ç ç‡èŒƒå›´å’Œå½“å‰ä½¿ç”¨çš„ç ç‡ï¼Œä¸€èˆ¬åªåœ¨è§†é¢‘ç¼–ç å™¨åˆå§‹åŒ–çš„æ—¶å€™è°ƒç”¨*/
 void                    sim_session_set_bitrates(sim_session_t* s, uint32_t min_bitrate, uint32_t start_bitrate, uint32_t max_bitrate);
 
-/*ÄÚ²¿·¢ËÍÏûÏ¢½Ó¿Ú*/
+/*å†…éƒ¨å‘é€æ¶ˆæ¯æ¥å£*/
 int                     sim_session_network_send(sim_session_t* s, bin_stream_t* strm);
 void                    sim_session_calculate_rtt(sim_session_t* s, uint32_t keep_rtt);
 

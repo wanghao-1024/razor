@@ -119,7 +119,7 @@ static void sampler_add_point(bbr_bandwidth_sampler_t* sampler, int64_t sent_tim
     if (sampler->start_pos == -1)
         sampler->start_pos = number;
 
-    /*³¬³ö·¶Î§£¬½øĞĞÀ©´ó*/
+    /*è¶…å‡ºèŒƒå›´ï¼Œè¿›è¡Œæ‰©å¤§*/
     if (sampler->size + sampler->start_pos < number)
         sampler_resize_points(sampler, (int)(number - sampler->start_pos));
 
@@ -147,7 +147,7 @@ static void sampler_remove_point(bbr_bandwidth_sampler_t* sampler, int64_t numbe
     point = &sampler->points[pos];
     point->ignore = 1;
 
-    /*½øĞĞÊı¾İÄ¨³ı*/
+    /*è¿›è¡Œæ•°æ®æŠ¹é™¤*/
     if (sampler->start_pos == number)
     {
         point->send_time = 0;
@@ -203,7 +203,7 @@ static bbr_bandwidth_sample_t sampler_on_packet_acked_inner(bbr_bandwidth_sample
     if (point->last_acked_packet_ack_time == -1 || point->last_acked_packet_sent_time == -1)
         return ret;
 
-    /*¼ÆËãsend_rate*/
+    /*è®¡ç®—send_rate*/
     send_rate = 0x7fffffff;
     if (point->send_time > point->last_acked_packet_sent_time)
     {

@@ -32,7 +32,7 @@ typedef struct
     int             ignore;
 } bbr_packet_point_t;
 
-/*¶¨ÒåÒ»¸öÍ¨¹ı¼ÇÂ¼sentºÍacked±¨ÎÄ¹ì¼£À´Í³¼Æ´ø¿íµÄ¸ú×ÙÆ÷*/
+/*å®šä¹‰ä¸€ä¸ªé€šè¿‡è®°å½•sentå’ŒackedæŠ¥æ–‡è½¨è¿¹æ¥ç»Ÿè®¡å¸¦å®½çš„è·Ÿè¸ªå™¨*/
 typedef struct
 {
     int32_t             rate_bps;

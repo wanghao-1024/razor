@@ -71,10 +71,10 @@ static void bbr_on_network_invalidation(bbr_sender_t* s)
     if (s->info.congestion_window <= 0)
         return;
 
-    /*ÉèÖÃpace²ÎÊý*/
+    /*è®¾ç½®paceå‚æ•°*/
     pacing_rate_kbps = bbr_pacer_data_rate(&s->info.pacer_config);
     pading_rate_kbps = bbr_pacer_pad_rate(&s->info.pacer_config);
-    /*¼ÆËã·´À¡´ø¿í*/
+    /*è®¡ç®—åé¦ˆå¸¦å®½*/
     outstanding = bbr_feedback_get_in_flight(&s->feedback);
 
     bbr_pacer_update_outstanding(s->pacer, outstanding);
@@ -84,7 +84,7 @@ static void bbr_on_network_invalidation(bbr_sender_t* s)
     acked_bitrate = bbr_feedback_get_birate(&s->feedback);
 
     fill = 1.0 * outstanding / s->info.congestion_window;
-    /*Èç¹ûÓµÈû´°¿ÚÂúÁË£¬½øÐÐ´ø¿íµÝ¼õ*/
+    /*å¦‚æžœæ‹¥å¡žçª—å£æ»¡äº†ï¼Œè¿›è¡Œå¸¦å®½é€’å‡*/
     if (fill > 1.0)
     {
         s->encoding_rate_ratio = 0.9f;
@@ -114,7 +114,7 @@ static void bbr_on_network_invalidation(bbr_sender_t* s)
         s->target_bitrate / 8000, acked_bitrate / 8000, pacing_rate_kbps, instant_rate_kbps, loss,
         s->info.congestion_window, outstanding, s->encoding_rate_ratio, s->info.target_rate.rtt);*/
 
-    /*Èç¹ûÊý¾Ý·¢Éú±ä»¯£¬½øÐÐ´¥·¢Ò»¸öÍ¨ÐÅ²ãÍ¨Öª*/
+    /*å¦‚æžœæ•°æ®å‘ç”Ÿå˜åŒ–ï¼Œè¿›è¡Œè§¦å‘ä¸€ä¸ªé€šä¿¡å±‚é€šçŸ¥*/
     if (s->target_bitrate != s->last_bitrate_bps || loss != s->last_fraction_loss)
     {
         s->last_bitrate_bps = s->target_bitrate;

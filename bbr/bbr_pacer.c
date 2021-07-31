@@ -7,10 +7,10 @@
 #include "bbr_pacer.h"
 #include "razor_log.h"
 
-#define k_min_packet_limit_ms       5           /*·¢°ü×îÐ¡¼ä¸ô*/
-#define k_max_packet_limit_ms       200         /*Ã¿400ºÁÃë±ØÐë·¢ËÍÒ»¸ö±¨ÎÄ£¬·ÀÖ¹·´À¡Ê§°Ü*/
-#define k_max_interval_ms           30          /*·¢°ü×î´óÊ±¼ä²î£¬³¤Ê±¼ä²»·¢ËÍ±¨ÎÄÒ»´Î·¢ËÍºÜ¶àÊý¾Ý³öÈ¥Ôì³ÉÍøÂç·ç±©*/
-#define k_default_pace_factor       1.5         /*Ä¬ÈÏµÄpace factorÒò×Ó*/
+#define k_min_packet_limit_ms       5           /*å‘åŒ…æœ€å°é—´éš”*/
+#define k_max_packet_limit_ms       200         /*æ¯400æ¯«ç§’å¿…é¡»å‘é€ä¸€ä¸ªæŠ¥æ–‡ï¼Œé˜²æ­¢åé¦ˆå¤±è´¥*/
+#define k_max_interval_ms           30          /*å‘åŒ…æœ€å¤§æ—¶é—´å·®ï¼Œé•¿æ—¶é—´ä¸å‘é€æŠ¥æ–‡ä¸€æ¬¡å‘é€å¾ˆå¤šæ•°æ®å‡ºåŽ»é€ æˆç½‘ç»œé£Žæš´*/
+#define k_default_pace_factor       1.5         /*é»˜è®¤çš„pace factorå› å­*/
 
 
 bbr_pacer_t* bbr_pacer_create(void* handler, pace_send_func send_cb, void* notify_handler, pacer_send_notify_cb notify_cb, uint32_t que_ms, int padding)
@@ -116,11 +116,11 @@ static int bbr_pacer_congestion(bbr_pacer_t* pace)
 
 static int bbr_pacer_send(bbr_pacer_t* pace, packet_event_t* ev)
 {
-    /*½øÐÐ·¢ËÍ¿ØÖÆ*/
+    /*è¿›è¡Œå‘é€æŽ§åˆ¶*/
     if (budget_remaining(&pace->media_budget) == 0 || bbr_pacer_congestion(pace) == -1)
         return -1;
 
-    /*µ÷ÓÃÍâ²¿½Ó¿Ú½øÐÐÊý¾Ý·¢ËÍ*/
+    /*è°ƒç”¨å¤–éƒ¨æŽ¥å£è¿›è¡Œæ•°æ®å‘é€*/
     if (pace->send_cb != NULL)
         pace->send_cb(pace->handler, ev->seq, ev->retrans, ev->size, 0);
 
@@ -147,7 +147,7 @@ void bbr_pacer_try_transmit(bbr_pacer_t* pace, int64_t now_ts)
     if (elapsed_ms < k_min_packet_limit_ms)
         return;
 
-    /*Èç¹ûÓµÈûÁË£¬Ã¿400ºÁÃë±ØÐë·¢ËÍÒ»¸ö°ü£¬·ÀÖ¹feedbackÎÞ·¨·´À¡*/
+    /*å¦‚æžœæ‹¥å¡žäº†ï¼Œæ¯400æ¯«ç§’å¿…é¡»å‘é€ä¸€ä¸ªåŒ…ï¼Œé˜²æ­¢feedbackæ— æ³•åé¦ˆ*/
     if (elapsed_ms >= k_max_packet_limit_ms && bbr_pacer_congestion(pace) == -1)
     {
         ev = pacer_queue_front(&pace->que);
@@ -170,7 +170,7 @@ void bbr_pacer_try_transmit(bbr_pacer_t* pace, int64_t now_ts)
         elapsed_ms = SU_MIN(elapsed_ms, k_max_interval_ms);
 
         pace->last_update_ts = now_ts;
-        /*¼ÆËãmedia budgetÖÐÐèÒªµÄÂëÂÊ,²¢¸üÐÂµ½media budgetÖ®ÖÐ*/
+        /*è®¡ç®—media budgetä¸­éœ€è¦çš„ç çŽ‡,å¹¶æ›´æ–°åˆ°media budgetä¹‹ä¸­*/
         if (pacer_queue_bytes(&pace->que) > 0)
         {
             target_bitrate_kbps = pacer_queue_target_bitrate_kbps(&pace->que, now_ts);
@@ -178,12 +178,12 @@ void bbr_pacer_try_transmit(bbr_pacer_t* pace, int64_t now_ts)
         }
         else
             target_bitrate_kbps = pace->pacing_bitrate_kpbs;
-        /*´ÓÐÂ¼ÆËã¿ÉÒÔ·¢ËÍµÄÖ±½ÓÊýÁ¿*/
+        /*ä»Žæ–°è®¡ç®—å¯ä»¥å‘é€çš„ç›´æŽ¥æ•°é‡*/
         set_target_rate_kbps(&pace->media_budget, target_bitrate_kbps);
         increase_budget(&pace->media_budget, elapsed_ms);
         increase_budget(&pace->padding_budget, elapsed_ms);
 
-        /*½øÐÐ·¢°ü*/
+        /*è¿›è¡Œå‘åŒ…*/
         sent_bytes = 0;
         while (pacer_queue_empty(&pace->que) != 0)
         {
@@ -194,7 +194,7 @@ void bbr_pacer_try_transmit(bbr_pacer_t* pace, int64_t now_ts)
                 break;
         }
 
-        /*¼ì²éÊÇ·ñ¿ÉÒÔpadding*/
+        /*æ£€æŸ¥æ˜¯å¦å¯ä»¥padding*/
         while (pace->padding == 1 && budget_remaining(&pace->padding_budget) > PADDING_SIZE / 4)
         {
             if (bbr_pacer_congestion(pace) == -1)

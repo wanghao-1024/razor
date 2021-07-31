@@ -252,7 +252,7 @@ int CDib::bitblt( HDC hdc, int _xDest, int _yDest, int _width, int _height, \
 {
     if(is_valid())
     {
-        // ·ÀÖ¹Ëõ·ÅÊ§Õæ
+        // é˜²æ­¢ç¼©æ”¾å¤±çœŸ
         ::SetStretchBltMode(hdc, STRETCH_HALFTONE);
 
         return ::SetDIBitsToDevice(hdc, _xDest, _yDest, _width, _height, \
@@ -267,7 +267,7 @@ int CDib::bitblt( HDC hdc, int _xDest, int _yDest ) const
 {
     if(is_valid())
     {
-        // ·ÀÖ¹Ëõ·ÅÊ§Õæ
+        // é˜²æ­¢ç¼©æ”¾å¤±çœŸ
         ::SetStretchBltMode(hdc, STRETCH_HALFTONE);
 
         return ::SetDIBitsToDevice(hdc, _xDest, _yDest, m_pBmpInfoHeader->biWidth, m_pBmpInfoHeader->biHeight, \
@@ -283,7 +283,7 @@ int CDib::stretch_blt( HDC hdc, int _dX, int _dY, int _dWidth, int _dHeight, \
 {
     if(is_valid())
     {
-        // ·ÀÖ¹Ëõ·ÅÊ§Õæ
+        // é˜²æ­¢ç¼©æ”¾å¤±çœŸ
         ::SetStretchBltMode(hdc, STRETCH_HALFTONE);
 
         return ::StretchDIBits(hdc, _dX, _dY, _dWidth, _dHeight, \
@@ -296,7 +296,7 @@ int CDib::stretch_blt( HDC hdc, int _dX, int _dY, int _dWidth, int _dHeight, \
 
 //////////////////////////////////////////////////////////////////////////
 //color convert
-//¼ÆËã³£Á¿
+//è®¡ç®—å¸¸é‡
 #define BLACK_Y 0
 #define BLACK_U 128
 #define BLACK_V 128

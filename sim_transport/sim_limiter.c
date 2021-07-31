@@ -73,7 +73,7 @@ static void sim_limiter_remove(sim_sender_limiter_t* limiter, int64_t now_ts)
     limiter->index = offset;
 }
 
-/*ÅĞ¶ÏÊÇ·ñ¿ÉÒÔ½øĞĞ·¢ËÍ±¨ÎÄ*/
+/*åˆ¤æ–­æ˜¯å¦å¯ä»¥è¿›è¡Œå‘é€æŠ¥æ–‡*/
 int sim_limiter_try(sim_sender_limiter_t* limiter, size_t size, int64_t now_ts)
 {
     if (now_ts < limiter->oldest_ts)
@@ -101,7 +101,7 @@ void sim_limiter_update(sim_sender_limiter_t* limiter, size_t size, int64_t now_
     if (offset > 0)
         sim_limiter_remove(limiter, now_ts);
 
-    /*ÉèÖÃµ±Ç°Ê±¿Ì*/
+    /*è®¾ç½®å½“å‰æ—¶åˆ»*/
     limiter->buckets[offset % limiter->wnd_size] += size;
     limiter->wnd_bytes += size;
 }

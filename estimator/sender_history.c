@@ -45,7 +45,7 @@ void sender_history_add(sender_history_t* hist, packet_feedback_t* packet)
     skiplist_iter_t* it;
     skiplist_item_t key, val;
 
-    /*È¥³ý¹ýÆÚµÄ·¢ËÍ¼ÇÂ¼*/
+    /*åŽ»é™¤è¿‡æœŸçš„å‘é€è®°å½•*/
     while (skiplist_size(hist->l) > 0)
     {
         it = skiplist_first(hist->l);

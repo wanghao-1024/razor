@@ -19,17 +19,17 @@ typedef struct
 
     cc_loss_statistics_t        loss_stat;
 
-    /*ĞÅÏ¢·´À¡º¯Êı*/
+    /*ä¿¡æ¯åé¦ˆå‡½æ•°*/
     void*                       handler;
     send_feedback_func          send_cb;
 
-    /*ÊÕ°üĞÅÏ¢*/
-    int64_t                     feedback_ts;        /*feedbakÊ±¼ä´Á£¬UNIX¾ø¶ÔÊ±¼ä£¬ºÁÃëÎªµ¥Î»*/
+    /*æ”¶åŒ…ä¿¡æ¯*/
+    int64_t                     feedback_ts;        /*feedbakæ—¶é—´æˆ³ï¼ŒUNIXç»å¯¹æ—¶é—´ï¼Œæ¯«ç§’ä¸ºå•ä½*/
 
-    int64_t                     base_seq;           /*´°¿Ú·´À¡µÄÆğÊ¼ID*/
+    int64_t                     base_seq;           /*çª—å£åé¦ˆçš„èµ·å§‹ID*/
     skiplist_t*                 cache;
 
-    cf_unwrapper_t              unwrapper;          /*ID»Ö¸´Æ÷*/
+    cf_unwrapper_t              unwrapper;          /*IDæ¢å¤å™¨*/
     bin_stream_t                strm;
 } bbr_receiver_t;
 
@@ -39,7 +39,7 @@ void                            bbr_receive_destroy(bbr_receiver_t* cc);
 void                            bbr_receive_check_acked(bbr_receiver_t* cc);
 void                            bbr_receive_on_received(bbr_receiver_t* cc, uint16_t seq, uint32_t timestamp, size_t size, int remb);
 
-/*ÔİÊ±ÎŞĞèÊµÏÖµÄ½Ó¿Ú£¬ÒòÎªBBRÖ»ĞèÒª·´À¡½ÓÊÕ¶Ë±¨ÎÄĞÅÏ¢¾Í¿ÉÒÔ½øĞĞÓµÈû¿ØÖÆ*/
+/*æš‚æ—¶æ— éœ€å®ç°çš„æ¥å£ï¼Œå› ä¸ºBBRåªéœ€è¦åé¦ˆæ¥æ”¶ç«¯æŠ¥æ–‡ä¿¡æ¯å°±å¯ä»¥è¿›è¡Œæ‹¥å¡æ§åˆ¶*/
 void                            bbr_receive_update_rtt(bbr_receiver_t* cc, int32_t rtt);
 void                            bbr_receive_set_min_bitrate(bbr_receiver_t* cc, int min_bitrate);
 void                            bbr_receive_set_max_bitrate(bbr_receiver_t* cc, int max_bitrate);

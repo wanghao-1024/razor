@@ -39,13 +39,13 @@ enum PIX_FORMAT
 
 typedef struct
 {
-    int             codec;          /*codecÀàĞÍ*/
-    int             rate;           /*Ã¿ÃëµÄÖ¡Êı*/
-    PIX_FORMAT      pix_format;     /*ÊÓÆµÊäÈëÔ´¸ñÊ½*/
-    uint32_t        width;          /*ÊäÈëÊÓÆµµÄ¿í¶È*/
-    uint32_t        height;         /*ÊäÈëÊÓÆµµÄ¸ß¶È*/
-    uint32_t        codec_width;    /*±àÂëÊÓÆµµÄ¿í¶È*/
-    uint32_t        codec_height;   /*±àÂëÊÓÆµµÄ¸ß¶È*/
+    int             codec;          /*codecç±»å‹*/
+    int             rate;           /*æ¯ç§’çš„å¸§æ•°*/
+    PIX_FORMAT      pix_format;     /*è§†é¢‘è¾“å…¥æºæ ¼å¼*/
+    uint32_t        width;          /*è¾“å…¥è§†é¢‘çš„å®½åº¦*/
+    uint32_t        height;         /*è¾“å…¥è§†é¢‘çš„é«˜åº¦*/
+    uint32_t        codec_width;    /*ç¼–ç è§†é¢‘çš„å®½åº¦*/
+    uint32_t        codec_height;   /*ç¼–ç è§†é¢‘çš„é«˜åº¦*/
 } video_info_t;
 
 class CFVideoRecorder
@@ -92,13 +92,13 @@ private:
     video_info_t        info_;
     std::string         resolution_;
 
-    //ÊÓÆµ×¥²¶µÄÍ¼ĞÎÆ÷
+    //è§†é¢‘æŠ“æ•çš„å›¾å½¢å™¨
     CameraPlay_Graph    cam_graph_;
     GUID                media_type_;
 
     CDib                dib_;
 
-    int64_t             frame_intval_; //Ö¡¼ä¸ô£¬ºÁÃëµ¥Î»
+    int64_t             frame_intval_; //å¸§é—´éš”ï¼Œæ¯«ç§’å•ä½
     LARGE_INTEGER       prev_timer_;
     LARGE_INTEGER       counter_frequency_;
 
@@ -111,7 +111,7 @@ private:
 
     SimpleLock          lock_;
 
-    /*Ôö¼Ó±àÂëÆ÷¶ÔÏó*/
+    /*å¢åŠ ç¼–ç å™¨å¯¹è±¡*/
     VideoEncoder*       encoder_;
     bool                encode_on_;
     bool                intra_frame_;
@@ -142,7 +142,7 @@ private:
     uint32_t    decode_data_height_;
 
     uint8_t*    data_;
-    /*Ôö¼Ó½âÂëÆ÷¶ÔÏó*/
+    /*å¢åŠ è§£ç å™¨å¯¹è±¡*/
     int         codec_type_;
     VideoDecoder* decoder_;
 

@@ -15,7 +15,7 @@
 typedef struct
 {
     razor_sender_t              sender;
-    /*ÉÏÒ»´ÎÆÀ¹ÀµÄÍøÂç×´Ì¬*/
+    /*ä¸Šä¸€æ¬¡è¯„ä¼°çš„ç½‘ç»œçŠ¶æ€*/
     uint32_t                    last_bitrate_bps;
     uint8_t                     last_fraction_loss;
     uint32_t                    last_rtt;
@@ -32,8 +32,8 @@ typedef struct
 
     uint8_t                     loss_fraction;
 
-    void*                       trigger;                    /*ÂëÂÊ¸Ä±äºóĞèÒªÍ¨Öª¸øÍ¨ĞÅ²ãµÄtrigger*/
-    bitrate_changed_func        trigger_cb;                 /*Í¨Öªº¯Êı*/
+    void*                       trigger;                    /*ç ç‡æ”¹å˜åéœ€è¦é€šçŸ¥ç»™é€šä¿¡å±‚çš„trigger*/
+    bitrate_changed_func        trigger_cb;                 /*é€šçŸ¥å‡½æ•°*/
 
     double                      encoding_rate_ratio;
     uint32_t                    max_bitrate;
@@ -49,7 +49,7 @@ void                            bbr_sender_destroy(bbr_sender_t* s);
 void                            bbr_sender_heartbeat(bbr_sender_t* s, int64_t now_ts);
 
 int                             bbr_sender_add_pace_packet(bbr_sender_t* s, uint32_t packet_id, int retrans, size_t size);
-/*ÕâÀïµÄseqÊÇtransportµÄ×ÔÔö³¤ID£¬¼´Ê¹°üÖØ·¢£¬Õâ¸öIDÒ²ÊÇ²»Ò»ÑùµÄ*/
+/*è¿™é‡Œçš„seqæ˜¯transportçš„è‡ªå¢é•¿IDï¼Œå³ä½¿åŒ…é‡å‘ï¼Œè¿™ä¸ªIDä¹Ÿæ˜¯ä¸ä¸€æ ·çš„*/
 void                            bbr_sender_send_packet(bbr_sender_t* s, uint16_t seq, size_t size);
 
 void                            bbr_sender_on_feedback(bbr_sender_t* s, uint8_t* feedback, int feedback_size);

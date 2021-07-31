@@ -169,7 +169,7 @@ void sim_fec_put_fec_packet(sim_session_t* s, sim_receiver_fec_t* f, sim_fec_t* 
         flex->fec_ts = fec->send_ts;
         flex_fec_receiver_active(flex, fec->fec_id, fec->col, fec->row, fec->base_id, fec->count);
 
-        /*½«ÒÑ¾­ÔÚsegsÖÐµÄsegments·ÅÈëFLEXÖÐ*/
+        /*å°†å·²ç»åœ¨segsä¸­çš„segmentsæ”¾å…¥FLEXä¸­*/
         sim_fec_add_segment_to_flex(s, f, flex, fec);
     }
     else
@@ -193,7 +193,7 @@ void sim_fec_put_segment(sim_session_t* s, sim_receiver_fec_t* f, sim_segment_t*
 
     f->max_ts = SU_MAX(seg->timestamp, f->max_ts);
 
-    /*Õâ¸ömalloc³öÀ´µÄÄÚ´æ¿éÔÚskiplist_remove(f->segs_cache)×Ô¶¯ÊÍ·Å*/
+    /*è¿™ä¸ªmallocå‡ºæ¥çš„å†…å­˜å—åœ¨skiplist_remove(f->segs_cache)è‡ªåŠ¨é‡Šæ”¾*/
     in_seg = malloc(sizeof(sim_segment_t));
     *in_seg = *seg;
     val.ptr = in_seg;
@@ -209,7 +209,7 @@ void sim_fec_put_segment(sim_session_t* s, sim_receiver_fec_t* f, sim_segment_t*
     while (list_size(f->out) > 0)
         sim_fec_packet_add_recover(s, f, list_pop(f->out));
 
-    /*Èç¹ûÒÑ¾­Íê³ÉÁË£¬ÊÍ·ÅµôFEC¶ÔÏó*/
+    /*å¦‚æžœå·²ç»å®Œæˆäº†ï¼Œé‡Šæ”¾æŽ‰FECå¯¹è±¡*/
     if (flex_fec_receiver_full(iter->val.ptr) == 0)
     {
         sim_fec_evict_segment(s, f, iter->val.ptr);

@@ -124,7 +124,7 @@ static void verify_flex_sender(sim_segment_t* segments[], int segs_count, base_l
         index = fec_packet->index & 0x7f;
         count = 0;
 
-        if ((fec_packet->index & 0x80) == 0)  /*½øĞĞrowÉÏÈ·ÈÏ*/
+        if ((fec_packet->index & 0x80) == 0)  /*è¿›è¡Œrowä¸Šç¡®è®¤*/
         {
             for (i = 0; i < fec_packet->col; i++)
             {
@@ -138,7 +138,7 @@ static void verify_flex_sender(sim_segment_t* segments[], int segs_count, base_l
             else
                 printf("recover failed, row fec index = %d\n", index);
         }
-        else /*½øĞĞcolÉÏÈ·ÈÏ*/
+        else /*è¿›è¡Œcolä¸Šç¡®è®¤*/
         {
             for (i = 0; i < fec_packet->row; i++)
             {
@@ -195,7 +195,7 @@ void test_flex_sender(uint8_t protect_fraction)
     {
         fec_packet = list_front(fec_list);
         printf("fec col = %d, row = %d\n", fec_packet->col, fec_packet->row);
-        /*½øĞĞ»Ö¸´È·ÈÏ*/
+        /*è¿›è¡Œæ¢å¤ç¡®è®¤*/
         verify_flex_sender(segs, FLEX_SEG_NUM, fec_list);
     }
 
@@ -261,7 +261,7 @@ static void test_flex_order(sim_segment_t* segs[], base_list_t* fec_list, uint8_
     rec_map = skiplist_create(idu32_compare, NULL, NULL);
     out = create_list();
 
-    /*Ä£Äâ²åÈëÍøÂç±¨ÎÄseg,¸ù¾İloss½øĞĞ¶ªÆú±¨ÎÄ*/
+    /*æ¨¡æ‹Ÿæ’å…¥ç½‘ç»œæŠ¥æ–‡seg,æ ¹æ®lossè¿›è¡Œä¸¢å¼ƒæŠ¥æ–‡*/
     for (i = 0; i < RECV_SEG_NUM; i++)
     {
         flag = 0;
@@ -277,7 +277,7 @@ static void test_flex_order(sim_segment_t* segs[], base_list_t* fec_list, uint8_
         }
     }
 
-    /*Ä£Äâ²åÈëFECµÄ±¨ÎÄ*/
+    /*æ¨¡æ‹Ÿæ’å…¥FECçš„æŠ¥æ–‡*/
     LIST_FOREACH(fec_list, iter)
     {
         packet_add_recover_list(rec_map, flex_fec_receiver_on_fec(receiver, iter->pdata));
@@ -291,14 +291,14 @@ static void test_flex_order(sim_segment_t* segs[], base_list_t* fec_list, uint8_
         printf("recover seg packet id = %u\n", seg->packet_id);
         segment_assert(seg, segs[seg->packet_id]);
 
-        /*½«»Ö¸´µÄseg²åÈëµ½fec recoverµ±ÖĞ¼ÌĞøÏÂÒ»ÂÖ»Ö¸´*/
+        /*å°†æ¢å¤çš„segæ’å…¥åˆ°fec recoverå½“ä¸­ç»§ç»­ä¸‹ä¸€è½®æ¢å¤*/
         flex_fec_receiver_on_segment(receiver, segs[seg->packet_id], out);
 
         skiplist_remove(rec_map, sl_iter->key);
 
         do
         {
-            packet_add_recover_list(rec_map, list_pop(out)); /*½«»Ö¸´µÄsegment²åÈëµ½recover mapµ±ÖĞ£¬½øĞĞÑ­»·»Ö¸´*/
+            packet_add_recover_list(rec_map, list_pop(out)); /*å°†æ¢å¤çš„segmentæ’å…¥åˆ°recover mapå½“ä¸­ï¼Œè¿›è¡Œå¾ªç¯æ¢å¤*/
         }
         while (list_size(out) > 0);
 
@@ -345,7 +345,7 @@ void test_flex_receiver(uint8_t protect_fraction, uint8_t loss_num)
     flex_fec_sender_update(sender, protect_fraction, fec_list);
     printf("%s, segment count = %d, protect = %u, fec num = %d\n", protect_fraction > 52 ? "multiFEC" : "singleFEC", FLEX_SEG_NUM, 80, list_size(fec_list));
 
-    /*¶Ôflex receiver½øĞĞ²âÊÔ*/
+    /*å¯¹flex receiverè¿›è¡Œæµ‹è¯•*/
     if (list_size(fec_list) > 0)
     {
         test_flex_order(segs, fec_list, loss, SU_MIN(loss_num, RECV_SEG_NUM));

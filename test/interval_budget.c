@@ -40,7 +40,7 @@ static void test_change_bitrate()
     init_interval_budget(&budget, k_bitrate_kbps, k_cannot_build_up);
     increase_budget(&budget, delta_ts);
 
-    /*码率变小*/
+    /*鐮佺巼鍙樺皬*/
     set_target_rate_kbps(&budget, k_bitrate_kbps / 10);
     EXPECT_EQ(budget_level_precent(&budget), 100);
     EXPECT_EQ(budget_remaining(&budget), time_to_bytes(k_bitrate_kbps / 10, k_window_ms));
@@ -54,7 +54,7 @@ static void test_add_bitrate()
     init_interval_budget(&budget, k_bitrate_kbps, k_cannot_build_up);
     increase_budget(&budget, delta_ts);
 
-    /*码率变小*/
+    /*鐮佺巼鍙樺皬*/
     set_target_rate_kbps(&budget, k_bitrate_kbps * 2);
     EXPECT_EQ(budget_level_precent(&budget), 50);
     EXPECT_EQ(budget_remaining(&budget), time_to_bytes(k_bitrate_kbps, k_window_ms));

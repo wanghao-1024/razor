@@ -73,7 +73,7 @@ void sender_estimation_set_send_bitrate(sender_estimation_t* est, uint32_t send_
     razor_debug("sender_estimation_set_send_bitrate, bitrate = %u\n", send_bitrate);
     cap_bitrate_to_threshold(est, GET_SYS_MS(), send_bitrate);
 
-    /*Çå¿ÕÀúÊ·×îĞ¡¼ÇÂ¼*/
+    /*æ¸…ç©ºå†å²æœ€å°è®°å½•*/
     est->end_index = est->begin_index = 0;
 }
 
@@ -116,7 +116,7 @@ static double slope_filter_update(slope_filter_t* slope, int delta)
     return slope->slope;
 }
 
-/*¸üĞÂ½ÓÊÕ¶Ë»ã±¨µÄ¶ª°üÑÓ³ÙÊı¾İ*/
+/*æ›´æ–°æ¥æ”¶ç«¯æ±‡æŠ¥çš„ä¸¢åŒ…å»¶è¿Ÿæ•°æ®*/
 void sender_estimation_update_block(sender_estimation_t* est, uint8_t fraction_loss, uint32_t rtt, int number_of_packets, int64_t cur_ts, uint32_t acked_bitrate)
 {
     int lost_packets_Q8;
@@ -137,7 +137,7 @@ void sender_estimation_update_block(sender_estimation_t* est, uint8_t fraction_l
         if (est->expected_packets_since_last_loss_update < k_limit_num_packets)
             return;
 
-        /*¼ÆËã¶ª°üÂÊ£¬ÕâÀï²ÉÓÃ´óÓÚ20¸ö±¨ÎÄµÄ²ÉÓÃ×÷Îª¼ÆËãÒÀ¾İ*/
+        /*è®¡ç®—ä¸¢åŒ…ç‡ï¼Œè¿™é‡Œé‡‡ç”¨å¤§äº20ä¸ªæŠ¥æ–‡çš„é‡‡ç”¨ä½œä¸ºè®¡ç®—ä¾æ®*/
         est->has_decreased_since_last_fraction_loss = -1;
         est->last_fraction_loss = est->lost_packets_since_last_loss_update_Q8 / est->expected_packets_since_last_loss_update;
 
@@ -145,7 +145,7 @@ void sender_estimation_update_block(sender_estimation_t* est, uint8_t fraction_l
         est->expected_packets_since_last_loss_update = 0;
         est->last_packet_report_ts = cur_ts;
 
-        /*½øĞĞ¶ª°üÂÊ²îÂË²¨£¬¿ÉÒÔÅĞ¶Ï³öÊÇÔëÉù¶ª°ü»¹ÊÇÏŞÖÆĞÔÓµÈû¶ª°ü*/
+        /*è¿›è¡Œä¸¢åŒ…ç‡å·®æ»¤æ³¢ï¼Œå¯ä»¥åˆ¤æ–­å‡ºæ˜¯å™ªå£°ä¸¢åŒ…è¿˜æ˜¯é™åˆ¶æ€§æ‹¥å¡ä¸¢åŒ…*/
         if (est->prev_fraction_loss != -1)
             slope_filter_update(&est->slopes, est->last_fraction_loss - (int)est->prev_fraction_loss);
         est->prev_fraction_loss = est->last_fraction_loss;
@@ -161,12 +161,12 @@ int sender_estimation_is_start_phare(sender_estimation_t* est, int64_t cur_ts)
     return -1;
 }
 
-/*¸üĞÂ×îĞ¡ÂëÂÊÀúÊ·¼ÇÂ¼*/
+/*æ›´æ–°æœ€å°ç ç‡å†å²è®°å½•*/
 static void sender_estimation_update_history(sender_estimation_t* estimator, int64_t cur_ts)
 {
     uint32_t i, pos;
 
-    /*É¾³ı³¬¹ı1Ãë¼ä¸ôµÄ¼ÇÂ¼*/
+    /*åˆ é™¤è¶…è¿‡1ç§’é—´éš”çš„è®°å½•*/
     for (i = estimator->begin_index; i < estimator->end_index; ++i)
     {
         pos = i % MIN_HISTORY_ARR_SIZE;
@@ -183,7 +183,7 @@ static void sender_estimation_update_history(sender_estimation_t* estimator, int
     pos = (estimator->end_index - 1) % MIN_HISTORY_ARR_SIZE;
     while (estimator->begin_index < estimator->end_index && estimator->min_bitrates[pos].bitrate >= estimator->curr_bitrate)
     {
-        /*Èç¹û×îºóÒ»¸ö¼ÇÂ¼µÄÂëÂÊ´óÓÚµ±Ç°¼ÆËã³öÀ´µÄ´ø¿í£¬ÌŞ³ı*/
+        /*å¦‚æœæœ€åä¸€ä¸ªè®°å½•çš„ç ç‡å¤§äºå½“å‰è®¡ç®—å‡ºæ¥çš„å¸¦å®½ï¼Œå‰”é™¤*/
         estimator->min_bitrates[pos].bitrate = 0;
         estimator->min_bitrates[pos].ts = 0;
 
@@ -194,7 +194,7 @@ static void sender_estimation_update_history(sender_estimation_t* estimator, int
     if (estimator->end_index == estimator->begin_index)
         estimator->end_index = estimator->begin_index = 0;
 
-    /*Ìí¼ÓĞÂµÄ¼ÇÂ¼*/
+    /*æ·»åŠ æ–°çš„è®°å½•*/
     pos = estimator->end_index % MIN_HISTORY_ARR_SIZE;
     if (estimator->end_index == estimator->begin_index + MIN_HISTORY_ARR_SIZE)
         estimator->begin_index++;
@@ -206,7 +206,7 @@ static void sender_estimation_update_history(sender_estimation_t* estimator, int
 
 static void cap_bitrate_to_threshold(sender_estimation_t* est, int64_t cur_ts, uint32_t bitrate)
 {
-    /*¶Ô´ø¿í½øĞĞÈ¡Öµ£¬È¥REMBºÍdelay baseÖ®ÖĞ×îĞ¡Öµ*/
+    /*å¯¹å¸¦å®½è¿›è¡Œå–å€¼ï¼Œå»REMBå’Œdelay baseä¹‹ä¸­æœ€å°å€¼*/
     if (est->bwe_incoming > 0 && bitrate > est->bwe_incoming)
         bitrate = est->bwe_incoming;
 
@@ -228,7 +228,7 @@ void sender_estimation_update(sender_estimation_t* est, int64_t cur_ts, uint32_t
     int64_t time_since_packet_report_ms, time_since_feedback_ms;
     double loss;
 
-    /*Èç¹ûÊÇ¿ªÊ¼½×¶ÎÇÒÍøÂçÃ»ÓĞ·¢Éú¶ª°ü£¬ÎÒÃÇÈ¡REMBºÍdelay baseÖĞ´óÕßÎªµ±Ç°µÄ¾ö²ß´ø¿í*/
+    /*å¦‚æœæ˜¯å¼€å§‹é˜¶æ®µä¸”ç½‘ç»œæ²¡æœ‰å‘ç”Ÿä¸¢åŒ…ï¼Œæˆ‘ä»¬å–REMBå’Œdelay baseä¸­å¤§è€…ä¸ºå½“å‰çš„å†³ç­–å¸¦å®½*/
     if (est->last_fraction_loss == 0 && sender_estimation_is_start_phare(est, cur_ts) == 0)
     {
         new_bitrate = SU_MAX(est->bwe_incoming, new_bitrate);
@@ -256,36 +256,36 @@ void sender_estimation_update(sender_estimation_t* est, int64_t cur_ts, uint32_t
         return;
     }
 
-    /*½øĞĞ¶ª°üÏà¹ØµÄÂëÂÊ¿ØÖÆ*/
+    /*è¿›è¡Œä¸¢åŒ…ç›¸å…³çš„ç ç‡æ§åˆ¶*/
     time_since_packet_report_ms = cur_ts - est->last_packet_report_ts;
     time_since_feedback_ms = cur_ts - est->last_feelback_ts;
     if (time_since_packet_report_ms * 1.2 < k_feelback_interval_ms)
     {
-        /*¶ª°üÂÊÊÇÓÃ0 ~ 255À´±íÊ¾£¬ÔÚÍøÂçÊı¾İ°üÖĞÊÇ²ÉÓÃuint8_t±íÊ¾£¬ËùÒÔÎÒÃÇÔÚ¼ÆËãµÄÊ±ºòĞèÒª×ª»»³É°Ù·ÖÊıÀ´½øĞĞÅĞ¶Ï*/
+        /*ä¸¢åŒ…ç‡æ˜¯ç”¨0 ~ 255æ¥è¡¨ç¤ºï¼Œåœ¨ç½‘ç»œæ•°æ®åŒ…ä¸­æ˜¯é‡‡ç”¨uint8_tè¡¨ç¤ºï¼Œæ‰€ä»¥æˆ‘ä»¬åœ¨è®¡ç®—çš„æ—¶å€™éœ€è¦è½¬æ¢æˆç™¾åˆ†æ•°æ¥è¿›è¡Œåˆ¤æ–­*/
         loss = est->last_fraction_loss / 256.0;
 
-        if (est->slopes.slope < 0.8f && loss > est->low_loss_threshold && est->state != kBwOverusing)  /*ÍøÂçÑÓ³Ù²¢Ã»ÓĞÔö´ó£¬¶ª°üÂÊ´¦ÓÚ¹Ì¶¨µÄ·¶Î§ÄÚ£¬ËµÃ÷ÊÇÔëÉù¶ª°ü£¬½øĞĞ´ø¿íÇÀÕ¼*/
+        if (est->slopes.slope < 0.8f && loss > est->low_loss_threshold && est->state != kBwOverusing)  /*ç½‘ç»œå»¶è¿Ÿå¹¶æ²¡æœ‰å¢å¤§ï¼Œä¸¢åŒ…ç‡å¤„äºå›ºå®šçš„èŒƒå›´å†…ï¼Œè¯´æ˜æ˜¯å™ªå£°ä¸¢åŒ…ï¼Œè¿›è¡Œå¸¦å®½æŠ¢å */
         {
             pos = est->begin_index % MIN_HISTORY_ARR_SIZE;
             new_bitrate = (uint32_t)(est->min_bitrates[pos].bitrate * 1.08 + 0.5 + 1000);
         }
         else
         {
-            /*ÍøÂç·¢ËÍ¶ª°üÂÊ < 2%Ê±£¬½øĞĞÂëÂÊÉÏÉı*/
+            /*ç½‘ç»œå‘é€ä¸¢åŒ…ç‡ < 2%æ—¶ï¼Œè¿›è¡Œç ç‡ä¸Šå‡*/
             if (est->curr_bitrate < est->bitrate_threshold || loss < est->low_loss_threshold)
             {
                 pos = est->begin_index % MIN_HISTORY_ARR_SIZE;
-                new_bitrate = (uint32_t)(est->min_bitrates[pos].bitrate * 1.08 + 0.5 + 1000); /*1000 min_bitrateÌ«Ğ¡Ôì³Éµş¼ÓÎŞĞ§*/
+                new_bitrate = (uint32_t)(est->min_bitrates[pos].bitrate * 1.08 + 0.5 + 1000); /*1000 min_bitrateå¤ªå°é€ æˆå åŠ æ— æ•ˆ*/
                 /*razor_debug("sender_estimation_update, loss < 2, new_bitrate = %u\n", new_bitrate);*/
             }
-            else if (est->curr_bitrate > est->bitrate_threshold)  /*ÂëÂÊ¹ıÔØ£¬¸ù¾İ¶ª°üÂÊ½øĞĞÂëÂÊÏÂ½µµ÷Õû*/
+            else if (est->curr_bitrate > est->bitrate_threshold)  /*ç ç‡è¿‡è½½ï¼Œæ ¹æ®ä¸¢åŒ…ç‡è¿›è¡Œç ç‡ä¸‹é™è°ƒæ•´*/
             {
                 /* 2% < loss < 10%*/
                 if (loss < est->high_loss_threshold)
                 {
-                    /*Î¬³Öµ±Ç°·¢ËÍÂëÂÊ*/
+                    /*ç»´æŒå½“å‰å‘é€ç ç‡*/
                 }
-                else  /*loss > 10%,½øĞĞÂëÂÊÏÂ½µ£¬¸ù¾İ¶ª°üÂÊÕ¼±ÈÀ´½øĞĞÏÂ½µµÄ*/
+                else  /*loss > 10%,è¿›è¡Œç ç‡ä¸‹é™ï¼Œæ ¹æ®ä¸¢åŒ…ç‡å æ¯”æ¥è¿›è¡Œä¸‹é™çš„*/
                 {
                     if (est->has_decreased_since_last_fraction_loss == -1 && cur_ts >= est->last_decrease_ts + k_bwe_decrease_interval_ms + est->last_rtt)
                     {
@@ -302,7 +302,7 @@ void sender_estimation_update(sender_estimation_t* est, int64_t cur_ts, uint32_t
         }
     }
     else if (time_since_feedback_ms > k_feelback_timeout_intervals * k_feelback_interval_ms &&
-             (est->last_timeout_ts == -1 || cur_ts > est->last_timeout_ts + k_timeout_interval_ms))  /*feelbackÏûÏ¢¶ªÊ§²¢³¬Ê±£¬½øĞĞ´ø¿íÏÂ½µ²¢Çå¿ÕÏà¹Ø¶ª°üÍ³¼Æ*/
+             (est->last_timeout_ts == -1 || cur_ts > est->last_timeout_ts + k_timeout_interval_ms))  /*feelbackæ¶ˆæ¯ä¸¢å¤±å¹¶è¶…æ—¶ï¼Œè¿›è¡Œå¸¦å®½ä¸‹é™å¹¶æ¸…ç©ºç›¸å…³ä¸¢åŒ…ç»Ÿè®¡*/
     {
         new_bitrate = new_bitrate * 4 / 5;
 
@@ -313,7 +313,7 @@ void sender_estimation_update(sender_estimation_t* est, int64_t cur_ts, uint32_t
     }
 
 
-    /*´ÓĞÂÈ·Á¢µ±Ç°¿ÉÓÃ´ø¿í*/
+    /*ä»æ–°ç¡®ç«‹å½“å‰å¯ç”¨å¸¦å®½*/
     cap_bitrate_to_threshold(est, cur_ts, new_bitrate);
 }
 

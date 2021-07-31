@@ -66,7 +66,7 @@ void estimator_proxy_incoming(estimator_proxy_t* proxy, int64_t arrival_ts, uint
     if (proxy->max_arrival_seq <= proxy->wnd_start_seq)
     {
         num = 0;
-        /*É¾³ı¹ıÆÚµÄµ½´ïÊ±¼äÍ³¼Æ£¬ÒòÎªUDP»áÂÒĞò£¬ÕâÀïÖ»»áÉ¾³ıÊ±¼ä³¬¹ı500ºÁÃëÇÒÊÇµ±Ç°±¨ÎÄÖ®Ç°µÄ±¨ÎÄµÄ¼ÇÂ¼*/
+        /*åˆ é™¤è¿‡æœŸçš„åˆ°è¾¾æ—¶é—´ç»Ÿè®¡ï¼Œå› ä¸ºUDPä¼šä¹±åºï¼Œè¿™é‡Œåªä¼šåˆ é™¤æ—¶é—´è¶…è¿‡500æ¯«ç§’ä¸”æ˜¯å½“å‰æŠ¥æ–‡ä¹‹å‰çš„æŠ¥æ–‡çš„è®°å½•*/
         SKIPLIST_FOREACH(proxy->arrival_times, iter)
         {
             if (iter->key.i64 < sequence && arrival_ts >= iter->val.i64 + BACK_WINDOWS_MS && num < MAX_IDS_NUM)
@@ -85,7 +85,7 @@ void estimator_proxy_incoming(estimator_proxy_t* proxy, int64_t arrival_ts, uint
     else if (sequence < proxy->wnd_start_seq)
         proxy->wnd_start_seq = sequence;
 
-    /*±£´æ½ÓÊÕµ½µÄ×î´ósequence*/
+    /*ä¿å­˜æ¥æ”¶åˆ°çš„æœ€å¤§sequence*/
     proxy->max_arrival_seq = SU_MAX(proxy->max_arrival_seq, sequence);
 
     key.i64 = sequence;
@@ -110,7 +110,7 @@ static int proxy_bulid_feelback_packet(estimator_proxy_t* proxy, feedback_msg_t*
 
         if (iter->key.i64 >= proxy->wnd_start_seq)
         {
-            /*ÕÒµ½×îÔçµ½´ïµÄ±¨ÎÄÊ±¼ä´Á*/
+            /*æ‰¾åˆ°æœ€æ—©åˆ°è¾¾çš„æŠ¥æ–‡æ—¶é—´æˆ³*/
             if (msg->min_ts == -1 || msg->min_ts > iter->val.i64)
                 msg->min_ts = iter->val.i64;
 
@@ -118,7 +118,7 @@ static int proxy_bulid_feelback_packet(estimator_proxy_t* proxy, feedback_msg_t*
             msg->samples[msg->samples_num].ts = iter->val.i64;
             msg->samples_num++;
 
-            /*¸üĞÂÏÂÒ»¸öfeelbackµÄÆğÊ¼Î»ÖÃ*/
+            /*æ›´æ–°ä¸‹ä¸€ä¸ªfeelbackçš„èµ·å§‹ä½ç½®*/
             new_start_seq = iter->key.i64 + 1;
 
             if (msg->samples_num >= MAX_FEELBACK_COUNT)
@@ -126,7 +126,7 @@ static int proxy_bulid_feelback_packet(estimator_proxy_t* proxy, feedback_msg_t*
         }
     }
 
-    /*½øĞĞµ½´ïÊ±¼äĞòÁĞ±àÂë*/
+    /*è¿›è¡Œåˆ°è¾¾æ—¶é—´åºåˆ—ç¼–ç */
     if (msg->samples_num > 2)
     {
         proxy->wnd_start_seq = new_start_seq;
@@ -146,7 +146,7 @@ int estimator_proxy_heartbeat(estimator_proxy_t* proxy, int64_t cur_ts, feedback
     return -1;
 }
 
-/*ÂëÂÊ·¢Éú±ä»¯Ê±ÖØĞÂÆÀ¹À·¢ËÍ¼ä¸ôÊ±¼ä*/
+/*ç ç‡å‘ç”Ÿå˜åŒ–æ—¶é‡æ–°è¯„ä¼°å‘é€é—´éš”æ—¶é—´*/
 void estimator_proxy_bitrate_changed(estimator_proxy_t* proxy, uint32_t bitrate)
 {
     double rate = bitrate * 0.05;

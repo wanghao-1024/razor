@@ -33,10 +33,10 @@ CFVideoRecorder::CFVideoRecorder(const std::wstring& dev_name) : frame_intval_(1
     hwnd_hdc_(NULL),
     dev_(dev_name)
 {
-    //²¶×½·Ö±æÂÊ
+    //æ•æ‰åˆ†è¾¨ç‡
     info_.width = 320;
     info_.height = 240;
-    //±àÂëÊ±µÄ·Ö±æÂÊ£¬Ò²¾ÍÊÇ×îÖÕÍøÂçÉÏ´«ÊäµÄ·Ö±æÂÊ
+    //ç¼–ç æ—¶çš„åˆ†è¾¨ç‡ï¼Œä¹Ÿå°±æ˜¯æœ€ç»ˆç½‘ç»œä¸Šä¼ è¾“çš„åˆ†è¾¨ç‡
     info_.codec_width = 160;
     info_.codec_height = 120;
 
@@ -84,10 +84,10 @@ bool CFVideoRecorder::open()
 
     AutoSpLock auto_lock(lock_);
 
-    /*¼ÆËã²É¼¯¼ä¸ô*/
+    /*è®¡ç®—é‡‡é›†é—´éš”*/
     frame_intval_ = 1000 / info_.rate;
 
-    //¼ì²éÊÓÆµÉè±¸
+    //æ£€æŸ¥è§†é¢‘è®¾å¤‡
     vector<SCaptureDevice> cap_devs;
     DS_Utils::EnumCaptureDevice(cap_devs);
     if (cap_devs.size() <= 0)
@@ -97,7 +97,7 @@ bool CFVideoRecorder::open()
     CComPtr<IBaseFilter> filter_cam;
     for (uint32_t i = 0; i < cap_devs.size(); i++)
     {
-        std::wstring devName = cap_devs[i].FriendlyName; //×ª³ÉUTF8±È½Ï
+        std::wstring devName = cap_devs[i].FriendlyName; //è½¬æˆUTF8æ¯”è¾ƒ
         if (devName == dev_)
         {
             filter_cam = cap_devs[i].pFilter;
@@ -116,11 +116,11 @@ bool CFVideoRecorder::open()
     if (FAILED(hr))
         return false;
 
-    //»ñÈ¡ÊÓÆµÇı¶¯²ÎÊı
+    //è·å–è§†é¢‘é©±åŠ¨å‚æ•°
     if (!get_device_info())
         return false;
 
-    //Æô¶¯ÊÓÆµÍ¼ĞÎÆ÷
+    //å¯åŠ¨è§†é¢‘å›¾å½¢å™¨
     hr = cam_graph_.RunGraph();
     if (FAILED(hr))
         return false;
@@ -140,11 +140,11 @@ bool CFVideoRecorder::open()
         dib_.create(info_.width, info_.height, 24);
     }
 
-    //·ÖÅäÒ»¸öÊÓÆµÊı¾İ»º³åÇø
+    //åˆ†é…ä¸€ä¸ªè§†é¢‘æ•°æ®ç¼“å†²åŒº
     video_data_size_ = info_.width * info_.height * 3;
     video_data_ = new uint8_t[video_data_size_];
 
-    /*³õÊ¼»¯±àÂëÆ÷*/
+    /*åˆå§‹åŒ–ç¼–ç å™¨*/
     if (info_.codec == codec_h264)
         encoder_ = new H264Encoder();
     else
@@ -225,7 +225,7 @@ bool CFVideoRecorder::capture_sample()
             return ret;
 
         unsigned long data_size = video_data_size_;
-        //»ñÈ¡Ò»ÕÅÍ¼Æ¬
+        //è·å–ä¸€å¼ å›¾ç‰‡
         HRESULT hr = grabber->GetCurrentBuffer((long*)&data_size, (long*)dib_.get_dib_bits());
         if (FAILED(hr))
             Sleep(1);
@@ -271,7 +271,7 @@ int CFVideoRecorder::read(void* data, uint32_t data_size, int& key_frame, uint8_
     data_size = 0;
     if (capture_sample())
     {
-        // Èç¹ûlocal_hwnd_hdc_²»Îª¿Õ£¬ÔòĞèÒªÔÚ±¾µØÔ¤ÀÀ
+        // å¦‚æœlocal_hwnd_hdc_ä¸ä¸ºç©ºï¼Œåˆ™éœ€è¦åœ¨æœ¬åœ°é¢„è§ˆ
         if (hwnd_hdc_ != NULL)
         {
             /*dib_.set_dib_bits(video_data_, video_data_size_);*/
@@ -281,7 +281,7 @@ int CFVideoRecorder::read(void* data, uint32_t data_size, int& key_frame, uint8_
 
         if (encode_on_)
         {
-            /*±àÂë£¬È·¶¨±àÂëÊı¾İºÍÊÇ·ñÊÇ¹Ø¼üÖ¡£¬Èç¹ûÊÇ¹Ø¼üÖ¡£¬key_frame = 1,·ñÕß = 0*/
+            /*ç¼–ç ï¼Œç¡®å®šç¼–ç æ•°æ®å’Œæ˜¯å¦æ˜¯å…³é”®å¸§ï¼Œå¦‚æœæ˜¯å…³é”®å¸§ï¼Œkey_frame = 1,å¦è€… = 0*/
             if (encoder_->encode(video_data_, video_data_size_, (PixelFormat)info_.pix_format, (uint8_t*)data, &out_size, &key_frame, intra_frame_) && out_size > 0)
             {
                 key_frame = (key_frame == 0x0001 ? 1 : 0);
@@ -493,7 +493,7 @@ int CFVideoPlayer::write(const void* data, uint32_t size, uint8_t payload_type)
             decoder_->init();
         }
 
-        /*ÏÈ½âÂë£¬ÔÚÏÔÊ¾*/
+        /*å…ˆè§£ç ï¼Œåœ¨æ˜¾ç¤º*/
         if(decoder_ != NULL && !decoder_->decode((uint8_t*)data, size, &data_, width, height, pic_type))
             return 0;
 

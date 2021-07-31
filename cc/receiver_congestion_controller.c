@@ -64,15 +64,15 @@ void receiver_cc_heartbeat(receiver_cc_t* cc)
     msg.flag = 0;
     now_ts = GET_SYS_MS();
 
-    /*¶ÔrembÆÀ¹À¶ÔÏó×öÐÄÌø£¬Èç¹ûremb×öÁËÂëÂÊ¸üÐÂ£¬½øÐÐ»ã±¨¸ø·¢ËÍ¶Ë*/
+    /*å¯¹rembè¯„ä¼°å¯¹è±¡åšå¿ƒè·³ï¼Œå¦‚æžœrembåšäº†ç çŽ‡æ›´æ–°ï¼Œè¿›è¡Œæ±‡æŠ¥ç»™å‘é€ç«¯*/
     if (rbe_heartbeat(cc->rbe, now_ts, &msg.remb) == 0)
         msg.flag |= remb_msg;
 
-    /*ÅÐ¶Ï¶ª°üÏûÏ¢*/
+    /*åˆ¤æ–­ä¸¢åŒ…æ¶ˆæ¯*/
     if (loss_statistics_calculate(&cc->loss_stat, now_ts, &msg.fraction_loss, &msg.packet_num) == 0)
         msg.flag |= loss_info_msg;
 
-    /*ÅÐ¶Ïproxy estimatorÊÇ·ñ¿ÉÒÔ·¢ËÍ±¨¸æ*/
+    /*åˆ¤æ–­proxy estimatoræ˜¯å¦å¯ä»¥å‘é€æŠ¥å‘Š*/
     if (estimator_proxy_heartbeat(cc->proxy, now_ts, &msg) == 0)
         msg.flag |= proxy_ts_msg;
 
@@ -93,7 +93,7 @@ void receiver_cc_on_received(receiver_cc_t* cc, uint16_t seq, uint32_t timestamp
     else
         estimator_proxy_incoming(cc->proxy, now_ts, 0, seq);
 
-    /*½øÐÐ¶ª°üÍ³¼Æ*/
+    /*è¿›è¡Œä¸¢åŒ…ç»Ÿè®¡*/
     loss_statistics_incoming(&cc->loss_stat, seq, now_ts);
 }
 

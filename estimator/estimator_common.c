@@ -31,7 +31,7 @@ void feedback_msg_encode(bin_stream_t* strm, feedback_msg_t* msg)
         for (i = 0; i < msg->samples_num; ++i)
         {
             mach_uint16_write(strm, msg->samples[i].seq);
-            mach_uint16_write(strm, (uint16_t)(msg->samples[i].ts - msg->min_ts)); /*´Ë´¦timestampÖ®²î²»¿ÉÄÜ´óÓÚ65535£¬ÒòÎªÔÚproxyÀïÃæÖ»±£Áô500ºÁÃëµÄ±¨ÎÄ¼ÇÂ¼*/
+            mach_uint16_write(strm, (uint16_t)(msg->samples[i].ts - msg->min_ts)); /*æ­¤å¤„timestampä¹‹å·®ä¸å¯èƒ½å¤§äº65535ï¼Œå› ä¸ºåœ¨proxyé‡Œé¢åªä¿ç•™500æ¯«ç§’çš„æŠ¥æ–‡è®°å½•*/
         }
     }
 }

@@ -31,8 +31,8 @@ void alr_detector_bytes_sent(alr_detector_t* alr, size_t bytes, int64_t delta_ts
     increase_budget(&alr->budget, (int)delta_ts);
 
     percent = budget_level_precent(&alr->budget);
-    /*进行alr started ts判定*/
-    if (percent > k_alr_start_buget_percent && alr->alr_started_ts == -1)  /*发送budget还有很多空闲*/
+    /*杩涜alr started ts鍒ゅ畾*/
+    if (percent > k_alr_start_buget_percent && alr->alr_started_ts == -1)  /*鍙戦�乥udget杩樻湁寰堝绌洪棽*/
     {
         alr->alr_started_ts = GET_SYS_MS();
     }

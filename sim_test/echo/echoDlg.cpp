@@ -176,7 +176,7 @@ BOOL CechoDlg::OnInitDialog()
 
     ::CoInitialize(NULL);
 
-    //³õÊ¼»¯±àÂëÆ÷²ÎÊı
+    //åˆå§‹åŒ–ç¼–ç å™¨å‚æ•°
     setup_codec(codec_h264);
 
     m_iUser = rand() % 10000 + 1000;
@@ -410,7 +410,7 @@ void CechoDlg::OnBnClickedBtnview()
     {
         m_viewing = TRUE;
 
-        /*´´½¨Ò»¸öÂ¼ÖÆÉè±¸£¬°üÀ¨ÊÓÆµ±à½âÂë*/
+        /*åˆ›å»ºä¸€ä¸ªå½•åˆ¶è®¾å¤‡ï¼ŒåŒ…æ‹¬è§†é¢‘ç¼–è§£ç */
         TCHAR* device;
         device = m_strDev.GetBuffer(m_strDev.GetLength());
         m_viRecorder = new CFVideoRecorder(device);
@@ -434,12 +434,12 @@ void CechoDlg::OnBnClickedBtnview()
         m_strDev.ReleaseBuffer();
         m_viRecorder->open();
 
-        /*´´½¨Ò»¸ö²¥·ÅÉè±¸*/
+        /*åˆ›å»ºä¸€ä¸ªæ’­æ”¾è®¾å¤‡*/
         m_dstVideo.GetClientRect(&display_rect);
         m_viPlayer = new CFVideoPlayer(m_dstVideo.GetSafeHwnd(), display_rect);
         m_viPlayer->open();
 
-        /*´ò¿ªÔ¤ÀÀÏß³Ì*/
+        /*æ‰“å¼€é¢„è§ˆçº¿ç¨‹*/
         m_btnView.SetWindowText(_T("stop view"));
         m_view.set_video_devices(m_viRecorder, m_viPlayer);
         m_view.start();
@@ -523,7 +523,7 @@ LRESULT CechoDlg::OnConnectSucc(WPARAM wparam, LPARAM lparam)
 
     UpdateData(FALSE);
 
-    /*´´½¨Ò»¸öÂ¼ÖÆÉè±¸£¬°üÀ¨ÊÓÆµ±à½âÂë*/
+    /*åˆ›å»ºä¸€ä¸ªå½•åˆ¶è®¾å¤‡ï¼ŒåŒ…æ‹¬è§†é¢‘ç¼–è§£ç */
     TCHAR* device;
     device = m_strDev.GetBuffer(m_strDev.GetLength());
     m_viRecorder = new CFVideoRecorder(device);
@@ -547,7 +547,7 @@ LRESULT CechoDlg::OnConnectSucc(WPARAM wparam, LPARAM lparam)
     m_strDev.ReleaseBuffer();
     m_viRecorder->open();
 
-    /*Æô¶¯Â¼ÖÆÏß³Ì*/
+    /*å¯åŠ¨å½•åˆ¶çº¿ç¨‹*/
     m_frame->start_recorder(m_viRecorder);
     m_recording = TRUE;
 
@@ -617,7 +617,7 @@ LRESULT CechoDlg::OnStartPlay(WPARAM wparam, LPARAM lparam)
     m_strInfo += data;
     UpdateData(FALSE);
 
-    /*´´½¨Ò»¸ö²¥·ÅÉè±¸*/
+    /*åˆ›å»ºä¸€ä¸ªæ’­æ”¾è®¾å¤‡*/
     RECT display_rect;
     m_dstVideo.GetClientRect(&display_rect);
     m_viPlayer = new CFVideoPlayer(m_dstVideo.GetSafeHwnd(), display_rect);
@@ -659,7 +659,7 @@ LRESULT CechoDlg::OnChangeBitrate(WPARAM wparam, LPARAM lparam)
 {
     UpdateData(TRUE);
 
-    //½øĞĞ·¢ËÍ¶Ë´ø¿íµ÷Õû
+    //è¿›è¡Œå‘é€ç«¯å¸¦å®½è°ƒæ•´
     if (m_viRecorder != NULL)
     {
         uint32_t bitrate = (uint32_t)wparam;

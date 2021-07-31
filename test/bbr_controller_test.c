@@ -115,7 +115,7 @@ static void test_run_simulation(test_bbr_controller_t* ctrl, int64_t duration,
     {
         send_flag = 1;
 
-        /*ÅÐ¶ÏÊÇ·ñ¿ÉÒÔ¼ÌÐø·¢ËÍÐÂµÄ±¨ÎÄ*/
+        /*åˆ¤æ–­æ˜¯å¦å¯ä»¥ç»§ç»­å‘é€æ–°çš„æŠ¥æ–‡*/
         if (ctrl->update.congestion_window > 0)
         {
             data_in_flight = 0;
@@ -129,8 +129,8 @@ static void test_run_simulation(test_bbr_controller_t* ctrl, int64_t duration,
                 send_flag = 0;
         }
 
-        /*½øÐÐ·¢°üÄ£Äâ*/
-        if (send_flag == 1 || list_size(ctrl->outstanding) < 2)  /*±ØÐëÓÐ2¸ö±¨ÎÄÔÚÍ¨µÀÖÐ´«Êä TCPMSS*/
+        /*è¿›è¡Œå‘åŒ…æ¨¡æ‹Ÿ*/
+        if (send_flag == 1 || list_size(ctrl->outstanding) < 2)  /*å¿…é¡»æœ‰2ä¸ªæŠ¥æ–‡åœ¨é€šé“ä¸­ä¼ è¾“ TCPMSS*/
         {
             sent_packet = test_bbr_next(ctrl, ctrl->update, ctrl->curr_ts, packet_interval);
             sent_packet.seq = ctrl->packet_number++;
@@ -144,7 +144,7 @@ static void test_run_simulation(test_bbr_controller_t* ctrl, int64_t duration,
 
             bbr_on_send_packet(ctrl->bbr, &sent_packet);
 
-            /*¼ÆËã·¢ËÍµÄ¼ä¸ôÊ±¼äÖµ*/
+            /*è®¡ç®—å‘é€çš„é—´éš”æ—¶é—´å€¼*/
             time_in_flight = sent_packet.size / actual_bandwidth;
             ctrl->accumulated_buffer += time_in_flight;
             total_delay = propagation_delay + ctrl->accumulated_buffer;
@@ -156,7 +156,7 @@ static void test_run_simulation(test_bbr_controller_t* ctrl, int64_t duration,
             list_push(ctrl->outstanding, packet);
         }
 
-        /*½øÐÐfeedback²Ù×÷*/
+        /*è¿›è¡Œfeedbackæ“ä½œ*/
         int64_t buffer_consumed = SU_MIN(ctrl->accumulated_buffer, packet_interval);
         ctrl->accumulated_buffer -= buffer_consumed;
 
@@ -172,7 +172,7 @@ static void test_run_simulation(test_bbr_controller_t* ctrl, int64_t duration,
                 }
             }
 
-            /*Èç¹û×îÇ°Ãæ2¸ö±¨ÎÄµ¥ÔªÊÇÂú×ãfeedbackµÄ£¬½øÐÐfeedbackÊý¾ÝÆ´´Õ*/
+            /*å¦‚æžœæœ€å‰é¢2ä¸ªæŠ¥æ–‡å•å…ƒæ˜¯æ»¡è¶³feedbackçš„ï¼Œè¿›è¡Œfeedbackæ•°æ®æ‹¼å‡‘*/
             if (second_packet->recv_time + propagation_delay <= ctrl->curr_ts)
             {
                 feedback.prior_in_flight = 0;
@@ -211,7 +211,7 @@ static void test_run_simulation(test_bbr_controller_t* ctrl, int64_t duration,
             }
         }
 
-        /*½øÐÐheartbeat*/
+        /*è¿›è¡Œheartbeat*/
         ctrl->curr_ts += packet_interval;
         if (ctrl->curr_ts > last_process_time + ctrl->interval_ts)
             ctrl->update = bbr_on_heartbeat(ctrl->bbr, ctrl->curr_ts);

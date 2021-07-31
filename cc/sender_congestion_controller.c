@@ -20,7 +20,7 @@ static void sender_cc_on_change_bitrate(void* handler, uint32_t bitrate, uint8_t
     razor_info("sender change bitrate, bitrate = %ubps\n", bitrate);
 
     pace_set_estimate_bitrate(cc->pacer, bitrate);
-    /*´¥·¢Ò»¸öÍ¨ĞÅ²ãÍ¨Öª*/
+    /*è§¦å‘ä¸€ä¸ªé€šä¿¡å±‚é€šçŸ¥*/
     if (cc->trigger != NULL && cc->trigger_cb != NULL)
         cc->trigger_cb(cc->trigger, bitrate, fraction_loss, rtt);
 }
@@ -96,10 +96,10 @@ void sender_cc_destroy(sender_cc_t* cc)
 void sender_cc_heartbeat(sender_cc_t* cc)
 {
     int64_t now_ts = GET_SYS_MS();
-    /*½øĞĞpace·¢ËÍ*/
+    /*è¿›è¡Œpaceå‘é€*/
     pace_try_transmit(cc->pacer, now_ts);
 
-    /*½øĞĞ´ø¿íµ÷½Ú*/
+    /*è¿›è¡Œå¸¦å®½è°ƒèŠ‚*/
     bitrate_controller_heartbeat(cc->bitrate_controller, now_ts, ack_estimator_bitrate_bps(cc->ack));
 }
 
@@ -112,7 +112,7 @@ void sender_on_send_packet(sender_cc_t* cc, uint16_t seq, size_t size)
 {
     cc_feedback_add_packet(&cc->adapter, seq, size);
 
-    /*todo:½øĞĞRTTÖÜÆÚÄÚÊÇ·ñ·¢ËÍÂëÂÊÒç³ö£¬¿ÉÒÔ²»ÊµÏÖ*/
+    /*todo:è¿›è¡ŒRTTå‘¨æœŸå†…æ˜¯å¦å‘é€ç ç‡æº¢å‡ºï¼Œå¯ä»¥ä¸å®ç°*/
 }
 
 void sender_on_feedback(sender_cc_t* cc, uint8_t* feedback, int feedback_size)
@@ -130,12 +130,12 @@ void sender_on_feedback(sender_cc_t* cc, uint8_t* feedback, int feedback_size)
     memcpy(cc->strm.data, feedback, feedback_size);
     cc->strm.used = feedback_size;
 
-    /*½âÂëµÃµ½·´À¡ĞòÁĞ*/
+    /*è§£ç å¾—åˆ°åé¦ˆåºåˆ—*/
     feedback_msg_decode(&cc->strm, &msg);
 
     now_ts = GET_SYS_MS();
 
-    /*´¦Àíproxy estimateµÄĞÅÏ¢*/
+    /*å¤„ç†proxy estimateçš„ä¿¡æ¯*/
     if ((msg.flag & proxy_ts_msg) == proxy_ts_msg)
     {
         if (cc_feedback_on_feedback(&cc->adapter, &msg) <= 0)
@@ -148,24 +148,24 @@ void sender_on_feedback(sender_cc_t* cc, uint8_t* feedback, int feedback_size)
         }
         cc->was_in_alr = cur_alr;
 
-        /*½øĞĞÔ¶¶Ë½ÓÊÕÂëÂÊÆÀ¹À*/
+        /*è¿›è¡Œè¿œç«¯æ¥æ”¶ç ç‡è¯„ä¼°*/
         ack_estimator_incoming(cc->ack, cc->adapter.packets, cc->adapter.num);
 
-        /*¸ù¾İÑÓ³Ù×´Ì¬½øĞĞ·¢ËÍ¶ËÓµÈû¿ØÖÆÅĞ¶Ï,²¢ÆÀ¹À×îĞÂµÄ·¢ËÍÂëÂÊ*/
+        /*æ ¹æ®å»¶è¿ŸçŠ¶æ€è¿›è¡Œå‘é€ç«¯æ‹¥å¡æ§åˆ¶åˆ¤æ–­,å¹¶è¯„ä¼°æœ€æ–°çš„å‘é€ç ç‡*/
         init_bwe_result_null(bwe_result);
         bwe_result = delay_bwe_incoming(cc->bwe, cc->adapter.packets, cc->adapter.num, ack_estimator_bitrate_bps(cc->ack), now_ts);
 
-        /*½øĞĞÂëÂÊµ÷½Ú*/
+        /*è¿›è¡Œç ç‡è°ƒèŠ‚*/
         if (bwe_result.updated == 0)
             bitrate_controller_on_basedelay_result(cc->bitrate_controller, bwe_result.updated, bwe_result.probe, bwe_result.bitrate, cc->bwe->detector->state);
     }
-    /*´¦Àíremb*/
+    /*å¤„ç†remb*/
     if ((msg.flag & remb_msg) == remb_msg)
     {
         razor_debug("sender remb = %ubps\n", msg.remb);
         bitrate_controller_on_remb(cc->bitrate_controller, msg.remb);
     }
-    /*´¦Àíloss info*/
+    /*å¤„ç†loss info*/
     if ((msg.flag & loss_info_msg) == loss_info_msg)
     {
         razor_debug("sender receive loss info, fraction_loss = %u, packets_num = %u\n", msg.fraction_loss, msg.packet_num);
@@ -192,7 +192,7 @@ void sender_cc_set_bitrates(sender_cc_t* cc, uint32_t min_bitrate, uint32_t star
 
     bitrate_controller_set_bitrates(cc->bitrate_controller, start_bitrate, min_bitrate, max_bitrate);
 
-    /*paceÊÇÓÃBYTE¼ÆËã*/
+    /*paceæ˜¯ç”¨BYTEè®¡ç®—*/
     pace_set_bitrate_limits(cc->pacer, min_bitrate);
     pace_set_estimate_bitrate(cc->pacer, start_bitrate);
 

@@ -37,7 +37,7 @@ void overuse_destroy(overuse_detector_t* detector)
         free(detector);
 }
 
-/*¸üĞÂ¹ıÔØµÄãĞÖµ*/
+/*æ›´æ–°è¿‡è½½çš„é˜ˆå€¼*/
 static void overuse_update_threshold(overuse_detector_t* detector, double modified_offset, int64_t cur_ts)
 {
     double k;
@@ -61,7 +61,7 @@ static void overuse_update_threshold(overuse_detector_t* detector, double modifi
     detector->update_ts = cur_ts;
 }
 
-/*¹ıÔØ¼ì²â*/
+/*è¿‡è½½æ£€æµ‹*/
 int overuse_detect(overuse_detector_t* detector, double offset, double ts_delta, int num_of_deltas, int64_t cur_ts)
 {
     double T;
@@ -70,7 +70,7 @@ int overuse_detect(overuse_detector_t* detector, double offset, double ts_delta,
         return kBwNormal;
 
     T = SU_MIN(num_of_deltas, kMinNumDeltas) * offset;
-    if (T > detector->threshold)  /*¼ÆËãÀÛ¼ÆµÄoverusingÖµ*/
+    if (T > detector->threshold)  /*è®¡ç®—ç´¯è®¡çš„overusingå€¼*/
     {
         if (detector->time_over_using == -1)
             detector->time_over_using = ts_delta / 2;
@@ -81,7 +81,7 @@ int overuse_detect(overuse_detector_t* detector, double offset, double ts_delta,
 
         if (detector->time_over_using > detector->ouveusing_time_threshold && detector->overuse_counter > 1)
         {
-            if (offset >= detector->prev_offset)  /*Á¬ĞøÁ½´ÎÒÔÉÏ´«ÊäÑÓ³ÙÔöÁ¿Ôö´ó£¬±íÊ¾ÍøÂçÒÑ¾­¹ıÔØÁË£¬ĞèÒª½øĞĞ´ø¿í¼õĞ¡*/
+            if (offset >= detector->prev_offset)  /*è¿ç»­ä¸¤æ¬¡ä»¥ä¸Šä¼ è¾“å»¶è¿Ÿå¢é‡å¢å¤§ï¼Œè¡¨ç¤ºç½‘ç»œå·²ç»è¿‡è½½äº†ï¼Œéœ€è¦è¿›è¡Œå¸¦å®½å‡å°*/
             {
                 detector->time_over_using = 0;
                 detector->overuse_counter = 0;
@@ -89,7 +89,7 @@ int overuse_detect(overuse_detector_t* detector, double offset, double ts_delta,
             }
         }
     }
-    else if (T < -detector->threshold)  /*ÍøÂçÑÓ³ÙÔöÁ¿Öğ²½ËõĞ¡£¬ĞèÒª¼Ó´ó´ø¿íÂëÂÊ*/
+    else if (T < -detector->threshold)  /*ç½‘ç»œå»¶è¿Ÿå¢é‡é€æ­¥ç¼©å°ï¼Œéœ€è¦åŠ å¤§å¸¦å®½ç ç‡*/
     {
         detector->time_over_using = -1;
         detector->overuse_counter = 0;

@@ -33,7 +33,7 @@ typedef struct
 }while (0)
 
 
-/*·¢ËÍ¶Ë»ùÓÚÑÓ³ÙµÄÂëÂÊ¹À¼ÆÄ£ĞÍÊµÏÖ£¬Í¨¹ı½ÓÊÕ¶Ë·´À¡¹ıÀ´µÄarrival timeºÍ·¢ËÍµÄsend time½øĞĞtrendlineÂË²¨£¬ÆÀ¹Àµ±Ç°µÄÂëÂÊ*/
+/*å‘é€ç«¯åŸºäºå»¶è¿Ÿçš„ç ç‡ä¼°è®¡æ¨¡å‹å®ç°ï¼Œé€šè¿‡æ¥æ”¶ç«¯åé¦ˆè¿‡æ¥çš„arrival timeå’Œå‘é€çš„send timeè¿›è¡Œtrendlineæ»¤æ³¢ï¼Œè¯„ä¼°å½“å‰çš„ç ç‡*/
 typedef struct
 {
     inter_arrival_t*        inter_arrival;
@@ -42,7 +42,7 @@ typedef struct
     overuse_detector_t*     detector;
 
     int64_t                 last_seen_ms;
-    int64_t                 first_ts;               /*ÆğÊ¼Ê±¼ä´Á£¬ÓÃÓÚ¼ÆËãÏà¶Ôsender timeÊ±¼ä´í*/
+    int64_t                 first_ts;               /*èµ·å§‹æ—¶é—´æˆ³ï¼Œç”¨äºè®¡ç®—ç›¸å¯¹sender timeæ—¶é—´é”™*/
     size_t                  trendline_window_size;
     double                  trendline_smoothing_coeff;
     double                  trendline_threshold_gain;

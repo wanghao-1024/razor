@@ -24,7 +24,7 @@ int sim_decode_header(bin_stream_t* strm, sim_header_t* header)
     uint8_t* pos = strm->data + strm->used - sizeof(uint32_t);
     src = mach_get_4(pos);
 
-    /*Ğ£ÑéCRC*/
+    /*æ ¡éªŒCRC*/
     crc = crc32(CRC_VAL, strm->data, strm->used - sizeof(uint32_t));
     if (src == crc)
     {
@@ -93,7 +93,7 @@ void sim_encode_msg(bin_stream_t* strm, sim_header_t* header, void* body)
             ;
     }
 
-    /*Ôö¼ÓCRCÖµ*/
+    /*å¢åŠ CRCå€¼*/
     crc = crc32(CRC_VAL, strm->data, strm->used);
     mach_uint32_write(strm, crc);
 }

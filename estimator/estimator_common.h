@@ -43,12 +43,12 @@ typedef struct
 
 typedef struct
 {
-    int64_t         create_ts;          /*´´½¨Ê±¼ä´Á*/
-    int64_t         arrival_ts;         /*µ½´ïÊ±¼ä´Á*/
-    int64_t         send_ts;            /*·¢ËÍÊ±¼ä´Á*/
+    int64_t         create_ts;          /*åˆ›å»ºæ—¶é—´æˆ³*/
+    int64_t         arrival_ts;         /*åˆ°è¾¾æ—¶é—´æˆ³*/
+    int64_t         send_ts;            /*å‘é€æ—¶é—´æˆ³*/
 
-    uint16_t        sequence_number;    /*·¢ËÍÍ¨µÀµÄ±¨ÎÄĞòºÅ*/
-    size_t          payload_size;       /*°üÊı¾İ´óĞ¡*/
+    uint16_t        sequence_number;    /*å‘é€é€šé“çš„æŠ¥æ–‡åºå·*/
+    size_t          payload_size;       /*åŒ…æ•°æ®å¤§å°*/
 } packet_feedback_t;
 
 #define init_packet_feedback(p) \

@@ -19,20 +19,20 @@
 typedef struct
 {
     razor_sender_t              sender;
-    int                         accepted_queue_ms;          /*ÊÓÆµ±¨ÎÄÔÚ·¢ËÍqueueµÄ×î´óÑÓ³Ù*/
+    int                         accepted_queue_ms;          /*è§†é¢‘æŠ¥æ–‡åœ¨å‘é€queueçš„æœ€å¤§å»¶è¿Ÿ*/
     int                         was_in_alr;
     int32_t                     rtt;
 
-    delay_base_bwe_t*           bwe;                        /*»ùÓÚÑÓ³ÙµÄ´ø¿íÆÀ¹ÀÆ÷*/
-    bitrate_controller_t*       bitrate_controller;         /*ÂëÂÊ¿ØÖÆÆ÷£¬»á¸ù¾İbwe¡¢ack rateºÍloss½øĞĞ×ÛºÏÂëÂÊµ÷½Ú*/
-    ack_bitrate_estimator_t*    ack;                        /*Ô¶¶ËÈ·ÈÏÊÕµ½µÄÊı¾İ´ø¿íÆÀ¹ÀÆ÷*/
-    pace_sender_t*              pacer;                      /*·¢ËÍ¶ËµÄ²½³¤¿ØÖÆÆ÷*/
-    feedback_adapter_t          adapter;                    /*´¦Àí·´À¡ĞÅÏ¢µÄÊÊÅäÆ÷*/
+    delay_base_bwe_t*           bwe;                        /*åŸºäºå»¶è¿Ÿçš„å¸¦å®½è¯„ä¼°å™¨*/
+    bitrate_controller_t*       bitrate_controller;         /*ç ç‡æ§åˆ¶å™¨ï¼Œä¼šæ ¹æ®bweã€ack rateå’Œlossè¿›è¡Œç»¼åˆç ç‡è°ƒèŠ‚*/
+    ack_bitrate_estimator_t*    ack;                        /*è¿œç«¯ç¡®è®¤æ”¶åˆ°çš„æ•°æ®å¸¦å®½è¯„ä¼°å™¨*/
+    pace_sender_t*              pacer;                      /*å‘é€ç«¯çš„æ­¥é•¿æ§åˆ¶å™¨*/
+    feedback_adapter_t          adapter;                    /*å¤„ç†åé¦ˆä¿¡æ¯çš„é€‚é…å™¨*/
 
     bin_stream_t                strm;
 
-    void*                       trigger;                    /*ÂëÂÊ¸Ä±äºóĞèÒªÍ¨Öª¸øÍ¨ĞÅ²ãµÄtrigger*/
-    bitrate_changed_func        trigger_cb;                 /*Í¨Öªº¯Êı*/
+    void*                       trigger;                    /*ç ç‡æ”¹å˜åéœ€è¦é€šçŸ¥ç»™é€šä¿¡å±‚çš„trigger*/
+    bitrate_changed_func        trigger_cb;                 /*é€šçŸ¥å‡½æ•°*/
 
 } sender_cc_t;
 
@@ -41,9 +41,9 @@ void                            sender_cc_destroy(sender_cc_t* cc);
 
 void                            sender_cc_heartbeat(sender_cc_t* cc);
 
-/*packet_idÊÇ±¨ÎÄĞòºÅ£¬Ïàµ±ÓÚRTPµÄÍ·ÖĞµÄSEQ*/
+/*packet_idæ˜¯æŠ¥æ–‡åºå·ï¼Œç›¸å½“äºRTPçš„å¤´ä¸­çš„SEQ*/
 int                             sender_cc_add_pace_packet(sender_cc_t* cc, uint32_t packet_id, int retrans, size_t size);
-/*ÕâÀïµÄseqÊÇtransportµÄ×ÔÔö³¤ID£¬¼´Ê¹°üÖØ·¢£¬Õâ¸öIDÒ²ÊÇ²»Ò»ÑùµÄ*/
+/*è¿™é‡Œçš„seqæ˜¯transportçš„è‡ªå¢é•¿IDï¼Œå³ä½¿åŒ…é‡å‘ï¼Œè¿™ä¸ªIDä¹Ÿæ˜¯ä¸ä¸€æ ·çš„*/
 void                            sender_on_send_packet(sender_cc_t* cc, uint16_t seq, size_t size);
 
 void                            sender_on_feedback(sender_cc_t* cc, uint8_t* feedback, int feedback_size);

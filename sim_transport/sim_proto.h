@@ -11,14 +11,14 @@
 #include "cf_platform.h"
 #include "cf_stream.h"
 
-/*ÕâÊÇÄ£Äâ´«ÊäµÄĞ­Òé¶¨Òå£¬ÕâÀïÖ»ÊÇ¼òµ¥µÄµã¶ÔµãÍ¨ĞÅÄ£Äâ£¬²»Éæ¼°Â·ÓÉÓÅ»¯¡¢Á¬½Ó°²È«ĞÔ£¬²»½¨ÒéÉú²ú»·¾³Ê¹ÓÃ*/
+/*è¿™æ˜¯æ¨¡æ‹Ÿä¼ è¾“çš„åè®®å®šä¹‰ï¼Œè¿™é‡Œåªæ˜¯ç®€å•çš„ç‚¹å¯¹ç‚¹é€šä¿¡æ¨¡æ‹Ÿï¼Œä¸æ¶‰åŠè·¯ç”±ä¼˜åŒ–ã€è¿æ¥å®‰å…¨æ€§ï¼Œä¸å»ºè®®ç”Ÿäº§ç¯å¢ƒä½¿ç”¨*/
 
 enum
 {
     MIN_MSG_ID  =   0x10,
 
-    SIM_CONNECT,            /*Á¬½Ó½ÓÊÕ¶ËÇëÇó*/
-    SIM_CONNECT_ACK,        /*ÏìÓ¦*/
+    SIM_CONNECT,            /*è¿æ¥æ¥æ”¶ç«¯è¯·æ±‚*/
+    SIM_CONNECT_ACK,        /*å“åº”*/
 
     SIM_DISCONNECT,
     SIM_DISCONNECT_ACK,
@@ -29,9 +29,9 @@ enum
     SIM_SEG,
     SIM_SEG_ACK,
     SIM_FEEDBACK,
-    SIM_FIR,                /*ÇëÇó¹Ø¼üÖ¡ÖØ´«*/
-    SIM_PAD,                /*padding±¨ÎÄ*/
-    SIM_FEC,                /*FEC±¨ÎÄ*/
+    SIM_FIR,                /*è¯·æ±‚å…³é”®å¸§é‡ä¼ */
+    SIM_PAD,                /*paddingæŠ¥æ–‡*/
+    SIM_FEC,                /*FECæŠ¥æ–‡*/
 
     MAX_MSG_ID
 };
@@ -40,9 +40,9 @@ enum
 
 typedef struct
 {
-    uint8_t     ver;            /*Ğ­Òé°æ±¾£¬Ä¬ÈÏÎª0x01*/
-    uint8_t     mid;            /*ÏûÏ¢ID*/
-    uint32_t    uid;            /*ÏûÏ¢·¢Æğ·½ID*/
+    uint8_t     ver;            /*åè®®ç‰ˆæœ¬ï¼Œé»˜è®¤ä¸º0x01*/
+    uint8_t     mid;            /*æ¶ˆæ¯ID*/
+    uint32_t    uid;            /*æ¶ˆæ¯å‘èµ·æ–¹ID*/
 } sim_header_t;
 
 #define INIT_SIM_HEADER(h, msg_id, userid) \
@@ -58,10 +58,10 @@ typedef struct
 #define SIM_FEEDBACK_SIZE       1000
 typedef struct
 {
-    uint32_t cid;                       /*Ğ­ÉÌµÄºô½ĞID£¬Ã¿´ÎÊÇÒ»¸öËæ»úÖµ,ºÍdisconnectµÈÏûÏ¢±£³ÖÒ»ÖÂ*/
-    uint16_t token_size;                /*tokenÊÇÒ»¸öÑéÖ¤ĞÅÏ¢£¬¿ÉÒÔÓÃÀàËÆÖ¤ÊéµÄ·½Ê½À´½øĞĞÑéÖ¤*/
+    uint32_t cid;                       /*åå•†çš„å‘¼å«IDï¼Œæ¯æ¬¡æ˜¯ä¸€ä¸ªéšæœºå€¼,å’Œdisconnectç­‰æ¶ˆæ¯ä¿æŒä¸€è‡´*/
+    uint16_t token_size;                /*tokenæ˜¯ä¸€ä¸ªéªŒè¯ä¿¡æ¯ï¼Œå¯ä»¥ç”¨ç±»ä¼¼è¯ä¹¦çš„æ–¹å¼æ¥è¿›è¡ŒéªŒè¯*/
     uint8_t  token[SIM_TOKEN_SIZE];
-    uint8_t  cc_type;                   /*ÓµÈû¿ØÖÆÀàĞÍ*/
+    uint8_t  cc_type;                   /*æ‹¥å¡æ§åˆ¶ç±»å‹*/
 } sim_connect_t;
 
 typedef struct
@@ -79,18 +79,18 @@ typedef sim_connect_ack_t sim_disconnect_ack_t;
 
 typedef struct
 {
-    uint32_t    packet_id;              /*°üĞòºÅ*/
-    uint32_t    fid;                    /*Ö¡ĞòºÅ*/
-    uint32_t    timestamp;              /*Ö¡Ê±¼ä´Á*/
-    uint16_t    index;                  /*Ö¡·Ö°üĞòºÅ*/
-    uint16_t    total;                  /*Ö¡·Ö°ü×ÜÊı*/
-    uint8_t     ftype;                  /*ÊÓÆµÖ¡ÀàĞÍ*/
-    uint8_t     payload_type;           /*±àÂëÆ÷ÀàĞÍ*/
+    uint32_t    packet_id;              /*åŒ…åºå·*/
+    uint32_t    fid;                    /*å¸§åºå·*/
+    uint32_t    timestamp;              /*å¸§æ—¶é—´æˆ³*/
+    uint16_t    index;                  /*å¸§åˆ†åŒ…åºå·*/
+    uint16_t    total;                  /*å¸§åˆ†åŒ…æ€»æ•°*/
+    uint8_t     ftype;                  /*è§†é¢‘å¸§ç±»å‹*/
+    uint8_t     payload_type;           /*ç¼–ç å™¨ç±»å‹*/
 
-    uint8_t     remb;                   /*0±íÊ¾¿ªÆôremb, ÆäËû±íÊ¾²»¿ªÆô*/
-    uint16_t    fec_id;                 /*1±íÊ¾¿ªÆôFEC, ÆäËû±íÊ¾²»¿ªÆô*/
-    uint16_t    send_ts;                /*·¢ËÍÊ±¿ÌÏà¶ÔÖ¡²úÉúÊ±¿ÌµÄÊ±¼ä´Á*/
-    uint16_t    transport_seq;          /*´«ÊäÍ¨µÀĞòºÅ£¬Õâ¸öÊÇ´«ÊäÍ¨µÀÃ¿·¢ËÍÒ»¸ö±¨ÎÄ£¬Ëü¾Í×ÔÔö³¤1£¬¶øÇÒÖØ·¢±¨ÎÄÒ²»áÔö³¤*/
+    uint8_t     remb;                   /*0è¡¨ç¤ºå¼€å¯remb, å…¶ä»–è¡¨ç¤ºä¸å¼€å¯*/
+    uint16_t    fec_id;                 /*1è¡¨ç¤ºå¼€å¯FEC, å…¶ä»–è¡¨ç¤ºä¸å¼€å¯*/
+    uint16_t    send_ts;                /*å‘é€æ—¶åˆ»ç›¸å¯¹å¸§äº§ç”Ÿæ—¶åˆ»çš„æ—¶é—´æˆ³*/
+    uint16_t    transport_seq;          /*ä¼ è¾“é€šé“åºå·ï¼Œè¿™ä¸ªæ˜¯ä¼ è¾“é€šé“æ¯å‘é€ä¸€ä¸ªæŠ¥æ–‡ï¼Œå®ƒå°±è‡ªå¢é•¿1ï¼Œè€Œä¸”é‡å‘æŠ¥æ–‡ä¹Ÿä¼šå¢é•¿*/
 
     uint32_t    send_id;
 
@@ -102,9 +102,9 @@ typedef struct
 
 typedef struct
 {
-    uint32_t    base_packet_id;         /*±»½ÓÊÕ¶ËÈ·ÈÏÁ¬Ğø×î´óµÄ°üID*/
-    uint32_t    acked_packet_id;        /*Á¢¼´È·ÈÏµÄ±¨ÎÄĞòºÅid,ÓÃÓÚ¼ÆËãrtt*/
-    /*ÖØ´«µÄĞòÁĞ*/
+    uint32_t    base_packet_id;         /*è¢«æ¥æ”¶ç«¯ç¡®è®¤è¿ç»­æœ€å¤§çš„åŒ…ID*/
+    uint32_t    acked_packet_id;        /*ç«‹å³ç¡®è®¤çš„æŠ¥æ–‡åºå·id,ç”¨äºè®¡ç®—rtt*/
+    /*é‡ä¼ çš„åºåˆ—*/
     uint8_t     nack_num;
     uint16_t    nack[NACK_NUM];
 
@@ -114,29 +114,29 @@ typedef struct
 
 typedef struct
 {
-    int64_t ts;                         /*ĞÄÌøÊ±¿Ì*/
+    int64_t ts;                         /*å¿ƒè·³æ—¶åˆ»*/
 } sim_ping_t;
 
 typedef sim_ping_t sim_pong_t;
 
 typedef struct
 {
-    uint32_t    base_packet_id;                     /*±»½ÓÊÕ¶ËÈ·ÈÏÁ¬Ğø×î´óµÄ°üID*/
+    uint32_t    base_packet_id;                     /*è¢«æ¥æ”¶ç«¯ç¡®è®¤è¿ç»­æœ€å¤§çš„åŒ…ID*/
 
-    uint16_t    feedback_size;                      /*ccÖĞµÄ·´À¡ĞÅÏ¢,ÓÉ½ÓÊÕ¶ËµÄÓµÈû¿ØÖÆ¶ÔÏó²úÉú*/
+    uint16_t    feedback_size;                      /*ccä¸­çš„åé¦ˆä¿¡æ¯,ç”±æ¥æ”¶ç«¯çš„æ‹¥å¡æ§åˆ¶å¯¹è±¡äº§ç”Ÿ*/
     uint8_t     feedback[SIM_FEEDBACK_SIZE];
 } sim_feedback_t;
 
 typedef struct
 {
-    uint32_t    fir_seq;                            /*firµÄĞòºÅ£¬Ã¿´Î½ÓÊÕ¶Ë´¥·¢Ìõ¼şÊ±µİÔö*/
+    uint32_t    fir_seq;                            /*firçš„åºå·ï¼Œæ¯æ¬¡æ¥æ”¶ç«¯è§¦å‘æ¡ä»¶æ—¶é€’å¢*/
 } sim_fir_t;
 
 #define PADDING_DATA_SIZE  500
 typedef struct
 {
-    uint32_t    send_ts;                /*·¢ËÍÊ±¿ÌÏà¶ÔÖ¡²úÉúÊ±¿ÌµÄÊ±¼ä´Á*/
-    uint16_t    transport_seq;          /*´«ÊäÍ¨µÀĞòºÅ£¬Õâ¸öÊÇ´«ÊäÍ¨µÀÃ¿·¢ËÍÒ»¸ö±¨ÎÄ£¬Ëü¾Í×ÔÔö³¤1£¬¶øÇÒÖØ·¢±¨ÎÄÒ²»áÔö³¤*/
+    uint32_t    send_ts;                /*å‘é€æ—¶åˆ»ç›¸å¯¹å¸§äº§ç”Ÿæ—¶åˆ»çš„æ—¶é—´æˆ³*/
+    uint16_t    transport_seq;          /*ä¼ è¾“é€šé“åºå·ï¼Œè¿™ä¸ªæ˜¯ä¼ è¾“é€šé“æ¯å‘é€ä¸€ä¸ªæŠ¥æ–‡ï¼Œå®ƒå°±è‡ªå¢é•¿1ï¼Œè€Œä¸”é‡å‘æŠ¥æ–‡ä¹Ÿä¼šå¢é•¿*/
 
     uint16_t    data_size;
     uint8_t     data[PADDING_DATA_SIZE];
@@ -147,29 +147,29 @@ typedef struct
     uint32_t    seq;
     uint32_t    fid;
     uint32_t    ts;
-    uint16_t    index;                  /*Ö¡·Ö°üĞòºÅ*/
-    uint16_t    total;                  /*Ö¡·Ö°ü×ÜÊı*/
-    uint8_t     ftype;                  /*ÊÓÆµÖ¡ÀàĞÍ*/
-    uint8_t     payload_type;           /*±àÂëÆ÷ÀàĞÍ*/
-    uint16_t    size;                   /*Êı¾İ³¤¶È*/
+    uint16_t    index;                  /*å¸§åˆ†åŒ…åºå·*/
+    uint16_t    total;                  /*å¸§åˆ†åŒ…æ€»æ•°*/
+    uint8_t     ftype;                  /*è§†é¢‘å¸§ç±»å‹*/
+    uint8_t     payload_type;           /*ç¼–ç å™¨ç±»å‹*/
+    uint16_t    size;                   /*æ•°æ®é•¿åº¦*/
 } sim_fec_meta_t;
 
 typedef struct
 {
-    uint16_t        fec_id;                 /*fec¶ÔÏóID£¬×ÔÔö³¤*/
-    uint8_t         row;                    /*fecĞĞÊı*/
-    uint8_t         col;                    /*fecÁĞÊı*/
-    uint8_t         index;                  /*ÄÚ²¿×é°üµÄĞòºÅ,ÓÃÓÚ»Ö¸´ĞĞºÍÁĞÉÏµÄ±¨ÎÄ*/
-    uint16_t        count;                  /*¾ØÕóÄÚ±¨ÎÄ¸öÊı*/
-    uint32_t        base_id;                /*¿ªÊ¼±¨ÎÄµÄid*/
+    uint16_t        fec_id;                 /*fecå¯¹è±¡IDï¼Œè‡ªå¢é•¿*/
+    uint8_t         row;                    /*fecè¡Œæ•°*/
+    uint8_t         col;                    /*fecåˆ—æ•°*/
+    uint8_t         index;                  /*å†…éƒ¨ç»„åŒ…çš„åºå·,ç”¨äºæ¢å¤è¡Œå’Œåˆ—ä¸Šçš„æŠ¥æ–‡*/
+    uint16_t        count;                  /*çŸ©é˜µå†…æŠ¥æ–‡ä¸ªæ•°*/
+    uint32_t        base_id;                /*å¼€å§‹æŠ¥æ–‡çš„id*/
 
-    uint32_t    send_ts;                    /*·¢ËÍÊ±¿ÌÏà¶ÔÖ¡²úÉúÊ±¿ÌµÄÊ±¼ä´Á*/
-    uint16_t    transport_seq;              /*´«ÊäÍ¨µÀĞòºÅ£¬Õâ¸öÊÇ´«ÊäÍ¨µÀÃ¿·¢ËÍÒ»¸ö±¨ÎÄ£¬Ëü¾Í×ÔÔö³¤1£¬¶øÇÒÖØ·¢±¨ÎÄÒ²»áÔö³¤*/
+    uint32_t    send_ts;                    /*å‘é€æ—¶åˆ»ç›¸å¯¹å¸§äº§ç”Ÿæ—¶åˆ»çš„æ—¶é—´æˆ³*/
+    uint16_t    transport_seq;              /*ä¼ è¾“é€šé“åºå·ï¼Œè¿™ä¸ªæ˜¯ä¼ è¾“é€šé“æ¯å‘é€ä¸€ä¸ªæŠ¥æ–‡ï¼Œå®ƒå°±è‡ªå¢é•¿1ï¼Œè€Œä¸”é‡å‘æŠ¥æ–‡ä¹Ÿä¼šå¢é•¿*/
 
-    sim_fec_meta_t  fec_meta;               /*FECÔªÊı¾İ,ÓÃÓÚ»Ö¸´segmentÖĞµÄÔªĞÅÏ¢*/
+    sim_fec_meta_t  fec_meta;               /*FECå…ƒæ•°æ®,ç”¨äºæ¢å¤segmentä¸­çš„å…ƒä¿¡æ¯*/
 
-    uint16_t        fec_data_size;          /*FECÊı¾İ³¤¶È*/
-    uint8_t         fec_data[SIM_VIDEO_SIZE];/*FECÊı¾İ¿é*/
+    uint16_t        fec_data_size;          /*FECæ•°æ®é•¿åº¦*/
+    uint8_t         fec_data[SIM_VIDEO_SIZE];/*FECæ•°æ®å—*/
 
 } sim_fec_t;
 

@@ -15,7 +15,7 @@
 #include "record_thread.h"
 #include "play_thread.h"
 
-/*与windows界面的通信事件*/
+/*涓巜indows鐣岄潰鐨勯�氫俊浜嬩欢*/
 #define WM_CONNECT_SUCC             (WM_USER + 10)
 #define WM_CONNECT_FAILED           (WM_CONNECT_SUCC + 1)
 #define WM_TIMEOUT                  (WM_CONNECT_SUCC + 2)
@@ -57,7 +57,7 @@ public:
 
 private:
     int                 state_;
-    HWND                hwnd_;          /*接收消息的UI窗口句柄*/
+    HWND                hwnd_;          /*鎺ユ敹娑堟伅鐨刄I绐楀彛鍙ユ焺*/
     VideoRecordhread    rec_;
     VideoPlayhread      play_;
 };

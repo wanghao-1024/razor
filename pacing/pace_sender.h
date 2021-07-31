@@ -26,7 +26,7 @@ typedef struct
 
     interval_budget_t   media_budget;
 
-    /*·¢°ü»Øµ÷º¯Êı*/
+    /*å‘åŒ…å›è°ƒå‡½æ•°*/
     void*               handler;
     pace_send_func      send_cb;
 } pace_sender_t;
@@ -42,12 +42,12 @@ int                     pace_insert_packet(pace_sender_t* pace, uint32_t seq, in
 int64_t                 pace_queue_ms(pace_sender_t* pace);
 size_t                  pace_queue_size(pace_sender_t* pace);
 
-/*Ô¤¼Æ·¢ËÍµôqueueÖĞÊı¾İµÄÊ±¼ä*/
+/*é¢„è®¡å‘é€æ‰queueä¸­æ•°æ®çš„æ—¶é—´*/
 int64_t                 pace_expected_queue_ms(pace_sender_t* pace);
 
 int64_t                 pace_get_limited_start_time(pace_sender_t* pace);
 
-/*³¢ÊÔ·¢ËÍ*/
+/*å°è¯•å‘é€*/
 void                    pace_try_transmit(pace_sender_t* pace, int64_t now_ts);
 
 #endif

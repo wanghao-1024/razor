@@ -25,10 +25,10 @@ typedef struct
 void                cc_feedback_adapter_init(feedback_adapter_t* adapter);
 void                cc_feedback_adapter_destroy(feedback_adapter_t* adapter);
 
-/*Ìí¼ÓÒ»¸öÍøÂç·¢ËÍ±¨ÎÄµÄ¼ÇÂ¼*/
+/*æ·»åŠ ä¸€ä¸ªç½‘ç»œå‘é€æŠ¥æ–‡çš„è®°å½•*/
 void                cc_feedback_add_packet(feedback_adapter_t* adapter, uint16_t seq, size_t size);
 
-/*½âÂëÍøÂçÀ´µÄfeedback£¬²¢½âÎö³Épacket_feedback½á¹¹ĞòÁĞ£¬Õâ¸öÊı¾İÊÇremote estimator proxy·´À¡¹ıÀ´µÄ*/
+/*è§£ç ç½‘ç»œæ¥çš„feedbackï¼Œå¹¶è§£ææˆpacket_feedbackç»“æ„åºåˆ—ï¼Œè¿™ä¸ªæ•°æ®æ˜¯remote estimator proxyåé¦ˆè¿‡æ¥çš„*/
 int                 cc_feedback_on_feedback(feedback_adapter_t* adapter, feedback_msg_t* msg);
 
 

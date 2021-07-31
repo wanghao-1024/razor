@@ -11,11 +11,11 @@
 #include "sender_bandwidth_estimator.h"
 #include "razor_api.h"
 
-/*·¢ËÍ¶ËÂëÂÊ¿ØÖÆÆ÷£¬»á¸ù¾İREMB/base delayºÍÍøÂç·´À¡±¨ÎÄµ÷½ÚºÍ¿ØÖÆ·¢ËÍ´ø¿í*/
+/*å‘é€ç«¯ç ç‡æ§åˆ¶å™¨ï¼Œä¼šæ ¹æ®REMB/base delayå’Œç½‘ç»œåé¦ˆæŠ¥æ–‡è°ƒèŠ‚å’Œæ§åˆ¶å‘é€å¸¦å®½*/
 typedef struct
 {
     int64_t                 last_bitrate_update_ts;
-    int64_t                 notify_ts;                  /*¶¨Ê±Í¨¸æÉÏ²ã*/
+    int64_t                 notify_ts;                  /*å®šæ—¶é€šå‘Šä¸Šå±‚*/
 
     uint32_t                reserved_bitrate_bps;
 
@@ -33,10 +33,10 @@ typedef struct
 bitrate_controller_t*   bitrate_controller_create(void* trigger, bitrate_changed_func func);
 void                    bitrate_controller_destroy(bitrate_controller_t* ctrl);
 
-/*»ñÈ¡¿ÉÓÃÂëÂÊ*/
+/*è·å–å¯ç”¨ç ç‡*/
 uint32_t                bitrate_controller_available_bandwidth(bitrate_controller_t* ctrl);
 
-/*ÉèÖÃÆğÊ¼ÂëÂÊ*/
+/*è®¾ç½®èµ·å§‹ç ç‡*/
 void                    bitrate_controller_set_start_bitrate(bitrate_controller_t* ctrl, uint32_t start_bitrate);
 void                    bitrate_controller_set_conf_bitrate(bitrate_controller_t* ctrl, uint32_t min_bitrate, uint32_t max_bitrate);
 void                    bitrate_controller_set_bitrates(bitrate_controller_t* ctrl, uint32_t bitrate, uint32_t min_bitrate, uint32_t max_bitrate);

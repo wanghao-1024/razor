@@ -48,7 +48,7 @@ typedef struct
 
     skiplist_compare_f  compare_fun;
     skiplist_free_f     free_fun;
-    void*               args;                   /*free¾ä±ú*/
+    void*               args;                   /*freeå¥æŸ„*/
     skiplist_iter_t*    entries[SKIPLIST_MAXDEPTH];
 } skiplist_t;
 

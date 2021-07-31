@@ -49,7 +49,7 @@ void rate_stat_reset(rate_stat_t* rate)
     }
 }
 
-/*É¾³ı¹ıÆÚµÄÍ³¼ÆÊı¾İ*/
+/*åˆ é™¤è¿‡æœŸçš„ç»Ÿè®¡æ•°æ®*/
 static void rate_stat_erase(rate_stat_t* rate, int64_t now_ts)
 {
     int64_t new_oldest_ts;
@@ -107,7 +107,7 @@ void rate_stat_update(rate_stat_t* rate, size_t count, int64_t now_ts)
 
 }
 
-/*»ñÈ¡Í³¼Æµ½µÄÂëÂÊ*/
+/*è·å–ç»Ÿè®¡åˆ°çš„ç ç‡*/
 int rate_stat_rate(rate_stat_t* rate, int64_t now_ts)
 {
     int ret, active_wnd_size;
