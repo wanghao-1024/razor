@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -15,9 +15,9 @@
 #include <qedit.h>
 
 
-#define _DS_BEGIN	namespace ds {
-#define _DS_END		}
-#define _DS	::ds::
+#define _DS_BEGIN   namespace ds {
+#define _DS_END     }
+#define _DS ::ds::
 
 _DS_BEGIN
 
@@ -25,25 +25,28 @@ _DS_BEGIN
 class Mic_Graph : public Graph
 {
 public:
-	Mic_Graph();
-	~Mic_Graph();
+    Mic_Graph();
+    ~Mic_Graph();
 
-	HRESULT InitInstance(CComPtr<IBaseFilter> pSourceAudio, DWORD nSamplesPerSec = 44100, WORD nChannels = 2, WORD wBitsPerSample = 16);
+    HRESULT InitInstance(CComPtr<IBaseFilter> pSourceAudio, DWORD nSamplesPerSec = 44100, WORD nChannels = 2, WORD wBitsPerSample = 16);
 
-	CComPtr<ISampleGrabber> GetAudioGrabber() { return m_pAudioGrabber; }
+    CComPtr<ISampleGrabber> GetAudioGrabber()
+    {
+        return m_pAudioGrabber;
+    }
 
 protected:
-	virtual HRESULT ClearGraph();
-	virtual HRESULT BuildGraph();
+    virtual HRESULT ClearGraph();
+    virtual HRESULT BuildGraph();
 
 protected:
-	CComPtr<IBaseFilter> m_pSourceAudio;
+    CComPtr<IBaseFilter> m_pSourceAudio;
 
-	CComPtr<ISampleGrabber> m_pAudioGrabber;
+    CComPtr<ISampleGrabber> m_pAudioGrabber;
 
-	DWORD m_nSamplesPerSec;
-	WORD m_nChannels;
-	WORD m_wBitsPerSample;
+    DWORD m_nSamplesPerSec;
+    WORD m_nChannels;
+    WORD m_wBitsPerSample;
 };
 
 

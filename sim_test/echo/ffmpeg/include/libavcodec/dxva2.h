@@ -54,16 +54,17 @@
  *
  * The application must make it available as AVCodecContext.hwaccel_context.
  */
-struct dxva_context {
+struct dxva_context
+{
     /**
      * DXVA2 decoder object
      */
-    IDirectXVideoDecoder *decoder;
+    IDirectXVideoDecoder* decoder;
 
     /**
      * DXVA2 configuration used to create the decoder
      */
-    const DXVA2_ConfigPictureDecode *cfg;
+    const DXVA2_ConfigPictureDecode* cfg;
 
     /**
      * The number of surface in the surface array
@@ -73,7 +74,7 @@ struct dxva_context {
     /**
      * The array of Direct3D surfaces used to create the decoder
      */
-    LPDIRECT3DSURFACE9 *surface;
+    LPDIRECT3DSURFACE9* surface;
 
     /**
      * A bit field configuring the workarounds needed for using the decoder

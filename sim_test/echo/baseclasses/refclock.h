@@ -72,17 +72,17 @@ inline LONGLONG WINAPI ConvertToMilliseconds(const REFERENCE_TIME& RT)
  */
 
 class CBaseReferenceClock
-: public CUnknown, public IReferenceClock, public CCritSec, public IReferenceClockTimerControl 
+    : public CUnknown, public IReferenceClock, public CCritSec, public IReferenceClockTimerControl
 {
 protected:
     virtual ~CBaseReferenceClock();     // Don't let me be created on the stack!
 public:
-    CBaseReferenceClock(__in_opt LPCTSTR pName, 
-                        __inout_opt LPUNKNOWN pUnk, 
-                        __inout HRESULT *phr, 
-                        __inout_opt CAMSchedule * pSched = 0 );
+    CBaseReferenceClock(__in_opt LPCTSTR pName,
+                        __inout_opt LPUNKNOWN pUnk,
+                        __inout HRESULT* phr,
+                        __inout_opt CAMSchedule* pSched = 0 );
 
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, __deref_out void ** ppv);
+    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, __deref_out void** ppv);
 
     DECLARE_IUNKNOWN
 
@@ -93,7 +93,7 @@ public:
     // clock has gone backwards and GetTime time has halted until internal
     // time has caught up. (Don't know if this will be much use to folk,
     // but it seems odd not to use the return code for something useful.)
-    STDMETHODIMP GetTime(__out REFERENCE_TIME *pTime);
+    STDMETHODIMP GetTime(__out REFERENCE_TIME* pTime);
     // When this is called, it sets m_rtLastGotTime to the time it returns.
 
     /* Provide standard mechanisms for scheduling events */
@@ -103,7 +103,7 @@ public:
         REFERENCE_TIME baseTime,        // base reference time
         REFERENCE_TIME streamTime,      // stream offset time
         HEVENT hEvent,                  // advise via this event
-        __out DWORD_PTR *pdwAdviseCookie// where your cookie goes
+        __out DWORD_PTR* pdwAdviseCookie// where your cookie goes
     );
 
     /* Ask for an asynchronous periodic notification that a time has elapsed */
@@ -111,7 +111,7 @@ public:
         REFERENCE_TIME StartTime,       // starting at this time
         REFERENCE_TIME PeriodTime,      // time between notifications
         HSEMAPHORE hSemaphore,          // advise via a semaphore
-        __out DWORD_PTR *pdwAdviseCookie// where your cookie goes
+        __out DWORD_PTR* pdwAdviseCookie// where your cookie goes
     );
 
     /* Cancel a request for notification(s) - if the notification was
@@ -136,7 +136,10 @@ public:
     /* Provide a method for correcting drift */
     STDMETHODIMP SetTimeDelta( const REFERENCE_TIME& TimeDelta );
 
-    CAMSchedule * GetSchedule() const { return m_pSchedule; }
+    CAMSchedule* GetSchedule() const
+    {
+        return m_pSchedule;
+    }
 
     // IReferenceClockTimerControl methods
     //
@@ -162,7 +165,8 @@ private:
 // Thread stuff
 public:
     void TriggerThread()    // Wakes thread up.  Need to do this if
-    {                       // time to next advise needs reevaluating.
+    {
+        // time to next advise needs reevaluating.
         EXECUTE_ASSERT(SetEvent(m_pSchedule->GetEvent()));
     }
 
@@ -175,7 +179,7 @@ private:
     static DWORD __stdcall AdviseThreadFunction(__in LPVOID); // Function used to get there
 
 protected:
-    CAMSchedule * m_pSchedule;
+    CAMSchedule* m_pSchedule;
 
     void Restart (IN REFERENCE_TIME rtMinTime = 0I64) ;
 };

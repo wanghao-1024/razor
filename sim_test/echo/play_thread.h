@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -14,15 +14,15 @@
 class VideoPlayhread : public CWin32_Thread
 {
 public:
-	VideoPlayhread();
-	~VideoPlayhread();
+    VideoPlayhread();
+    ~VideoPlayhread();
 
-	void set_video_devices(CFVideoPlayer* play);
+    void set_video_devices(CFVideoPlayer* play);
 
 private:
-	void run();
+    void run();
 
-	CFVideoPlayer* play_;
+    CFVideoPlayer* play_;
 };
 
 #endif

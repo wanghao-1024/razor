@@ -54,21 +54,22 @@
  *
  * The application must make it available as AVCodecContext.hwaccel_context.
  */
-struct AVD3D11VAContext {
+struct AVD3D11VAContext
+{
     /**
      * D3D11 decoder object
      */
-    ID3D11VideoDecoder *decoder;
+    ID3D11VideoDecoder* decoder;
 
     /**
       * D3D11 VideoContext
       */
-    ID3D11VideoContext *video_context;
+    ID3D11VideoContext* video_context;
 
     /**
      * D3D11 configuration used to create the decoder
      */
-    D3D11_VIDEO_DECODER_CONFIG *cfg;
+    D3D11_VIDEO_DECODER_CONFIG* cfg;
 
     /**
      * The number of surface in the surface array
@@ -78,7 +79,7 @@ struct AVD3D11VAContext {
     /**
      * The array of Direct3D surfaces used to create the decoder
      */
-    ID3D11VideoDecoderOutputView **surface;
+    ID3D11VideoDecoderOutputView** surface;
 
     /**
      * A bit field configuring the workarounds needed for using the decoder

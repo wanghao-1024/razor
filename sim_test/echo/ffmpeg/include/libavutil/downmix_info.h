@@ -41,7 +41,8 @@
 /**
  * Possible downmix types.
  */
-enum AVDownmixType {
+enum AVDownmixType
+{
     AV_DOWNMIX_TYPE_UNKNOWN, /**< Not indicated. */
     AV_DOWNMIX_TYPE_LORO,    /**< Lo/Ro 2-channel downmix (Stereo). */
     AV_DOWNMIX_TYPE_LTRT,    /**< Lt/Rt 2-channel downmix, Dolby Surround compatible. */
@@ -55,7 +56,8 @@ enum AVDownmixType {
  * All fields are set by the decoder to the value indicated in the audio
  * bitstream (if present), or to a "sane" default otherwise.
  */
-typedef struct AVDownmixInfo {
+typedef struct AVDownmixInfo
+{
     /**
      * Type of downmix preferred by the mastering engineer.
      */
@@ -102,7 +104,7 @@ typedef struct AVDownmixInfo {
  * @return the AVDownmixInfo structure to be edited by the caller, or NULL if
  *         the structure cannot be allocated.
  */
-AVDownmixInfo *av_downmix_info_update_side_data(AVFrame *frame);
+AVDownmixInfo* av_downmix_info_update_side_data(AVFrame* frame);
 
 /**
  * @}

@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -54,16 +54,16 @@ typedef int64_t(*sender_get_first_ts)(razor_sender_t* sender);
 
 struct __razor_sender
 {
-	int								type;
-	int								padding;
-	sender_heartbeat_func			heartbeat;
-	sender_set_bitrates				set_bitrates;
-	sender_add_packet_func			add_packet;
-	sender_on_send_func				on_send;
-	sender_on_feedback_func			on_feedback;
-	sender_update_rtt_func			update_rtt;
-	sender_get_pacer_queue_ms_func	get_pacer_queue_ms;
-	sender_get_first_ts				get_first_timestamp;
+    int                             type;
+    int                             padding;
+    sender_heartbeat_func           heartbeat;
+    sender_set_bitrates             set_bitrates;
+    sender_add_packet_func          add_packet;
+    sender_on_send_func             on_send;
+    sender_on_feedback_func         on_feedback;
+    sender_update_rtt_func          update_rtt;
+    sender_get_pacer_queue_ms_func  get_pacer_queue_ms;
+    sender_get_first_ts             get_first_timestamp;
 };
 
 /*************************************接收端********************************************/
@@ -73,10 +73,10 @@ typedef struct __razor_receiver razor_receiver_t;
 typedef void(*receiver_heartbeat_func)(razor_receiver_t* receiver);
 
 /*接收端接收到一个报文，进行拥塞计算,
-transport_seq		发送的报文的自增通道序号
-timestamp			发送端的相对时间戳（通过视频时间戳和发送偏移时间戳来计算），
-size				报文数据大小（包含UDP头和应用协议的头大小）
-remb				是否采用remb方式计算码率，= 0表示用，其他值表示不用，这个值来自于接收到的报文头
+transport_seq       发送的报文的自增通道序号
+timestamp           发送端的相对时间戳（通过视频时间戳和发送偏移时间戳来计算），
+size                报文数据大小（包含UDP头和应用协议的头大小）
+remb                是否采用remb方式计算码率，= 0表示用，其他值表示不用，这个值来自于接收到的报文头
 */
 typedef void(*receiver_on_received_func)(razor_receiver_t* receiver, uint16_t transport_seq, uint32_t timestamp, size_t size, int remb);
 
@@ -84,19 +84,19 @@ typedef void(*receiver_on_received_func)(razor_receiver_t* receiver, uint16_t tr
 typedef void(*receiver_update_rtt_func)(razor_receiver_t* receiver, int32_t rtt);
 
 /*设置最小码率*/
-typedef void(*receiver_set_min_bitrate_func)(razor_receiver_t*receiver, uint32_t bitrate);
+typedef void(*receiver_set_min_bitrate_func)(razor_receiver_t* receiver, uint32_t bitrate);
 
 /*设置最大码率*/
-typedef void(*receiver_set_max_bitrate_func)(razor_receiver_t*receiver, uint32_t bitrate);
+typedef void(*receiver_set_max_bitrate_func)(razor_receiver_t* receiver, uint32_t bitrate);
 
 struct __razor_receiver
 {
-	int								type;
-	receiver_heartbeat_func			heartbeat;				/*接收端拥塞对象心跳，建议每5毫秒一次*/
-	receiver_on_received_func		on_received;			/*接收报文事件*/
-	receiver_update_rtt_func		update_rtt;				/*更新rtt*/
-	receiver_set_max_bitrate_func	set_max_bitrate;		/*设置配置的最大码率*/
-	receiver_set_min_bitrate_func	set_min_bitrate;		/*设置配置的最小码率*/
+    int                             type;
+    receiver_heartbeat_func         heartbeat;              /*接收端拥塞对象心跳，建议每5毫秒一次*/
+    receiver_on_received_func       on_received;            /*接收报文事件*/
+    receiver_update_rtt_func        update_rtt;             /*更新rtt*/
+    receiver_set_max_bitrate_func   set_max_bitrate;        /*设置配置的最大码率*/
+    receiver_set_min_bitrate_func   set_min_bitrate;        /*设置配置的最小码率*/
 };
 
 #endif

@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -14,31 +14,33 @@
 extern "C" {
 #endif
 
-typedef struct base_list_unit_t{
-	struct base_list_unit_t*		next;
-	void*							pdata;
-}base_list_unit_t;
+typedef struct base_list_unit_t
+{
+    struct base_list_unit_t*        next;
+    void*                           pdata;
+} base_list_unit_t;
 
-typedef struct {
-	base_list_unit_t*		head;
-	base_list_unit_t*		tailer;
-	size_t					size;
+typedef struct
+{
+    base_list_unit_t*       head;
+    base_list_unit_t*       tailer;
+    size_t                  size;
 } base_list_t;
 
 
-base_list_t*				create_list();
-void						destroy_list(base_list_t* l);
+base_list_t*                create_list();
+void                        destroy_list(base_list_t* l);
 
-void						list_clear(base_list_t* l);
-void						list_push(base_list_t* l, void* data);
-void*						list_pop(base_list_t* l);
-void*						list_front(base_list_t* l);
-void*						list_back(base_list_t* l);
+void                        list_clear(base_list_t* l);
+void                        list_push(base_list_t* l, void* data);
+void*                       list_pop(base_list_t* l);
+void*                       list_front(base_list_t* l);
+void*                       list_back(base_list_t* l);
 
-size_t						list_size(base_list_t* l);
+size_t                      list_size(base_list_t* l);
 
-#define LIST_FOREACH(l, pos)							\
-	for (pos = (l)->head; pos != NULL; pos = pos->next)	
+#define LIST_FOREACH(l, pos)                            \
+    for (pos = (l)->head; pos != NULL; pos = pos->next)
 
 
 #ifdef __cplusplus

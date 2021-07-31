@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -14,11 +14,11 @@
 class H264Decoder : public VideoDecoder
 {
 public:
-	H264Decoder();
-	virtual ~H264Decoder();
+    H264Decoder();
+    virtual ~H264Decoder();
 
 protected:
-	void set_codec_id();
+    void set_codec_id();
 };
 
 #endif

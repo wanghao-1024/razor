@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -14,7 +14,7 @@ extern "C" {
 
 #ifdef WIN32
 //ÉêÃ÷ÒýÓÃ
-int gettimeofday(struct timeval *tv, void *tz);
+int gettimeofday(struct timeval* tv, void* tz);
 #endif
 
 #ifdef __cplusplus

@@ -79,9 +79,10 @@
 #define AV_DICT_APPEND         32   /**< If the entry already exists, append to it.  Note that no
                                       delimiter is added, the strings are simply concatenated. */
 
-typedef struct AVDictionaryEntry {
-    char *key;
-    char *value;
+typedef struct AVDictionaryEntry
+{
+    char* key;
+    char* value;
 } AVDictionaryEntry;
 
 typedef struct AVDictionary AVDictionary;
@@ -101,8 +102,8 @@ typedef struct AVDictionary AVDictionary;
  * @param flags a collection of AV_DICT_* flags controlling how the entry is retrieved
  * @return found entry or NULL in case no matching entry was found in the dictionary
  */
-AVDictionaryEntry *av_dict_get(const AVDictionary *m, const char *key,
-                               const AVDictionaryEntry *prev, int flags);
+AVDictionaryEntry* av_dict_get(const AVDictionary* m, const char* key,
+                               const AVDictionaryEntry* prev, int flags);
 
 /**
  * Get number of entries in dictionary.
@@ -110,7 +111,7 @@ AVDictionaryEntry *av_dict_get(const AVDictionary *m, const char *key,
  * @param m dictionary
  * @return  number of entries in dictionary
  */
-int av_dict_count(const AVDictionary *m);
+int av_dict_count(const AVDictionary* m);
 
 /**
  * Set the given entry in *pm, overwriting an existing entry.
@@ -125,7 +126,7 @@ int av_dict_count(const AVDictionary *m);
  *        Passing a NULL value will cause an existing entry to be deleted.
  * @return >= 0 on success otherwise an error code <0
  */
-int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+int av_dict_set(AVDictionary** pm, const char* key, const char* value, int flags);
 
 /**
  * Convenience wrapper for av_dict_set that converts the value to a string
@@ -133,7 +134,7 @@ int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags
  *
  * Note: If AV_DICT_DONT_STRDUP_KEY is set, key will be freed on error.
  */
-int av_dict_set_int(AVDictionary **pm, const char *key, int64_t value, int flags);
+int av_dict_set_int(AVDictionary** pm, const char* key, int64_t value, int flags);
 
 /**
  * Parse the key/value pairs list and add the parsed entries to a dictionary.
@@ -151,8 +152,8 @@ int av_dict_set_int(AVDictionary **pm, const char *key, int64_t value, int flags
  *                     be duplicated.
  * @return             0 on success, negative AVERROR code on failure
  */
-int av_dict_parse_string(AVDictionary **pm, const char *str,
-                         const char *key_val_sep, const char *pairs_sep,
+int av_dict_parse_string(AVDictionary** pm, const char* str,
+                         const char* key_val_sep, const char* pairs_sep,
                          int flags);
 
 /**
@@ -163,13 +164,13 @@ int av_dict_parse_string(AVDictionary **pm, const char *str,
  * @param flags flags to use when setting entries in *dst
  * @note metadata is read using the AV_DICT_IGNORE_SUFFIX flag
  */
-void av_dict_copy(AVDictionary **dst, const AVDictionary *src, int flags);
+void av_dict_copy(AVDictionary** dst, const AVDictionary* src, int flags);
 
 /**
  * Free all the memory allocated for an AVDictionary struct
  * and all keys and values.
  */
-void av_dict_free(AVDictionary **m);
+void av_dict_free(AVDictionary** m);
 
 /**
  * Get dictionary entries as a string.
@@ -186,7 +187,7 @@ void av_dict_free(AVDictionary **m);
  * @return                   >= 0 on success, negative on error
  * @warning Separators cannot be neither '\\' nor '\0'. They also cannot be the same.
  */
-int av_dict_get_string(const AVDictionary *m, char **buffer,
+int av_dict_get_string(const AVDictionary* m, char** buffer,
                        const char key_val_sep, const char pairs_sep);
 
 /**

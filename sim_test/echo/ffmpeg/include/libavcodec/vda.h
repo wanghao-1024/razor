@@ -44,7 +44,8 @@
 #include "libavcodec/version.h"
 
 // extra flags not defined in VDADecoder.h
-enum {
+enum
+{
     kVDADecodeInfo_Asynchronous = 1UL << 0,
     kVDADecodeInfo_FrameDropped = 1UL << 1
 };
@@ -62,7 +63,8 @@ enum {
  *
  * The application must make it available as AVCodecContext.hwaccel_context.
  */
-struct vda_context {
+struct vda_context
+{
     /**
      * VDA decoder object.
      *
@@ -122,7 +124,7 @@ struct vda_context {
     /**
      * unused
      */
-    uint8_t             *priv_bitstream;
+    uint8_t*             priv_bitstream;
 
     /**
      * unused
@@ -147,12 +149,12 @@ struct vda_context {
 };
 
 /** Create the video decoder. */
-int ff_vda_create_decoder(struct vda_context *vda_ctx,
-                          uint8_t *extradata,
+int ff_vda_create_decoder(struct vda_context* vda_ctx,
+                          uint8_t* extradata,
                           int extradata_size);
 
 /** Destroy the video decoder. */
-int ff_vda_destroy_decoder(struct vda_context *vda_ctx);
+int ff_vda_destroy_decoder(struct vda_context* vda_ctx);
 
 /**
  * This struct holds all the information that needs to be passed
@@ -160,7 +162,8 @@ int ff_vda_destroy_decoder(struct vda_context *vda_ctx);
  * Its size is not a part of the public ABI, it must be allocated with
  * av_vda_alloc_context() and freed with av_free().
  */
-typedef struct AVVDAContext {
+typedef struct AVVDAContext
+{
     /**
      * VDA decoder object. Created and freed by the caller.
      */
@@ -192,7 +195,7 @@ typedef struct AVVDAContext {
  *
  * @return the newly allocated context or NULL on failure
  */
-AVVDAContext *av_vda_alloc_context(void);
+AVVDAContext* av_vda_alloc_context(void);
 
 /**
  * This is a convenience function that creates and sets up the VDA context using
@@ -202,7 +205,7 @@ AVVDAContext *av_vda_alloc_context(void);
  *
  * @return >= 0 on success, a negative AVERROR code on failure
  */
-int av_vda_default_init(AVCodecContext *avctx);
+int av_vda_default_init(AVCodecContext* avctx);
 
 /**
  * This is a convenience function that creates and sets up the VDA context using
@@ -213,7 +216,7 @@ int av_vda_default_init(AVCodecContext *avctx);
  *
  * @return >= 0 on success, a negative AVERROR code on failure
  */
-int av_vda_default_init2(AVCodecContext *avctx, AVVDAContext *vdactx);
+int av_vda_default_init2(AVCodecContext* avctx, AVVDAContext* vdactx);
 
 /**
  * This function must be called to free the VDA context initialized with
@@ -221,7 +224,7 @@ int av_vda_default_init2(AVCodecContext *avctx, AVVDAContext *vdactx);
  *
  * @param avctx the corresponding codec context
  */
-void av_vda_default_free(AVCodecContext *avctx);
+void av_vda_default_free(AVCodecContext* avctx);
 
 /**
  * @}

@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -13,19 +13,19 @@
 class CWin32_Thread
 {
 public:
-	CWin32_Thread();
-	virtual ~CWin32_Thread();
+    CWin32_Thread();
+    virtual ~CWin32_Thread();
 
-	int start();
-	void stop();
+    int start();
+    void stop();
 
-protected:	
-	static DWORD WINAPI thread_work(LPVOID lpData);
-	virtual void run() = 0;
+protected:
+    static DWORD WINAPI thread_work(LPVOID lpData);
+    virtual void run() = 0;
 
-	bool m_run_flag;
+    bool m_run_flag;
 
-	HANDLE m_thread_handle;
+    HANDLE m_thread_handle;
 };
 
 #endif

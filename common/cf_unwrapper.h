@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -14,14 +14,14 @@
 
 typedef struct
 {
-	int		size;
-	int64_t last_value;		/*类型当前值*/
-}cf_unwrapper_t;
+    int     size;
+    int64_t last_value;     /*类型当前值*/
+} cf_unwrapper_t;
 
-void		init_unwrapper16(cf_unwrapper_t* wrap);
-int64_t		wrap_uint16(cf_unwrapper_t* wrap, uint16_t val);
+void        init_unwrapper16(cf_unwrapper_t* wrap);
+int64_t     wrap_uint16(cf_unwrapper_t* wrap, uint16_t val);
 
-void		init_unwrapper32(cf_unwrapper_t* wrap);
-int64_t		wrap_uint32(cf_unwrapper_t* wrap, uint32_t val);
+void        init_unwrapper32(cf_unwrapper_t* wrap);
+int64_t     wrap_uint32(cf_unwrapper_t* wrap, uint32_t val);
 
 #endif

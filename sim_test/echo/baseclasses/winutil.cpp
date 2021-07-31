@@ -59,7 +59,8 @@ HRESULT CBaseWindow::PrepareWindow()
     m_pClassName = GetClassWindowStyles(&m_ClassStyles,
                                         &m_WindowStyles,
                                         &m_WindowStylesEx);
-    if (m_pClassName == NULL) {
+    if (m_pClassName == NULL)
+    {
         return E_FAIL;
     }
 
@@ -67,22 +68,26 @@ HRESULT CBaseWindow::PrepareWindow()
     m_ShowStageMessage = RegisterWindowMessage(SHOWSTAGE);
 
     // RegisterWindowMessage() returns 0 if an error occurs.
-    if (0 == m_ShowStageMessage) {
+    if (0 == m_ShowStageMessage)
+    {
         return AmGetLastErrorToHResult();
     }
 
     m_ShowStageTop = RegisterWindowMessage(SHOWSTAGETOP);
-    if (0 == m_ShowStageTop) {
+    if (0 == m_ShowStageTop)
+    {
         return AmGetLastErrorToHResult();
     }
 
     m_RealizePalette = RegisterWindowMessage(REALIZEPALETTE);
-    if (0 == m_RealizePalette) {
+    if (0 == m_RealizePalette)
+    {
         return AmGetLastErrorToHResult();
     }
 
     MsgDestroy = RegisterWindowMessage(TEXT("AM_DESTROY"));
-    if (0 == MsgDestroy) {
+    if (0 == MsgDestroy)
+    {
         return AmGetLastErrorToHResult();
     }
 
@@ -112,19 +117,23 @@ CBaseWindow::~CBaseWindow()
 
 HRESULT CBaseWindow::DoneWithWindow()
 {
-    if (!IsWindow(m_hwnd) || (GetWindowThreadProcessId(m_hwnd, NULL) != GetCurrentThreadId())) {
+    if (!IsWindow(m_hwnd) || (GetWindowThreadProcessId(m_hwnd, NULL) != GetCurrentThreadId()))
+    {
 
-        if (IsWindow(m_hwnd)) {
+        if (IsWindow(m_hwnd))
+        {
 
-            // This code should only be executed if the window exists and if the window's 
+            // This code should only be executed if the window exists and if the window's
             // messages are processed on a different thread.
             ASSERT(GetWindowThreadProcessId(m_hwnd, NULL) != GetCurrentThreadId());
 
-            if (m_bDoPostToDestroy) {
+            if (m_bDoPostToDestroy)
+            {
 
                 HRESULT hr = S_OK;
                 CAMEvent m_evDone(FALSE, &hr);
-                if (FAILED(hr)) {
+                if (FAILED(hr))
+                {
                     return hr;
                 }
 
@@ -134,7 +143,9 @@ HRESULT CBaseWindow::DoneWithWindow()
                 //  Sending a message gives less synchronization.
                 PostMessage(m_hwnd, MsgDestroy, (WPARAM)(HANDLE)m_evDone, 0);
                 WaitDispatchingMessages(m_evDone, INFINITE);
-            } else {
+            }
+            else
+            {
                 SendMessage(m_hwnd, MsgDestroy, 0, 0);
             }
         }
@@ -162,7 +173,8 @@ HRESULT CBaseWindow::DoneWithWindow()
         return NOERROR;
     }
     const HWND hwnd = m_hwnd;
-    if (hwnd == NULL) {
+    if (hwnd == NULL)
+    {
         return NOERROR;
     }
 
@@ -178,7 +190,8 @@ HRESULT CBaseWindow::DoneWithWindow()
     //  UnintialiseWindow sets m_hwnd to NULL so save a copy
     UninitialiseWindow();
     DbgLog((LOG_TRACE, 2, TEXT("Destroying 0x%8.8X"), hwnd));
-    if (!DestroyWindow(hwnd)) {
+    if (!DestroyWindow(hwnd))
+    {
         DbgLog((LOG_TRACE, 0, TEXT("DestroyWindow %8.8X failed code %d"),
                 hwnd, GetLastError()));
         DbgBreak("");
@@ -206,7 +219,8 @@ HRESULT CBaseWindow::DoneWithWindow()
 HRESULT CBaseWindow::InactivateWindow()
 {
     // Has the window been activated
-    if (m_bActivated == FALSE) {
+    if (m_bActivated == FALSE)
+    {
         return S_FALSE;
     }
 
@@ -233,7 +247,8 @@ HRESULT CBaseWindow::ActivateWindow()
 {
     // Has the window been sized and positioned already
 
-    if (m_bActivated == TRUE || GetParent(m_hwnd) != NULL) {
+    if (m_bActivated == TRUE || GetParent(m_hwnd) != NULL)
+    {
 
         SetWindowPos(m_hwnd,            // Our window handle
                      HWND_TOP,          // Put it at the top
@@ -281,7 +296,8 @@ HRESULT CBaseWindow::PerformanceAlignWindow()
 
     // Don't do this if we're owned
 
-    if (GetParent(m_hwnd)) {
+    if (GetParent(m_hwnd))
+    {
         return NOERROR;
     }
 
@@ -325,10 +341,13 @@ HRESULT CBaseWindow::SetPalette(HPALETTE hPalette)
 
 HRESULT CBaseWindow::SetPalette()
 {
-    if (!m_bNoRealize) {
+    if (!m_bNoRealize)
+    {
         SendMessage(m_hwnd, m_RealizePalette, 0, 0);
         return S_OK;
-    } else {
+    }
+    else
+    {
         // Just select the palette
         ASSERT(m_hdc);
         ASSERT(m_MemoryDC);
@@ -378,7 +397,8 @@ HRESULT CBaseWindow::DoRealisePalette(BOOL bForceBackground)
     {
         CAutoLock cPaletteLock(&m_PaletteLock);
 
-        if (m_hPalette == NULL) {
+        if (m_hPalette == NULL)
+        {
             return NOERROR;
         }
 
@@ -425,9 +445,10 @@ LRESULT CALLBACK WndProc(HWND hwnd,         // Window handle
     // structure.  IF we get any messages before WM_NCCREATE we will
     // pass them to DefWindowProc.
 
-    CBaseWindow *pBaseWindow = _GetWindowLongPtr<CBaseWindow*>(hwnd,0);
+    CBaseWindow* pBaseWindow = _GetWindowLongPtr<CBaseWindow*>(hwnd,0);
 
-    if (pBaseWindow == NULL) {
+    if (pBaseWindow == NULL)
+    {
 
         // Get the structure pointer from the create struct.
         // We can only do this for WM_NCCREATE which should be one of
@@ -438,12 +459,13 @@ LRESULT CALLBACK WndProc(HWND hwnd,         // Window handle
         // and will then place it in the window structure
 
         // turn off WS_EX_LAYOUTRTL style for quartz windows
-        if (uMsg == WM_NCCREATE) {
+        if (uMsg == WM_NCCREATE)
+        {
             SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) & ~0x400000);
         }
 
         if ((uMsg != WM_NCCREATE)
-            || (NULL == (pBaseWindow = *(CBaseWindow**) ((LPCREATESTRUCT)lParam)->lpCreateParams)))
+                || (NULL == (pBaseWindow = *(CBaseWindow**) ((LPCREATESTRUCT)lParam)->lpCreateParams)))
         {
             return(DefWindowProc(hwnd, uMsg, wParam, lParam));
         }
@@ -457,7 +479,8 @@ LRESULT CALLBACK WndProc(HWND hwnd,         // Window handle
 
 
 #ifdef DEBUG
-        if (0 == rc) {
+        if (0 == rc)
+        {
             // SetWindowLong MIGHT have failed.  (Read the docs which admit
             // that it is awkward to work out if you have had an error.)
             LONG lasterror = GetLastError();
@@ -469,9 +492,11 @@ LRESULT CALLBACK WndProc(HWND hwnd,         // Window handle
 
     }
     // See if this is the packet of death
-    if (uMsg == MsgDestroy && uMsg != 0) {
+    if (uMsg == MsgDestroy && uMsg != 0)
+    {
         pBaseWindow->DoneWithWindow();
-        if (pBaseWindow->m_bDoPostToDestroy) {
+        if (pBaseWindow->m_bDoPostToDestroy)
+        {
             EXECUTE_ASSERT(SetEvent((HANDLE)wParam));
         }
         return 0;
@@ -511,7 +536,8 @@ HRESULT CBaseWindow::UninitialiseWindow()
 {
     // Have we already cleaned up
 
-    if (m_hwnd == NULL) {
+    if (m_hwnd == NULL)
+    {
         ASSERT(m_hdc == NULL);
         ASSERT(m_MemoryDC == NULL);
         return NOERROR;
@@ -585,7 +611,8 @@ HRESULT CBaseWindow::DoCreateWindow()
         m_ClassStyles |= CS_OWNDC;
     }
 
-    if (bRegistered == FALSE) {
+    if (bRegistered == FALSE)
+    {
 
         // Register the renderer window class
 
@@ -593,7 +620,7 @@ HRESULT CBaseWindow::DoCreateWindow()
         wndclass.style         = m_ClassStyles;
         wndclass.lpfnWndProc   = WndProc;
         wndclass.cbClsExtra    = 0;
-        wndclass.cbWndExtra    = sizeof(CBaseWindow *);
+        wndclass.cbWndExtra    = sizeof(CBaseWindow*);
         wndclass.hInstance     = m_hInstance;
         wndclass.hIcon         = NULL;
         wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW);
@@ -607,7 +634,7 @@ HRESULT CBaseWindow::DoCreateWindow()
     // CreateStruct which allows our message handling loop to get hold of
     // the pBaseWindow pointer.
 
-    CBaseWindow *pBaseWindow = this;                      // The owner window object
+    CBaseWindow* pBaseWindow = this;                      // The owner window object
     hwnd = CreateWindowEx(m_WindowStylesEx,               // Extended styles
                           m_pClassName,                   // Registered name
                           TEXT("ActiveMovie Window"),     // Window title
@@ -625,7 +652,8 @@ HRESULT CBaseWindow::DoCreateWindow()
     // last Win32 error on this thread) then signal the constructor thread
     // to continue, release the mutex to let others have a go and exit
 
-    if (hwnd == NULL) {
+    if (hwnd == NULL)
+    {
         DWORD Error = GetLastError();
         return AmHresultFromWin32(Error);
     }
@@ -666,7 +694,8 @@ LRESULT CBaseWindow::OnReceiveMessage(HWND hwnd,         // Window handle
     // topmost window without the foreground focus. If wParam is TRUE then
     // for both cases the window will be forced into the foreground focus
 
-    if (uMsg == m_ShowStageMessage) {
+    if (uMsg == m_ShowStageMessage)
+    {
 
         BOOL bVisible = IsWindowVisible(hwnd);
         SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0,
@@ -674,7 +703,8 @@ LRESULT CBaseWindow::OnReceiveMessage(HWND hwnd,         // Window handle
                      (bVisible ? SWP_NOACTIVATE : 0));
 
         // Should we bring the window to the foreground
-        if (wParam == TRUE) {
+        if (wParam == TRUE)
+        {
             SetForegroundWindow(hwnd);
         }
         return (LRESULT) 1;
@@ -686,7 +716,8 @@ LRESULT CBaseWindow::OnReceiveMessage(HWND hwnd,         // Window handle
     // must be on the same thread as that which created the window. The
     // wParam parameter can be TRUE or FALSE to set and reset the topmost
 
-    if (uMsg == m_ShowStageTop) {
+    if (uMsg == m_ShowStageTop)
+    {
         HWND HwndTop = (wParam == TRUE ? HWND_TOPMOST : HWND_NOTOPMOST);
         BOOL bVisible = IsWindowVisible(hwnd);
         SetWindowPos(hwnd, HwndTop, 0, 0, 0, 0,
@@ -697,57 +728,60 @@ LRESULT CBaseWindow::OnReceiveMessage(HWND hwnd,         // Window handle
     }
 
     // New palette stuff
-    if (uMsg == m_RealizePalette) {
+    if (uMsg == m_RealizePalette)
+    {
         ASSERT(m_hwnd == hwnd);
         return OnPaletteChange(m_hwnd,WM_QUERYNEWPALETTE);
     }
 
-    switch (uMsg) {
+    switch (uMsg)
+    {
 
         // Repaint the window if the system colours change
 
-    case WM_SYSCOLORCHANGE:
+        case WM_SYSCOLORCHANGE:
 
-        InvalidateRect(hwnd,NULL,FALSE);
-        return (LRESULT) 1;
+            InvalidateRect(hwnd,NULL,FALSE);
+            return (LRESULT) 1;
 
-    // Somebody has changed the palette
-    case WM_PALETTECHANGED:
+        // Somebody has changed the palette
+        case WM_PALETTECHANGED:
 
-        OnPaletteChange((HWND)wParam,uMsg);
-        return (LRESULT) 0;
+            OnPaletteChange((HWND)wParam,uMsg);
+            return (LRESULT) 0;
 
         // We are about to receive the keyboard focus so we ask GDI to realise
         // our logical palette again and hopefully it will be fully installed
         // without any mapping having to be done during any picture rendering
 
-    case WM_QUERYNEWPALETTE:
-        ASSERT(m_hwnd == hwnd);
-        return OnPaletteChange(m_hwnd,uMsg);
+        case WM_QUERYNEWPALETTE:
+            ASSERT(m_hwnd == hwnd);
+            return OnPaletteChange(m_hwnd,uMsg);
 
-    // do NOT fwd WM_MOVE. the parameters are the location of the parent
-    // window, NOT what the renderer should be looking at.  But we need
-    // to make sure the overlay is moved with the parent window, so we
-    // do this.
-    case WM_MOVE:
-        if (IsWindowVisible(m_hwnd)) {
-            PostMessage(m_hwnd,WM_PAINT,0,0);
-        }
-        break;
+        // do NOT fwd WM_MOVE. the parameters are the location of the parent
+        // window, NOT what the renderer should be looking at.  But we need
+        // to make sure the overlay is moved with the parent window, so we
+        // do this.
+        case WM_MOVE:
+            if (IsWindowVisible(m_hwnd))
+            {
+                PostMessage(m_hwnd,WM_PAINT,0,0);
+            }
+            break;
 
-    // Store the width and height as useful base class members
+        // Store the width and height as useful base class members
 
-    case WM_SIZE:
+        case WM_SIZE:
 
-        OnSize(LOWORD(lParam), HIWORD(lParam));
-        return (LRESULT) 0;
+            OnSize(LOWORD(lParam), HIWORD(lParam));
+            return (LRESULT) 0;
 
-    // Intercept the WM_CLOSE messages to hide the window
+        // Intercept the WM_CLOSE messages to hide the window
 
-    case WM_CLOSE:
+        case WM_CLOSE:
 
-        OnClose();
-        return (LRESULT) 0;
+            OnClose();
+            return (LRESULT) 0;
     }
     return DefWindowProc(hwnd,uMsg,wParam,lParam);
 }
@@ -764,19 +798,22 @@ LRESULT CBaseWindow::OnPaletteChange(HWND hwnd,UINT Message)
 {
     // First check we are not changing the palette during closedown
 
-    if (m_hwnd == NULL || hwnd == NULL) {
+    if (m_hwnd == NULL || hwnd == NULL)
+    {
         return (LRESULT) 0;
     }
     ASSERT(!m_bRealizing);
 
     // Should we realise our palette again
 
-    if ((Message == WM_QUERYNEWPALETTE || hwnd != m_hwnd)) {
+    if ((Message == WM_QUERYNEWPALETTE || hwnd != m_hwnd))
+    {
         //  It seems that even if we're invisible that we can get asked
         //  to realize our palette and this can cause really ugly side-effects
         //  Seems like there's another bug but this masks it a least for the
         //  shutting down case.
-        if (!IsWindowVisible(m_hwnd)) {
+        if (!IsWindowVisible(m_hwnd))
+        {
             DbgLog((LOG_TRACE, 1, TEXT("Realizing when invisible!")));
             return (LRESULT) 0;
         }
@@ -791,7 +828,8 @@ LRESULT CBaseWindow::OnPaletteChange(HWND hwnd,UINT Message)
 #endif
 
         // Should we redraw the window with the new palette
-        if (Message == WM_PALETTECHANGED) {
+        if (Message == WM_PALETTECHANGED)
+        {
             InvalidateRect(m_hwnd,NULL,FALSE);
         }
     }
@@ -916,7 +954,7 @@ void CBaseWindow::DoSetWindowForeground(BOOL bFocus)
 // look after. We are given device context handles to use later on as well as
 // the source and destination rectangles (but reset them here just in case)
 
-CDrawImage::CDrawImage(__inout CBaseWindow *pBaseWindow) :
+CDrawImage::CDrawImage(__inout CBaseWindow* pBaseWindow) :
     m_pBaseWindow(pBaseWindow),
     m_hdc(NULL),
     m_MemoryDC(NULL),
@@ -938,7 +976,7 @@ CDrawImage::CDrawImage(__inout CBaseWindow *pBaseWindow) :
 // top of the video using TextOut on the device context we are handed. If
 // there isn't enough room in the window for the times we don't show them
 
-void CDrawImage::DisplaySampleTimes(IMediaSample *pSample)
+void CDrawImage::DisplaySampleTimes(IMediaSample* pSample)
 {
 #ifdef DEBUG
     //
@@ -946,7 +984,8 @@ void CDrawImage::DisplaySampleTimes(IMediaSample *pSample)
     // logging "way up"
     //
     BOOL bAccept = DbgCheckModuleLevel(LOG_TRACE, 5);
-    if (bAccept == FALSE) {
+    if (bAccept == FALSE)
+    {
         return;
     }
 #endif
@@ -965,8 +1004,8 @@ void CDrawImage::DisplaySampleTimes(IMediaSample *pSample)
     // Format the sample time stamps
 
     (void)StringCchPrintf(szTimes,NUMELMS(szTimes),TEXT("%08d : %08d"),
-             m_StartSample.Millisecs(),
-             m_EndSample.Millisecs());
+                          m_StartSample.Millisecs(),
+                          m_EndSample.Millisecs());
 
     ASSERT(lstrlen(szTimes) < TIMELENGTH);
 
@@ -978,7 +1017,8 @@ void CDrawImage::DisplaySampleTimes(IMediaSample *pSample)
 
     // Check the window is big enough to have sample times displayed
 
-    if ((XPos > 0) && (YPos > 0)) {
+    if ((XPos > 0) && (YPos > 0))
+    {
         TextOut(m_hdc,XPos,YPos,szTimes,lstrlen(szTimes));
     }
 }
@@ -988,10 +1028,10 @@ void CDrawImage::DisplaySampleTimes(IMediaSample *pSample)
 // palette cookie. We simply call the SetDIBColorTable Windows API with the
 // palette that is found after the BITMAPINFOHEADER - we return no errors
 
-void CDrawImage::UpdateColourTable(HDC hdc,__in BITMAPINFOHEADER *pbmi)
+void CDrawImage::UpdateColourTable(HDC hdc,__in BITMAPINFOHEADER* pbmi)
 {
     ASSERT(pbmi->biClrUsed);
-    RGBQUAD *pColourTable = (RGBQUAD *)(pbmi+1);
+    RGBQUAD* pColourTable = (RGBQUAD*)(pbmi+1);
 
     // Set the new palette in the device context
 
@@ -1006,7 +1046,7 @@ void CDrawImage::UpdateColourTable(HDC hdc,__in BITMAPINFOHEADER *pbmi)
 
 // No source rectangle scaling is done by the base class
 
-RECT CDrawImage::ScaleSourceRect(const RECT *pSource)
+RECT CDrawImage::ScaleSourceRect(const RECT* pSource)
 {
     ASSERT(pSource);
     return *pSource;
@@ -1020,13 +1060,13 @@ RECT CDrawImage::ScaleSourceRect(const RECT *pSource)
 // the media type is agreed in SetMediaType, the media type may be changed on
 // the fly if, for example, the source filter needs to change the palette
 
-void CDrawImage::FastRender(IMediaSample *pMediaSample)
+void CDrawImage::FastRender(IMediaSample* pMediaSample)
 {
-    BITMAPINFOHEADER *pbmi;     // Image format data
-    DIBDATA *pDibData;          // Stores DIB information
-    BYTE *pImage;               // Pointer to image data
+    BITMAPINFOHEADER* pbmi;     // Image format data
+    DIBDATA* pDibData;          // Stores DIB information
+    BYTE* pImage;               // Pointer to image data
     HBITMAP hOldBitmap;         // Store the old bitmap
-    CImageSample *pSample;      // Pointer to C++ object
+    CImageSample* pSample;      // Pointer to C++ object
 
     ASSERT(m_pMediaType);
 
@@ -1035,14 +1075,15 @@ void CDrawImage::FastRender(IMediaSample *pMediaSample)
     // to a CImageSample object so we can retrieve it's DIBSECTION details
 
     pbmi = HEADER(m_pMediaType->Format());
-    pSample = (CImageSample *) pMediaSample;
+    pSample = (CImageSample*) pMediaSample;
     pDibData = pSample->GetDIBData();
     hOldBitmap = (HBITMAP) SelectObject(m_MemoryDC,pDibData->hBitmap);
 
     // Get a pointer to the real image data
 
     HRESULT hr = pMediaSample->GetPointer(&pImage);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return;
     }
 
@@ -1052,7 +1093,8 @@ void CDrawImage::FastRender(IMediaSample *pMediaSample)
     // By the time we get to draw the images the format change will be done
     // so all we do is ask the renderer for what it's palette version is
 
-    if (pDibData->PaletteVersion < GetPaletteVersion()) {
+    if (pDibData->PaletteVersion < GetPaletteVersion())
+    {
         ASSERT(pbmi->biBitCount <= iPALETTE);
         UpdateColourTable(m_MemoryDC,pbmi);
         pDibData->PaletteVersion = GetPaletteVersion();
@@ -1069,7 +1111,8 @@ void CDrawImage::FastRender(IMediaSample *pMediaSample)
 
     // Is the window the same size as the video
 
-    if (m_bStretch == FALSE) {
+    if (m_bStretch == FALSE)
+    {
 
         // Put the image straight into the window
 
@@ -1084,7 +1127,9 @@ void CDrawImage::FastRender(IMediaSample *pMediaSample)
             SourceRect.top,                         // Y source position
             SRCCOPY);                               // Simple copy
 
-    } else {
+    }
+    else
+    {
 
         // Stretch the image when copying to the window
 
@@ -1106,9 +1151,9 @@ void CDrawImage::FastRender(IMediaSample *pMediaSample)
     // draw the times into the offscreen device context however that actually
     // writes the text into the image data buffer which may not be writable
 
-    #ifdef DEBUG
+#ifdef DEBUG
     DisplaySampleTimes(pMediaSample);
-    #endif
+#endif
 
     // Put the old bitmap back into the device context so we don't leak
     SelectObject(m_MemoryDC,hOldBitmap);
@@ -1123,18 +1168,19 @@ void CDrawImage::FastRender(IMediaSample *pMediaSample)
 // space into theirs before going to the screen (although in reality the cost
 // is small because all they do is to map the buffer into their address space)
 
-void CDrawImage::SlowRender(IMediaSample *pMediaSample)
+void CDrawImage::SlowRender(IMediaSample* pMediaSample)
 {
     // Get the BITMAPINFOHEADER for the connection
 
     ASSERT(m_pMediaType);
-    BITMAPINFOHEADER *pbmi = HEADER(m_pMediaType->Format());
-    BYTE *pImage;
+    BITMAPINFOHEADER* pbmi = HEADER(m_pMediaType->Format());
+    BYTE* pImage;
 
     // Get the image data buffer
 
     HRESULT hr = pMediaSample->GetPointer(&pImage);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return;
     }
 
@@ -1150,12 +1196,14 @@ void CDrawImage::SlowRender(IMediaSample *pMediaSample)
     LONG lAdjustedSourceTop = SourceRect.top;
     // if the origin of bitmap is bottom-left, adjust soruce_rect_top
     // to be the bottom-left corner instead of the top-left.
-    if (pbmi->biHeight > 0) {
-       lAdjustedSourceTop = pbmi->biHeight - SourceRect.bottom;
+    if (pbmi->biHeight > 0)
+    {
+        lAdjustedSourceTop = pbmi->biHeight - SourceRect.bottom;
     }
     // Is the window the same size as the video
 
-    if (m_bStretch == FALSE) {
+    if (m_bStretch == FALSE)
+    {
 
         // Put the image straight into the window
 
@@ -1170,10 +1218,12 @@ void CDrawImage::SlowRender(IMediaSample *pMediaSample)
             (UINT) 0,                               // Start scan line
             pbmi->biHeight,                         // Scan lines present
             pImage,                                 // Image data
-            (BITMAPINFO *) pbmi,                    // DIB header
+            (BITMAPINFO*) pbmi,                     // DIB header
             DIB_RGB_COLORS);                        // Type of palette
 
-    } else {
+    }
+    else
+    {
 
         // Stretch the image when copying to the window
 
@@ -1188,7 +1238,7 @@ void CDrawImage::SlowRender(IMediaSample *pMediaSample)
             SourceRect.right - SourceRect.left,     // Source width
             SourceRect.bottom - SourceRect.top,     // Source height
             pImage,                                 // Image data
-            (BITMAPINFO *) pbmi,                    // DIB header
+            (BITMAPINFO*) pbmi,                     // DIB header
             DIB_RGB_COLORS,                         // Type of palette
             SRCCOPY);                               // Simple image copy
     }
@@ -1201,9 +1251,9 @@ void CDrawImage::SlowRender(IMediaSample *pMediaSample)
     // the screen, unfortunately this has considerable performance penalties
     // and also means that this code is not executed when compiled retail
 
-    #ifdef DEBUG
+#ifdef DEBUG
     DisplaySampleTimes(pMediaSample);
-    #endif
+#endif
 }
 
 
@@ -1214,7 +1264,7 @@ void CDrawImage::SlowRender(IMediaSample *pMediaSample)
 // call to realise may cause an interthread send message to the window thread
 // which may in turn be waiting to get the renderer lock before servicing it
 
-BOOL CDrawImage::DrawImage(IMediaSample *pMediaSample)
+BOOL CDrawImage::DrawImage(IMediaSample* pMediaSample)
 {
     ASSERT(m_hdc);
     ASSERT(m_MemoryDC);
@@ -1225,7 +1275,8 @@ BOOL CDrawImage::DrawImage(IMediaSample *pMediaSample)
     // use to do faster image rendering, they may optionally also contain a
     // DirectDraw surface pointer in which case we do not do the drawing
 
-    if (m_bUsingImageAllocator == FALSE) {
+    if (m_bUsingImageAllocator == FALSE)
+    {
         SlowRender(pMediaSample);
         EXECUTE_ASSERT(GdiFlush());
         NotifyEndDraw();
@@ -1243,31 +1294,34 @@ BOOL CDrawImage::DrawImage(IMediaSample *pMediaSample)
 
 BOOL CDrawImage::DrawVideoImageHere(
     HDC hdc,
-    IMediaSample *pMediaSample,
+    IMediaSample* pMediaSample,
     __in LPRECT lprcSrc,
     __in LPRECT lprcDst
-    )
+)
 {
     ASSERT(m_pMediaType);
-    BITMAPINFOHEADER *pbmi = HEADER(m_pMediaType->Format());
-    BYTE *pImage;
+    BITMAPINFOHEADER* pbmi = HEADER(m_pMediaType->Format());
+    BYTE* pImage;
 
     // Get the image data buffer
 
     HRESULT hr = pMediaSample->GetPointer(&pImage);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return FALSE;
     }
 
     RECT SourceRect;
     RECT TargetRect;
 
-    if (lprcSrc) {
+    if (lprcSrc)
+    {
         SourceRect = *lprcSrc;
     }
     else  SourceRect = ScaleSourceRect(&m_SourceRect);
 
-    if (lprcDst) {
+    if (lprcDst)
+    {
         TargetRect = *lprcDst;
     }
     else  TargetRect = m_TargetRect;
@@ -1275,8 +1329,9 @@ BOOL CDrawImage::DrawVideoImageHere(
     LONG lAdjustedSourceTop = SourceRect.top;
     // if the origin of bitmap is bottom-left, adjust soruce_rect_top
     // to be the bottom-left corner instead of the top-left.
-    if (pbmi->biHeight > 0) {
-       lAdjustedSourceTop = pbmi->biHeight - SourceRect.bottom;
+    if (pbmi->biHeight > 0)
+    {
+        lAdjustedSourceTop = pbmi->biHeight - SourceRect.bottom;
     }
 
 
@@ -1292,7 +1347,7 @@ BOOL CDrawImage::DrawVideoImageHere(
                                     SourceRect.right - SourceRect.left,
                                     SourceRect.bottom - SourceRect.top,
                                     pImage,
-                                    (BITMAPINFO *)pbmi,
+                                    (BITMAPINFO*)pbmi,
                                     DIB_RGB_COLORS,
                                     SRCCOPY));
     return bRet;
@@ -1315,7 +1370,7 @@ void CDrawImage::SetDrawContext()
 // called whenever a WM_SIZE message is retrieved from the message queue. We
 // simply store the rectangle and use it later when we do the drawing calls
 
-void CDrawImage::SetTargetRect(__in RECT *pTargetRect)
+void CDrawImage::SetTargetRect(__in RECT* pTargetRect)
 {
     ASSERT(pTargetRect);
     m_TargetRect = *pTargetRect;
@@ -1325,7 +1380,7 @@ void CDrawImage::SetTargetRect(__in RECT *pTargetRect)
 
 // Return the current target rectangle
 
-void CDrawImage::GetTargetRect(__out RECT *pTargetRect)
+void CDrawImage::GetTargetRect(__out RECT* pTargetRect)
 {
     ASSERT(pTargetRect);
     *pTargetRect = m_TargetRect;
@@ -1337,7 +1392,7 @@ void CDrawImage::GetTargetRect(__out RECT *pTargetRect)
 // see if the source and destination rectangles have the same dimensions. If
 // not we must stretch during the drawing rather than a direct pixel copy
 
-void CDrawImage::SetSourceRect(__in RECT *pSourceRect)
+void CDrawImage::SetSourceRect(__in RECT* pSourceRect)
 {
     ASSERT(pSourceRect);
     m_SourceRect = *pSourceRect;
@@ -1347,7 +1402,7 @@ void CDrawImage::SetSourceRect(__in RECT *pSourceRect)
 
 // Return the current source rectangle
 
-void CDrawImage::GetSourceRect(__out RECT *pSourceRect)
+void CDrawImage::GetSourceRect(__out RECT* pSourceRect)
 {
     ASSERT(pSourceRect);
     *pSourceRect = m_SourceRect;
@@ -1369,8 +1424,10 @@ void CDrawImage::SetStretchMode()
     LONG SinkHeight = m_TargetRect.bottom - m_TargetRect.top;
 
     m_bStretch = TRUE;
-    if (SourceWidth == SinkWidth) {
-        if (SourceHeight == SinkHeight) {
+    if (SourceWidth == SinkWidth)
+    {
+        if (SourceHeight == SinkHeight)
+        {
             m_bStretch = FALSE;
         }
     }
@@ -1402,7 +1459,7 @@ BOOL CDrawImage::UsingImageAllocator()
 // from it. We use that in the calls to draw the image such as StretchDIBits
 // and also when updating the colour table held in shared memory DIBSECTIONs
 
-void CDrawImage::NotifyMediaType(__in CMediaType *pMediaType)
+void CDrawImage::NotifyMediaType(__in CMediaType* pMediaType)
 {
     m_pMediaType = pMediaType;
 }
@@ -1447,9 +1504,9 @@ void CDrawImage::IncrementPaletteVersion()
 // cookie much lower than the current version, this isn't a problem since it
 // will be seen by the window object and the versions will then be updated
 
-CImageAllocator::CImageAllocator(__inout CBaseFilter *pFilter,
+CImageAllocator::CImageAllocator(__inout CBaseFilter* pFilter,
                                  __in_opt LPCTSTR pName,
-                                 __inout HRESULT *phr) :
+                                 __inout HRESULT* phr) :
     CBaseAllocator(pName,NULL,phr,TRUE,TRUE),
     m_pFilter(pFilter)
 {
@@ -1477,11 +1534,12 @@ void CImageAllocator::Free()
 {
     ASSERT(m_lAllocated == m_lFree.GetCount());
     EXECUTE_ASSERT(GdiFlush());
-    CImageSample *pSample;
-    DIBDATA *pDibData;
+    CImageSample* pSample;
+    DIBDATA* pDibData;
 
-    while (m_lFree.GetCount() != 0) {
-        pSample = (CImageSample *) m_lFree.RemoveHead();
+    while (m_lFree.GetCount() != 0)
+    {
+        pSample = (CImageSample*) m_lFree.RemoveHead();
         pDibData = pSample->GetDIBData();
         EXECUTE_ASSERT(DeleteObject(pDibData->hBitmap));
         EXECUTE_ASSERT(CloseHandle(pDibData->hMapping));
@@ -1494,11 +1552,12 @@ void CImageAllocator::Free()
 
 // Prepare the allocator by checking all the input parameters
 
-STDMETHODIMP CImageAllocator::CheckSizes(__in ALLOCATOR_PROPERTIES *pRequest)
+STDMETHODIMP CImageAllocator::CheckSizes(__in ALLOCATOR_PROPERTIES* pRequest)
 {
     // Check we have a valid connection
 
-    if (m_pMediaType == NULL) {
+    if (m_pMediaType == NULL)
+    {
         return VFW_E_NOT_CONNECTED;
     }
 
@@ -1507,20 +1566,22 @@ STDMETHODIMP CImageAllocator::CheckSizes(__in ALLOCATOR_PROPERTIES *pRequest)
     // the target display device may contain a different palette (we may not
     // have the focus) in which case GDI will do after the palette mapping
 
-    VIDEOINFOHEADER *pVideoInfo = (VIDEOINFOHEADER *) m_pMediaType->Format();
+    VIDEOINFOHEADER* pVideoInfo = (VIDEOINFOHEADER*) m_pMediaType->Format();
 
     // When we call CreateDIBSection it implicitly maps only enough memory
     // for the image as defined by thee BITMAPINFOHEADER. If the user asks
     // for an image smaller than this then we reject the call, if they ask
     // for an image larger than this then we return what they can have
 
-    if ((DWORD) pRequest->cbBuffer < pVideoInfo->bmiHeader.biSizeImage) {
+    if ((DWORD) pRequest->cbBuffer < pVideoInfo->bmiHeader.biSizeImage)
+    {
         return E_INVALIDARG;
     }
 
     // Reject buffer prefixes
 
-    if (pRequest->cbPrefix > 0) {
+    if (pRequest->cbPrefix > 0)
+    {
         return E_INVALIDARG;
     }
 
@@ -1534,15 +1595,16 @@ STDMETHODIMP CImageAllocator::CheckSizes(__in ALLOCATOR_PROPERTIES *pRequest)
 // boundaries NOTE the buffers are not allocated until the Commit call
 
 STDMETHODIMP CImageAllocator::SetProperties(
-    __in ALLOCATOR_PROPERTIES * pRequest,
-    __out ALLOCATOR_PROPERTIES * pActual)
+    __in ALLOCATOR_PROPERTIES* pRequest,
+    __out ALLOCATOR_PROPERTIES* pActual)
 {
     ALLOCATOR_PROPERTIES Adjusted = *pRequest;
 
     // Check the parameters fit with the current connection
 
     HRESULT hr = CheckSizes(&Adjusted);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return hr;
     }
     return CBaseAllocator::SetProperties(&Adjusted, pActual);
@@ -1560,13 +1622,14 @@ STDMETHODIMP CImageAllocator::SetProperties(
 HRESULT CImageAllocator::Alloc(void)
 {
     ASSERT(m_pMediaType);
-    CImageSample *pSample;
+    CImageSample* pSample;
     DIBDATA DibData;
 
     // Check the base allocator says it's ok to continue
 
     HRESULT hr = CBaseAllocator::Alloc();
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return hr;
     }
 
@@ -1576,19 +1639,22 @@ HRESULT CImageAllocator::Alloc(void)
     // case the available sample list is left with those already created
 
     ASSERT(m_lAllocated == 0);
-    while (m_lAllocated < m_lCount) {
+    while (m_lAllocated < m_lCount)
+    {
 
         // Create and initialise a shared memory GDI buffer
 
         hr = CreateDIB(m_lSize,DibData);
-        if (FAILED(hr)) {
+        if (FAILED(hr))
+        {
             return hr;
         }
 
         // Create the sample object and pass it the DIBDATA
 
         pSample = CreateImageSample(DibData.pBase,m_lSize);
-        if (pSample == NULL) {
+        if (pSample == NULL)
+        {
             EXECUTE_ASSERT(DeleteObject(DibData.hBitmap));
             EXECUTE_ASSERT(CloseHandle(DibData.hMapping));
             return E_OUTOFMEMORY;
@@ -1608,20 +1674,21 @@ HRESULT CImageAllocator::Alloc(void)
 // may override it and allocate more specialised sample objects. So long as it
 // derives its samples from CImageSample then all this code will still work ok
 
-CImageSample *CImageAllocator::CreateImageSample(__in_bcount(Length) LPBYTE pData,LONG Length)
+CImageSample* CImageAllocator::CreateImageSample(__in_bcount(Length) LPBYTE pData,LONG Length)
 {
     HRESULT hr = NOERROR;
-    CImageSample *pSample;
+    CImageSample* pSample;
 
     // Allocate the new sample and check the return codes
 
-    pSample = new CImageSample((CBaseAllocator *) this,   // Base class
+    pSample = new CImageSample((CBaseAllocator*) this,    // Base class
                                NAME("Video sample"),      // DEBUG name
-                               (HRESULT *) &hr,           // Return code
+                               (HRESULT*) &hr,            // Return code
                                (LPBYTE) pData,            // DIB address
                                (LONG) Length);            // Size of DIB
 
-    if (pSample == NULL || FAILED(hr)) {
+    if (pSample == NULL || FAILED(hr))
+    {
         delete pSample;
         return NULL;
     }
@@ -1633,10 +1700,10 @@ CImageSample *CImageAllocator::CreateImageSample(__in_bcount(Length) LPBYTE pDat
 // generating DIBs for us to render. The memory block is created in shared
 // memory so that GDI doesn't have to copy the memory when we do a BitBlt
 
-HRESULT CImageAllocator::CreateDIB(LONG InSize,DIBDATA &DibData)
+HRESULT CImageAllocator::CreateDIB(LONG InSize,DIBDATA& DibData)
 {
-    BITMAPINFO *pbmi;       // Format information for pin
-    BYTE *pBase;            // Pointer to the actual image
+    BITMAPINFO* pbmi;       // Format information for pin
+    BYTE* pBase;            // Pointer to the actual image
     HANDLE hMapping;        // Handle to mapped object
     HBITMAP hBitmap;        // DIB section bitmap handle
 
@@ -1648,7 +1715,8 @@ HRESULT CImageAllocator::CreateDIB(LONG InSize,DIBDATA &DibData)
                                  (DWORD) 0,       // Less than 4Gb in size
                                  InSize,          // Size of buffer
                                  NULL);           // No name to section
-    if (hMapping == NULL) {
+    if (hMapping == NULL)
+    {
         DWORD Error = GetLastError();
         return MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, Error);
     }
@@ -1658,19 +1726,21 @@ HRESULT CImageAllocator::CreateDIB(LONG InSize,DIBDATA &DibData)
     // the target display device may contain a different palette (we may not
     // have the focus) in which case GDI will do after the palette mapping
 
-    pbmi = (BITMAPINFO *) HEADER(m_pMediaType->Format());
-    if (m_pMediaType == NULL) {
+    pbmi = (BITMAPINFO*) HEADER(m_pMediaType->Format());
+    if (m_pMediaType == NULL)
+    {
         DbgBreak("Invalid media type");
     }
 
     hBitmap = CreateDIBSection((HDC) NULL,          // NO device context
                                pbmi,                // Format information
                                DIB_RGB_COLORS,      // Use the palette
-                               (VOID **) &pBase,    // Pointer to image data
+                               (VOID**) &pBase,     // Pointer to image data
                                hMapping,            // Mapped memory handle
                                (DWORD) 0);          // Offset into memory
 
-    if (hBitmap == NULL || pBase == NULL) {
+    if (hBitmap == NULL || pBase == NULL)
+    {
         EXECUTE_ASSERT(CloseHandle(hMapping));
         DWORD Error = GetLastError();
         return MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, Error);
@@ -1682,7 +1752,7 @@ HRESULT CImageAllocator::CreateDIB(LONG InSize,DIBDATA &DibData)
     DibData.hMapping = hMapping;
     DibData.pBase = pBase;
     DibData.PaletteVersion = PALETTE_VERSION;
-    GetObject(hBitmap,sizeof(DIBSECTION),(VOID *)&DibData.DibSection);
+    GetObject(hBitmap,sizeof(DIBSECTION),(VOID*)&DibData.DibSection);
 
     return NOERROR;
 }
@@ -1690,7 +1760,7 @@ HRESULT CImageAllocator::CreateDIB(LONG InSize,DIBDATA &DibData)
 
 // We use the media type during the DIBSECTION creation
 
-void CImageAllocator::NotifyMediaType(__in CMediaType *pMediaType)
+void CImageAllocator::NotifyMediaType(__in CMediaType* pMediaType)
 {
     m_pMediaType = pMediaType;
 }
@@ -1728,9 +1798,9 @@ STDMETHODIMP_(ULONG) CImageAllocator::NonDelegatingRelease()
 // the IMediaSample into one of your objects. Additional checks can be made
 // to ensure the sample's this pointer is known to be one of your own objects
 
-CImageSample::CImageSample(__inout CBaseAllocator *pAllocator,
+CImageSample::CImageSample(__inout CBaseAllocator* pAllocator,
                            __in_opt LPCTSTR pName,
-                           __inout HRESULT *phr,
+                           __inout HRESULT* phr,
                            __in_bcount(length) LPBYTE pBuffer,
                            LONG length) :
     CMediaSample(pName,pAllocator,phr,pBuffer,length),
@@ -1743,7 +1813,7 @@ CImageSample::CImageSample(__inout CBaseAllocator *pAllocator,
 
 // Set the shared memory DIB information
 
-void CImageSample::SetDIBData(__in DIBDATA *pDibData)
+void CImageSample::SetDIBData(__in DIBDATA* pDibData)
 {
     ASSERT(pDibData);
     m_DibData = *pDibData;
@@ -1753,7 +1823,7 @@ void CImageSample::SetDIBData(__in DIBDATA *pDibData)
 
 // Retrieve the shared memory DIB data
 
-__out DIBDATA *CImageSample::GetDIBData()
+__out DIBDATA* CImageSample::GetDIBData()
 {
     ASSERT(m_bInit == TRUE);
     return &m_DibData;
@@ -1769,9 +1839,9 @@ __out DIBDATA *CImageSample::GetDIBData()
 // absolutely necessary as they typically require WM_PALETTECHANGED messages
 // to be sent to every window thread in the system which is very expensive
 
-CImagePalette::CImagePalette(__inout CBaseFilter *pBaseFilter,
-                             __inout CBaseWindow *pBaseWindow,
-                             __inout CDrawImage *pDrawImage) :
+CImagePalette::CImagePalette(__inout CBaseFilter* pBaseFilter,
+                             __inout CBaseWindow* pBaseWindow,
+                             __inout CDrawImage* pDrawImage) :
     m_pBaseWindow(pBaseWindow),
     m_pFilter(pBaseFilter),
     m_pDrawImage(pDrawImage),
@@ -1799,19 +1869,22 @@ CImagePalette::~CImagePalette()
 // FALSE if they match. This therefore short circuits palette creation unless
 // absolutely necessary since installing palettes is an expensive operation
 
-BOOL CImagePalette::ShouldUpdate(const VIDEOINFOHEADER *pNewInfo,
-                                 const VIDEOINFOHEADER *pOldInfo)
+BOOL CImagePalette::ShouldUpdate(const VIDEOINFOHEADER* pNewInfo,
+                                 const VIDEOINFOHEADER* pOldInfo)
 {
     // We may not have a current format yet
 
-    if (pOldInfo == NULL) {
+    if (pOldInfo == NULL)
+    {
         return TRUE;
     }
 
     // Do both formats not require a palette
 
-    if (ContainsPalette(pNewInfo) == FALSE) {
-        if (ContainsPalette(pOldInfo) == FALSE) {
+    if (ContainsPalette(pNewInfo) == FALSE)
+    {
+        if (ContainsPalette(pOldInfo) == FALSE)
+        {
             return FALSE;
         }
     }
@@ -1825,7 +1898,8 @@ BOOL CImagePalette::ShouldUpdate(const VIDEOINFOHEADER *pNewInfo,
                 if (pOldInfo->bmiHeader.biClrUsed > 0)
                     if (memcmp((PVOID) GetBitmapPalette(pNewInfo),
                                (PVOID) GetBitmapPalette(pOldInfo),
-                               VideoEntries * sizeof(RGBQUAD)) == 0) {
+                               VideoEntries * sizeof(RGBQUAD)) == 0)
+                    {
 
                         return FALSE;
                     }
@@ -1842,12 +1916,12 @@ BOOL CImagePalette::ShouldUpdate(const VIDEOINFOHEADER *pNewInfo,
 // We can be passed an optional device name if we wish to prepare a palette
 // for a specific monitor on a multi monitor system
 
-HRESULT CImagePalette::PreparePalette(const CMediaType *pmtNew,
-                                      const CMediaType *pmtOld,
-				                      __in LPSTR szDevice)
+HRESULT CImagePalette::PreparePalette(const CMediaType* pmtNew,
+                                      const CMediaType* pmtOld,
+                                      __in LPSTR szDevice)
 {
-    const VIDEOINFOHEADER *pNewInfo = (VIDEOINFOHEADER *) pmtNew->Format();
-    const VIDEOINFOHEADER *pOldInfo = (VIDEOINFOHEADER *) pmtOld->Format();
+    const VIDEOINFOHEADER* pNewInfo = (VIDEOINFOHEADER*) pmtNew->Format();
+    const VIDEOINFOHEADER* pOldInfo = (VIDEOINFOHEADER*) pmtOld->Format();
     ASSERT(pNewInfo);
 
     // This is an performance optimisation, when we get a media type we check
@@ -1855,7 +1929,8 @@ HRESULT CImagePalette::PreparePalette(const CMediaType *pmtNew,
     // when previously we didn't or vica versa then this returns TRUE, if we
     // previously needed a palette and we do now it compares their colours
 
-    if (ShouldUpdate(pNewInfo,pOldInfo) == FALSE) {
+    if (ShouldUpdate(pNewInfo,pOldInfo) == FALSE)
+    {
         NOTE("No update needed");
         return S_FALSE;
     }
@@ -1870,12 +1945,14 @@ HRESULT CImagePalette::PreparePalette(const CMediaType *pmtNew,
 
     // Do we need a palette for the new format
 
-    if (ContainsPalette(pNewInfo) == FALSE) {
+    if (ContainsPalette(pNewInfo) == FALSE)
+    {
         NOTE("New has no palette");
         return S_FALSE;
     }
 
-    if (m_pBaseWindow) {
+    if (m_pBaseWindow)
+    {
         m_pBaseWindow->LockPaletteLock();
     }
 
@@ -1888,7 +1965,8 @@ HRESULT CImagePalette::PreparePalette(const CMediaType *pmtNew,
     m_hPalette = MakePalette(pNewInfo, szDevice);
     ASSERT(m_hPalette != NULL);
 
-    if (m_pBaseWindow) {
+    if (m_pBaseWindow)
+    {
         m_pBaseWindow->UnlockPaletteLock();
     }
 
@@ -1913,25 +1991,27 @@ HRESULT CImagePalette::PreparePalette(const CMediaType *pmtNew,
 // any buffer (eg YUV) and hand it back. We make a new palette out of that
 // format and then copy the palette colours into the current connection type
 
-HRESULT CImagePalette::CopyPalette(const CMediaType *pSrc,__out CMediaType *pDest)
+HRESULT CImagePalette::CopyPalette(const CMediaType* pSrc,__out CMediaType* pDest)
 {
     // Reset the destination palette before starting
 
-    VIDEOINFOHEADER *pDestInfo = (VIDEOINFOHEADER *) pDest->Format();
+    VIDEOINFOHEADER* pDestInfo = (VIDEOINFOHEADER*) pDest->Format();
     pDestInfo->bmiHeader.biClrUsed = 0;
     pDestInfo->bmiHeader.biClrImportant = 0;
 
     // Does the destination have a palette
 
-    if (PALETTISED(pDestInfo) == FALSE) {
+    if (PALETTISED(pDestInfo) == FALSE)
+    {
         NOTE("No destination palette");
         return S_FALSE;
     }
 
     // Does the source contain a palette
 
-    const VIDEOINFOHEADER *pSrcInfo = (VIDEOINFOHEADER *) pSrc->Format();
-    if (ContainsPalette(pSrcInfo) == FALSE) {
+    const VIDEOINFOHEADER* pSrcInfo = (VIDEOINFOHEADER*) pSrc->Format();
+    if (ContainsPalette(pSrcInfo) == FALSE)
+    {
         NOTE("No source palette");
         return S_FALSE;
     }
@@ -1939,7 +2019,8 @@ HRESULT CImagePalette::CopyPalette(const CMediaType *pSrc,__out CMediaType *pDes
     // The number of colours may be zero filled
 
     DWORD PaletteEntries = pSrcInfo->bmiHeader.biClrUsed;
-    if (PaletteEntries == 0) {
+    if (PaletteEntries == 0)
+    {
         DWORD Maximum  = (1 << pSrcInfo->bmiHeader.biBitCount);
         NOTE1("Setting maximum colours (%d)",Maximum);
         PaletteEntries = Maximum;
@@ -1954,7 +2035,8 @@ HRESULT CImagePalette::CopyPalette(const CMediaType *pSrc,__out CMediaType *pDes
     pDestInfo->bmiHeader.biClrImportant = pSrcInfo->bmiHeader.biClrImportant;
     ULONG BitmapSize = GetBitmapFormatSize(HEADER(pSrcInfo));
 
-    if (pDest->FormatLength() < BitmapSize) {
+    if (pDest->FormatLength() < BitmapSize)
+    {
         NOTE("Reallocating destination");
         pDest->ReallocFormatBuffer(BitmapSize);
     }
@@ -1976,15 +2058,18 @@ HRESULT CImagePalette::CopyPalette(const CMediaType *pSrc,__out CMediaType *pDes
 
 HRESULT CImagePalette::RemovePalette()
 {
-    if (m_pBaseWindow) {
+    if (m_pBaseWindow)
+    {
         m_pBaseWindow->LockPaletteLock();
     }
 
     // Do we have a palette to remove
 
-    if (m_hPalette != NULL) {
+    if (m_hPalette != NULL)
+    {
 
-        if (m_pBaseWindow) {
+        if (m_pBaseWindow)
+        {
             // Make sure that the window's palette handle matches
             // our palette handle.
             ASSERT(m_hPalette == m_pBaseWindow->GetPalette());
@@ -1996,7 +2081,8 @@ HRESULT CImagePalette::RemovePalette()
         m_hPalette = NULL;
     }
 
-    if (m_pBaseWindow) {
+    if (m_pBaseWindow)
+    {
         m_pBaseWindow->UnlockPaletteLock();
     }
 
@@ -2013,18 +2099,19 @@ HRESULT CImagePalette::RemovePalette()
 // We can be passed an optional device name if we wish to prepare a palette
 // for a specific monitor on a multi monitor system
 
-HPALETTE CImagePalette::MakePalette(const VIDEOINFOHEADER *pVideoInfo, __in LPSTR szDevice)
+HPALETTE CImagePalette::MakePalette(const VIDEOINFOHEADER* pVideoInfo, __in LPSTR szDevice)
 {
     ASSERT(ContainsPalette(pVideoInfo) == TRUE);
     ASSERT(pVideoInfo->bmiHeader.biClrUsed <= iPALETTE_COLORS);
-    BITMAPINFOHEADER *pHeader = HEADER(pVideoInfo);
+    BITMAPINFOHEADER* pHeader = HEADER(pVideoInfo);
 
-    const RGBQUAD *pColours;            // Pointer to the palette
-    LOGPALETTE *lp;                     // Used to create a palette
+    const RGBQUAD* pColours;            // Pointer to the palette
+    LOGPALETTE* lp;                     // Used to create a palette
     HPALETTE hPalette;                  // Logical palette object
 
-    lp = (LOGPALETTE *) new BYTE[sizeof(LOGPALETTE) + SIZE_PALETTE];
-    if (lp == NULL) {
+    lp = (LOGPALETTE*) new BYTE[sizeof(LOGPALETTE) + SIZE_PALETTE];
+    if (lp == NULL)
+    {
         return NULL;
     }
 
@@ -2039,7 +2126,8 @@ HPALETTE CImagePalette::MakePalette(const VIDEOINFOHEADER *pVideoInfo, __in LPST
     if (lp->palNumEntries == 0) lp->palNumEntries = (1 << pHeader->biBitCount);
     pColours = GetBitmapPalette(pVideoInfo);
 
-    for (DWORD dwCount = 0;dwCount < lp->palNumEntries;dwCount++) {
+    for (DWORD dwCount = 0; dwCount < lp->palNumEntries; dwCount++)
+    {
         lp->palPalEntry[dwCount].peRed = pColours[dwCount].rgbRed;
         lp->palPalEntry[dwCount].peGreen = pColours[dwCount].rgbGreen;
         lp->palPalEntry[dwCount].peBlue = pColours[dwCount].rgbBlue;
@@ -2067,7 +2155,7 @@ HPALETTE CImagePalette::MakePalette(const VIDEOINFOHEADER *pVideoInfo, __in LPST
 // We can be passed an optional device name if we wish to prepare a palette
 // for a specific monitor on a multi monitor system
 
-HRESULT CImagePalette::MakeIdentityPalette(__inout_ecount_full(iColours) PALETTEENTRY *pEntry,INT iColours, __in LPSTR szDevice)
+HRESULT CImagePalette::MakeIdentityPalette(__inout_ecount_full(iColours) PALETTEENTRY* pEntry,INT iColours, __in LPSTR szDevice)
 {
     PALETTEENTRY SystemEntries[10];         // System palette entries
     BOOL bIdentityPalette = TRUE;           // Is an identity palette
@@ -2077,7 +2165,8 @@ HRESULT CImagePalette::MakeIdentityPalette(__inout_ecount_full(iColours) PALETTE
 
     // Does this have the full colour range
 
-    if (iColours < 10) {
+    if (iColours < 10)
+    {
         return S_FALSE;
     }
 
@@ -2090,11 +2179,13 @@ HRESULT CImagePalette::MakeIdentityPalette(__inout_ecount_full(iColours) PALETTE
         hdc = CreateDCA("DISPLAY", NULL, NULL, NULL);
     else
         hdc = CreateDCA(NULL, szDevice, NULL, NULL);
-    if (NULL == hdc) {
+    if (NULL == hdc)
+    {
         return E_OUTOFMEMORY;
     }
     INT Reserved = GetDeviceCaps(hdc,NUMRESERVED);
-    if (Reserved != 20) {
+    if (Reserved != 20)
+    {
         DeleteDC(hdc);
         return S_FALSE;
     }
@@ -2104,23 +2195,28 @@ HRESULT CImagePalette::MakeIdentityPalette(__inout_ecount_full(iColours) PALETTE
     // I am not sure what will be in the flags fields for the system entries
 
     UINT Result = GetSystemPaletteEntries(hdc,0,PalLoCount,SystemEntries);
-    for (UINT Count = 0;Count < Result;Count++) {
+    for (UINT Count = 0; Count < Result; Count++)
+    {
         if (SystemEntries[Count].peRed != pEntry[Count].peRed ||
                 SystemEntries[Count].peGreen != pEntry[Count].peGreen ||
-                    SystemEntries[Count].peBlue != pEntry[Count].peBlue) {
-                        bIdentityPalette = FALSE;
+                SystemEntries[Count].peBlue != pEntry[Count].peBlue)
+        {
+            bIdentityPalette = FALSE;
         }
     }
 
     // And likewise compare against the last ten entries
 
     Result = GetSystemPaletteEntries(hdc,PalHiStart,PalLoCount,SystemEntries);
-    for (UINT Count = 0;Count < Result;Count++) {
-        if (INT(Count) + PalHiStart < iColours) {
+    for (UINT Count = 0; Count < Result; Count++)
+    {
+        if (INT(Count) + PalHiStart < iColours)
+        {
             if (SystemEntries[Count].peRed != pEntry[PalHiStart + Count].peRed ||
                     SystemEntries[Count].peGreen != pEntry[PalHiStart + Count].peGreen ||
-                        SystemEntries[Count].peBlue != pEntry[PalHiStart + Count].peBlue) {
-                            bIdentityPalette = FALSE;
+                    SystemEntries[Count].peBlue != pEntry[PalHiStart + Count].peBlue)
+            {
+                bIdentityPalette = FALSE;
             }
         }
     }
@@ -2128,13 +2224,15 @@ HRESULT CImagePalette::MakeIdentityPalette(__inout_ecount_full(iColours) PALETTE
     // If not an identity palette then return S_FALSE
 
     DeleteDC(hdc);
-    if (bIdentityPalette == FALSE) {
+    if (bIdentityPalette == FALSE)
+    {
         return S_FALSE;
     }
 
     // Set the non VGA entries so that GDI doesn't map them
 
-    for (UINT Count = PalLoCount;INT(Count) < min(PalHiStart,iColours);Count++) {
+    for (UINT Count = PalLoCount; INT(Count) < min(PalHiStart,iColours); Count++)
+    {
         pEntry[Count].peFlags = PC_NOCOLLAPSE;
     }
     return NOERROR;
@@ -2182,22 +2280,25 @@ HRESULT CImageDisplay::RefreshDisplayType(__in_opt LPSTR szDeviceName)
         hdcDisplay = CreateDCA("DISPLAY", NULL, NULL, NULL);
     else
         hdcDisplay = CreateDCA(NULL, szDeviceName, NULL, NULL);
-    if (hdcDisplay == NULL) {
-    ASSERT(FALSE);
-    DbgLog((LOG_ERROR,1,TEXT("ACK! Can't get a DC for %hs"),
+    if (hdcDisplay == NULL)
+    {
+        ASSERT(FALSE);
+        DbgLog((LOG_ERROR,1,TEXT("ACK! Can't get a DC for %hs"),
                 szDeviceName ? szDeviceName : "<NULL>"));
-    return E_FAIL;
-    } else {
-    DbgLog((LOG_TRACE,3,TEXT("Created a DC for %s"),
+        return E_FAIL;
+    }
+    else
+    {
+        DbgLog((LOG_TRACE,3,TEXT("Created a DC for %s"),
                 szDeviceName ? szDeviceName : "<NULL>"));
     }
     HBITMAP hbm = CreateCompatibleBitmap(hdcDisplay,1,1);
     if ( hbm )
     {
-        GetDIBits(hdcDisplay,hbm,0,1,NULL,(BITMAPINFO *)&m_Display.bmiHeader,DIB_RGB_COLORS);
+        GetDIBits(hdcDisplay,hbm,0,1,NULL,(BITMAPINFO*)&m_Display.bmiHeader,DIB_RGB_COLORS);
 
         // This call will get the colour table or the proper bitfields
-        GetDIBits(hdcDisplay,hbm,0,1,NULL,(BITMAPINFO *)&m_Display.bmiHeader,DIB_RGB_COLORS);
+        GetDIBits(hdcDisplay,hbm,0,1,NULL,(BITMAPINFO*)&m_Display.bmiHeader,DIB_RGB_COLORS);
         DeleteObject(hbm);
     }
     DeleteDC(hdcDisplay);
@@ -2207,7 +2308,7 @@ HRESULT CImageDisplay::RefreshDisplayType(__in_opt LPSTR szDeviceName)
     ASSERT(CheckHeaderValidity(&m_Display));
     UpdateFormat(&m_Display);
     DbgLog((LOG_TRACE,3,TEXT("New DISPLAY bit depth =%d"),
-                m_Display.bmiHeader.biBitCount));
+            m_Display.bmiHeader.biBitCount));
     return NOERROR;
 }
 
@@ -2217,16 +2318,18 @@ HRESULT CImageDisplay::RefreshDisplayType(__in_opt LPSTR szDeviceName)
 // bit count assumption is enforced and also makes sure that all the bits
 // set are contiguous. We return a boolean TRUE if the field checks out ok
 
-BOOL CImageDisplay::CheckBitFields(const VIDEOINFO *pInput)
+BOOL CImageDisplay::CheckBitFields(const VIDEOINFO* pInput)
 {
-    DWORD *pBitFields = (DWORD *) BITMASKS(pInput);
+    DWORD* pBitFields = (DWORD*) BITMASKS(pInput);
 
-    for (INT iColour = iRED;iColour <= iBLUE;iColour++) {
+    for (INT iColour = iRED; iColour <= iBLUE; iColour++)
+    {
 
         // First of all work out how many bits are set
 
         DWORD SetBits = CountSetBits(pBitFields[iColour]);
-        if (SetBits > iMAXBITS || SetBits == 0) {
+        if (SetBits > iMAXBITS || SetBits == 0)
+        {
             NOTE1("Bit fields for component %d invalid",iColour);
             return FALSE;
         }
@@ -2243,7 +2346,8 @@ BOOL CImageDisplay::CheckBitFields(const VIDEOINFO *pInput)
 
         DWORD TestField = pBitFields[iColour] >> PrefixBits;
         DWORD Mask = ULONG_MAX << SetBits;
-        if (TestField & Mask) {
+        if (TestField & Mask)
+        {
             NOTE1("Bit fields for component %d not contiguous",iColour);
             return FALSE;
         }
@@ -2263,7 +2367,8 @@ DWORD CImageDisplay::CountSetBits(DWORD Field)
 
     // Until the input is exhausted, count the number of bits
 
-    while (init) {
+    while (init)
+    {
         init = init & (init - 1);  // Turn off the bottommost bit
         Count++;
     }
@@ -2280,14 +2385,17 @@ DWORD CImageDisplay::CountPrefixBits(DWORD Field)
     DWORD Mask = 1;
     DWORD Count = 0;
 
-    while (TRUE) {
-        if (Field & Mask) {
+    while (TRUE)
+    {
+        if (Field & Mask)
+        {
             return Count;
         }
         Count++;
 
         ASSERT(Mask != 0x80000000);
-        if (Mask == 0x80000000) {
+        if (Mask == 0x80000000)
+        {
             return Count;
         }
         Mask <<= 1;
@@ -2302,20 +2410,23 @@ DWORD CImageDisplay::CountPrefixBits(DWORD Field)
 // fields likes the number of planes is one, that it's structure size is set
 // correctly and that the bitmap dimensions have not been set as negative
 
-BOOL CImageDisplay::CheckHeaderValidity(const VIDEOINFO *pInput)
+BOOL CImageDisplay::CheckHeaderValidity(const VIDEOINFO* pInput)
 {
     // Check the bitmap width and height are not negative.
 
     if (pInput->bmiHeader.biWidth <= 0 ||
-    pInput->bmiHeader.biHeight <= 0) {
+            pInput->bmiHeader.biHeight <= 0)
+    {
         NOTE("Invalid bitmap dimensions");
         return FALSE;
     }
 
     // Check the compression is either BI_RGB or BI_BITFIELDS
 
-    if (pInput->bmiHeader.biCompression != BI_RGB) {
-        if (pInput->bmiHeader.biCompression != BI_BITFIELDS) {
+    if (pInput->bmiHeader.biCompression != BI_RGB)
+    {
+        if (pInput->bmiHeader.biCompression != BI_BITFIELDS)
+        {
             NOTE("Invalid compression format");
             return FALSE;
         }
@@ -2323,9 +2434,12 @@ BOOL CImageDisplay::CheckHeaderValidity(const VIDEOINFO *pInput)
 
     // If BI_BITFIELDS compression format check the colour depth
 
-    if (pInput->bmiHeader.biCompression == BI_BITFIELDS) {
-        if (pInput->bmiHeader.biBitCount != 16) {
-            if (pInput->bmiHeader.biBitCount != 32) {
+    if (pInput->bmiHeader.biCompression == BI_BITFIELDS)
+    {
+        if (pInput->bmiHeader.biBitCount != 16)
+        {
+            if (pInput->bmiHeader.biBitCount != 32)
+            {
                 NOTE("BI_BITFIELDS not 16/32 bit depth");
                 return FALSE;
             }
@@ -2334,8 +2448,10 @@ BOOL CImageDisplay::CheckHeaderValidity(const VIDEOINFO *pInput)
 
     // Check the assumptions about the layout of the bit fields
 
-    if (pInput->bmiHeader.biCompression == BI_BITFIELDS) {
-        if (CheckBitFields(pInput) == FALSE) {
+    if (pInput->bmiHeader.biCompression == BI_BITFIELDS)
+    {
+        if (CheckBitFields(pInput) == FALSE)
+        {
             NOTE("Bit fields are not valid");
             return FALSE;
         }
@@ -2343,15 +2459,18 @@ BOOL CImageDisplay::CheckHeaderValidity(const VIDEOINFO *pInput)
 
     // Are the number of planes equal to one
 
-    if (pInput->bmiHeader.biPlanes != 1) {
+    if (pInput->bmiHeader.biPlanes != 1)
+    {
         NOTE("Number of planes not one");
         return FALSE;
     }
 
     // Check the image size is consistent (it can be zero)
 
-    if (pInput->bmiHeader.biSizeImage != GetBitmapSize(&pInput->bmiHeader)) {
-        if (pInput->bmiHeader.biSizeImage) {
+    if (pInput->bmiHeader.biSizeImage != GetBitmapSize(&pInput->bmiHeader))
+    {
+        if (pInput->bmiHeader.biSizeImage)
+        {
             NOTE("Image size incorrectly set");
             return FALSE;
         }
@@ -2359,7 +2478,8 @@ BOOL CImageDisplay::CheckHeaderValidity(const VIDEOINFO *pInput)
 
     // Check the size of the structure
 
-    if (pInput->bmiHeader.biSize != sizeof(BITMAPINFOHEADER)) {
+    if (pInput->bmiHeader.biSize != sizeof(BITMAPINFOHEADER))
+    {
         NOTE("Size of BITMAPINFOHEADER wrong");
         return FALSE;
     }
@@ -2372,12 +2492,14 @@ BOOL CImageDisplay::CheckHeaderValidity(const VIDEOINFO *pInput)
 // colours present, the number considered important and the biCompression
 // field which should always be BI_RGB as no other formats are meaningful
 
-BOOL CImageDisplay::CheckPaletteHeader(const VIDEOINFO *pInput)
+BOOL CImageDisplay::CheckPaletteHeader(const VIDEOINFO* pInput)
 {
     // The checks here are for palettised videos only
 
-    if (PALETTISED(pInput) == FALSE) {
-        if (pInput->bmiHeader.biClrUsed) {
+    if (PALETTISED(pInput) == FALSE)
+    {
+        if (pInput->bmiHeader.biClrUsed)
+        {
             NOTE("Invalid palette entries");
             return FALSE;
         }
@@ -2386,21 +2508,24 @@ BOOL CImageDisplay::CheckPaletteHeader(const VIDEOINFO *pInput)
 
     // Compression type of BI_BITFIELDS is meaningless for palette video
 
-    if (pInput->bmiHeader.biCompression != BI_RGB) {
+    if (pInput->bmiHeader.biCompression != BI_RGB)
+    {
         NOTE("Palettised video must be BI_RGB");
         return FALSE;
     }
 
     // Check the number of palette colours is correct
 
-    if (pInput->bmiHeader.biClrUsed > PALETTE_ENTRIES(pInput)) {
+    if (pInput->bmiHeader.biClrUsed > PALETTE_ENTRIES(pInput))
+    {
         NOTE("Too many colours in palette");
         return FALSE;
     }
 
     // The number of important colours shouldn't exceed the number used
 
-    if (pInput->bmiHeader.biClrImportant > pInput->bmiHeader.biClrUsed) {
+    if (pInput->bmiHeader.biClrImportant > pInput->bmiHeader.biClrUsed)
+    {
         NOTE("Too many important colours");
         return FALSE;
     }
@@ -2410,7 +2535,7 @@ BOOL CImageDisplay::CheckPaletteHeader(const VIDEOINFO *pInput)
 
 // Return the format of the video display
 
-const VIDEOINFO *CImageDisplay::GetDisplayFormat()
+const VIDEOINFO* CImageDisplay::GetDisplayFormat()
 {
     return &m_Display;
 }
@@ -2440,18 +2565,20 @@ WORD CImageDisplay::GetDisplayDepth()
 // palette). We set the base class media type before calling this function so
 // that the media types between the pins match after a connection is made
 
-HRESULT CImageDisplay::UpdateFormat(__inout VIDEOINFO *pVideoInfo)
+HRESULT CImageDisplay::UpdateFormat(__inout VIDEOINFO* pVideoInfo)
 {
     ASSERT(pVideoInfo);
 
-    BITMAPINFOHEADER *pbmi = HEADER(pVideoInfo);
+    BITMAPINFOHEADER* pbmi = HEADER(pVideoInfo);
     SetRectEmpty(&pVideoInfo->rcSource);
     SetRectEmpty(&pVideoInfo->rcTarget);
 
     // Set the number of colours explicitly
 
-    if (PALETTISED(pVideoInfo)) {
-        if (pVideoInfo->bmiHeader.biClrUsed == 0) {
+    if (PALETTISED(pVideoInfo))
+    {
+        if (pVideoInfo->bmiHeader.biClrUsed == 0)
+        {
             pVideoInfo->bmiHeader.biClrUsed = PALETTE_ENTRIES(pVideoInfo);
         }
     }
@@ -2460,13 +2587,15 @@ HRESULT CImageDisplay::UpdateFormat(__inout VIDEOINFO *pVideoInfo)
     // some displays the number of important colours is not initialised when
     // retrieving the display type so we set the colours used correctly
 
-    if (pVideoInfo->bmiHeader.biClrImportant > pVideoInfo->bmiHeader.biClrUsed) {
+    if (pVideoInfo->bmiHeader.biClrImportant > pVideoInfo->bmiHeader.biClrUsed)
+    {
         pVideoInfo->bmiHeader.biClrImportant = PALETTE_ENTRIES(pVideoInfo);
     }
 
     // Change the image size field to be explicit
 
-    if (pVideoInfo->bmiHeader.biSizeImage == 0) {
+    if (pVideoInfo->bmiHeader.biSizeImage == 0)
+    {
         pVideoInfo->bmiHeader.biSizeImage = GetBitmapSize(&pVideoInfo->bmiHeader);
     }
     return NOERROR;
@@ -2481,18 +2610,21 @@ HRESULT CImageDisplay::UpdateFormat(__inout VIDEOINFO *pVideoInfo)
 // complexity is that most displays draw 8 bit palettised images efficiently
 // Also if the input format is less colour bits per pixel then we also accept
 
-HRESULT CImageDisplay::CheckVideoType(const VIDEOINFO *pInput)
+HRESULT CImageDisplay::CheckVideoType(const VIDEOINFO* pInput)
 {
     // First of all check the VIDEOINFOHEADER looks correct
 
-    if (CheckHeaderValidity(pInput) == FALSE) {
+    if (CheckHeaderValidity(pInput) == FALSE)
+    {
         return E_INVALIDARG;
     }
 
     // Virtually all devices support palettised images efficiently
 
-    if (m_Display.bmiHeader.biBitCount == pInput->bmiHeader.biBitCount) {
-        if (PALETTISED(pInput) == TRUE) {
+    if (m_Display.bmiHeader.biBitCount == pInput->bmiHeader.biBitCount)
+    {
+        if (PALETTISED(pInput) == TRUE)
+        {
             ASSERT(PALETTISED(&m_Display) == TRUE);
             NOTE("(Video) Type connection ACCEPTED");
             return NOERROR;
@@ -2502,14 +2634,16 @@ HRESULT CImageDisplay::CheckVideoType(const VIDEOINFO *pInput)
 
     // Is the display depth greater than the input format
 
-    if (m_Display.bmiHeader.biBitCount > pInput->bmiHeader.biBitCount) {
+    if (m_Display.bmiHeader.biBitCount > pInput->bmiHeader.biBitCount)
+    {
         NOTE("(Video) Mismatch agreed");
         return NOERROR;
     }
 
     // Is the display depth less than the input format
 
-    if (m_Display.bmiHeader.biBitCount < pInput->bmiHeader.biBitCount) {
+    if (m_Display.bmiHeader.biBitCount < pInput->bmiHeader.biBitCount)
+    {
         NOTE("(Video) Format mismatch");
         return E_INVALIDARG;
     }
@@ -2526,12 +2660,13 @@ HRESULT CImageDisplay::CheckVideoType(const VIDEOINFO *pInput)
     // fields they really mean and check against the display device format
     // This is only going to be called when both formats are equal bits pixel
 
-    const DWORD *pInputMask = GetBitMasks(pInput);
-    const DWORD *pDisplayMask = GetBitMasks((VIDEOINFO *)&m_Display);
+    const DWORD* pInputMask = GetBitMasks(pInput);
+    const DWORD* pDisplayMask = GetBitMasks((VIDEOINFO*)&m_Display);
 
     if (pInputMask[iRED] != pDisplayMask[iRED] ||
             pInputMask[iGREEN] != pDisplayMask[iGREEN] ||
-                pInputMask[iBLUE] != pDisplayMask[iBLUE]) {
+            pInputMask[iBLUE] != pDisplayMask[iBLUE])
+    {
 
         NOTE("(Video) Bit field mismatch");
         return E_INVALIDARG;
@@ -2544,21 +2679,27 @@ HRESULT CImageDisplay::CheckVideoType(const VIDEOINFO *pInput)
 
 // Return the bit masks for the true colour VIDEOINFO provided
 
-const DWORD *CImageDisplay::GetBitMasks(const VIDEOINFO *pVideoInfo)
+const DWORD* CImageDisplay::GetBitMasks(const VIDEOINFO* pVideoInfo)
 {
     static const DWORD FailMasks[] = {0,0,0};
 
-    if (pVideoInfo->bmiHeader.biCompression == BI_BITFIELDS) {
+    if (pVideoInfo->bmiHeader.biCompression == BI_BITFIELDS)
+    {
         return BITMASKS(pVideoInfo);
     }
 
     ASSERT(pVideoInfo->bmiHeader.biCompression == BI_RGB);
 
-    switch (pVideoInfo->bmiHeader.biBitCount) {
-        case 16: return bits555;
-        case 24: return bits888;
-        case 32: return bits888;
-        default: return FailMasks;
+    switch (pVideoInfo->bmiHeader.biBitCount)
+    {
+        case 16:
+            return bits555;
+        case 24:
+            return bits888;
+        case 32:
+            return bits888;
+        default:
+            return FailMasks;
     }
 }
 
@@ -2569,12 +2710,13 @@ const DWORD *CImageDisplay::GetBitMasks(const VIDEOINFO *pVideoInfo)
 // As well as the contained VIDEOINFO being correct the major type must be
 // video, the subtype a recognised video format and the type GUID correct
 
-HRESULT CImageDisplay::CheckMediaType(const CMediaType *pmtIn)
+HRESULT CImageDisplay::CheckMediaType(const CMediaType* pmtIn)
 {
     // Does this have a VIDEOINFOHEADER format block
 
-    const GUID *pFormatType = pmtIn->FormatType();
-    if (*pFormatType != FORMAT_VideoInfo) {
+    const GUID* pFormatType = pmtIn->FormatType();
+    if (*pFormatType != FORMAT_VideoInfo)
+    {
         NOTE("Format GUID not a VIDEOINFOHEADER");
         return E_INVALIDARG;
     }
@@ -2583,25 +2725,28 @@ HRESULT CImageDisplay::CheckMediaType(const CMediaType *pmtIn)
     // Check the format looks reasonably ok
 
     ULONG Length = pmtIn->FormatLength();
-    if (Length < SIZE_VIDEOHEADER) {
+    if (Length < SIZE_VIDEOHEADER)
+    {
         NOTE("Format smaller than a VIDEOHEADER");
         return E_FAIL;
     }
 
-    VIDEOINFO *pInput = (VIDEOINFO *) pmtIn->Format();
+    VIDEOINFO* pInput = (VIDEOINFO*) pmtIn->Format();
 
     // Check the major type is MEDIATYPE_Video
 
-    const GUID *pMajorType = pmtIn->Type();
-    if (*pMajorType != MEDIATYPE_Video) {
+    const GUID* pMajorType = pmtIn->Type();
+    if (*pMajorType != MEDIATYPE_Video)
+    {
         NOTE("Major type not MEDIATYPE_Video");
         return E_INVALIDARG;
     }
 
     // Check we can identify the media subtype
 
-    const GUID *pSubType = pmtIn->Subtype();
-    if (GetBitCount(pSubType) == USHRT_MAX) {
+    const GUID* pSubType = pmtIn->Subtype();
+    if (GetBitCount(pSubType) == USHRT_MAX)
+    {
         NOTE("Invalid video media subtype");
         return E_INVALIDARG;
     }
@@ -2615,9 +2760,9 @@ HRESULT CImageDisplay::CheckMediaType(const CMediaType *pmtIn)
 // 16 bit 5:6:5 display format uses 0xF8, 0xFC and 0xF8, therefore given any
 // RGB triplets we can AND them with these fields to find one that is valid
 
-BOOL CImageDisplay::GetColourMask(__out DWORD *pMaskRed,
-                                  __out DWORD *pMaskGreen,
-                                  __out DWORD *pMaskBlue)
+BOOL CImageDisplay::GetColourMask(__out DWORD* pMaskRed,
+                                  __out DWORD* pMaskGreen,
+                                  __out DWORD* pMaskBlue)
 {
     CAutoLock cDisplayLock(this);
     *pMaskRed = 0xFF;
@@ -2626,7 +2771,8 @@ BOOL CImageDisplay::GetColourMask(__out DWORD *pMaskRed,
 
     // If this format is palettised then it doesn't have bit fields
 
-    if (m_Display.bmiHeader.biBitCount < 16) {
+    if (m_Display.bmiHeader.biBitCount < 16)
+    {
         return FALSE;
     }
 
@@ -2634,21 +2780,23 @@ BOOL CImageDisplay::GetColourMask(__out DWORD *pMaskRed,
     // possible colour component ranges described by a byte. It is never
     // allowed for a 24 bit colour depth image to have BI_BITFIELDS set
 
-    if (m_Display.bmiHeader.biBitCount == 24) {
+    if (m_Display.bmiHeader.biBitCount == 24)
+    {
         ASSERT(m_Display.bmiHeader.biCompression == BI_RGB);
         return TRUE;
     }
 
     // Calculate the mask based on the format's bit fields
 
-    const DWORD *pBitFields = (DWORD *) GetBitMasks((VIDEOINFO *)&m_Display);
-    DWORD *pOutputMask[] = { pMaskRed, pMaskGreen, pMaskBlue };
+    const DWORD* pBitFields = (DWORD*) GetBitMasks((VIDEOINFO*)&m_Display);
+    DWORD* pOutputMask[] = { pMaskRed, pMaskGreen, pMaskBlue };
 
     // We know from earlier testing that there are no more than iMAXBITS
     // bits set in the mask and that they are all contiguous. All that
     // therefore remains is to shift them into the correct position
 
-    for (INT iColour = iRED;iColour <= iBLUE;iColour++) {
+    for (INT iColour = iRED; iColour <= iBLUE; iColour++)
+    {
 
         // This works out how many bits there are and where they live
 
@@ -2668,22 +2816,26 @@ BOOL CImageDisplay::GetColourMask(__out DWORD *pMaskRed,
 
 /*  Helper to convert to VIDEOINFOHEADER2
 */
-STDAPI ConvertVideoInfoToVideoInfo2(__inout AM_MEDIA_TYPE *pmt)
+STDAPI ConvertVideoInfoToVideoInfo2(__inout AM_MEDIA_TYPE* pmt)
 {
-    if (pmt->formattype != FORMAT_VideoInfo) {
+    if (pmt->formattype != FORMAT_VideoInfo)
+    {
         return E_INVALIDARG;
     }
-    if (NULL == pmt->pbFormat || pmt->cbFormat < sizeof(VIDEOINFOHEADER)) {
+    if (NULL == pmt->pbFormat || pmt->cbFormat < sizeof(VIDEOINFOHEADER))
+    {
         return E_INVALIDARG;
     }
-    VIDEOINFO *pVideoInfo = (VIDEOINFO *)pmt->pbFormat;
+    VIDEOINFO* pVideoInfo = (VIDEOINFO*)pmt->pbFormat;
     DWORD dwNewSize;
     HRESULT hr = DWordAdd(pmt->cbFormat, sizeof(VIDEOINFOHEADER2) - sizeof(VIDEOINFOHEADER), &dwNewSize);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return hr;
     }
     PVOID pvNew = CoTaskMemAlloc(dwNewSize);
-    if (pvNew == NULL) {
+    if (pvNew == NULL)
+    {
         return E_OUTOFMEMORY;
     }
     CopyMemory(pvNew, pmt->pbFormat, FIELD_OFFSET(VIDEOINFOHEADER, bmiHeader));
@@ -2692,7 +2844,7 @@ STDAPI ConvertVideoInfoToVideoInfo2(__inout AM_MEDIA_TYPE *pmt)
     CopyMemory((PBYTE)pvNew + FIELD_OFFSET(VIDEOINFOHEADER2, bmiHeader),
                pmt->pbFormat + FIELD_OFFSET(VIDEOINFOHEADER, bmiHeader),
                pmt->cbFormat - FIELD_OFFSET(VIDEOINFOHEADER, bmiHeader));
-    VIDEOINFOHEADER2 *pVideoInfo2 = (VIDEOINFOHEADER2 *)pvNew;
+    VIDEOINFOHEADER2* pVideoInfo2 = (VIDEOINFOHEADER2*)pvNew;
     pVideoInfo2->dwPictAspectRatioX = (DWORD)pVideoInfo2->bmiHeader.biWidth;
     pVideoInfo2->dwPictAspectRatioY = (DWORD)abs(pVideoInfo2->bmiHeader.biHeight);
     pmt->formattype = FORMAT_VideoInfo2;
@@ -2704,20 +2856,23 @@ STDAPI ConvertVideoInfoToVideoInfo2(__inout AM_MEDIA_TYPE *pmt)
 
 
 //  Check a media type containing VIDEOINFOHEADER
-STDAPI CheckVideoInfoType(const AM_MEDIA_TYPE *pmt)
+STDAPI CheckVideoInfoType(const AM_MEDIA_TYPE* pmt)
 {
-    if (NULL == pmt || NULL == pmt->pbFormat) {
+    if (NULL == pmt || NULL == pmt->pbFormat)
+    {
         return E_POINTER;
     }
-    if (pmt->majortype != MEDIATYPE_Video || 
-        pmt->formattype != FORMAT_VideoInfo ||
-        pmt->cbFormat < sizeof(VIDEOINFOHEADER)) {
+    if (pmt->majortype != MEDIATYPE_Video ||
+            pmt->formattype != FORMAT_VideoInfo ||
+            pmt->cbFormat < sizeof(VIDEOINFOHEADER))
+    {
         return VFW_E_TYPE_NOT_ACCEPTED;
     }
-    const VIDEOINFOHEADER *pHeader = (const VIDEOINFOHEADER *)pmt->pbFormat;
+    const VIDEOINFOHEADER* pHeader = (const VIDEOINFOHEADER*)pmt->pbFormat;
     if (!ValidateBitmapInfoHeader(
-             &pHeader->bmiHeader, 
-             pmt->cbFormat - FIELD_OFFSET(VIDEOINFOHEADER, bmiHeader))) {
+                &pHeader->bmiHeader,
+                pmt->cbFormat - FIELD_OFFSET(VIDEOINFOHEADER, bmiHeader)))
+    {
         return VFW_E_TYPE_NOT_ACCEPTED;
     }
 
@@ -2725,20 +2880,23 @@ STDAPI CheckVideoInfoType(const AM_MEDIA_TYPE *pmt)
 }
 
 //  Check a media type containing VIDEOINFOHEADER2
-STDAPI CheckVideoInfo2Type(const AM_MEDIA_TYPE *pmt)
+STDAPI CheckVideoInfo2Type(const AM_MEDIA_TYPE* pmt)
 {
-    if (NULL == pmt || NULL == pmt->pbFormat) {
+    if (NULL == pmt || NULL == pmt->pbFormat)
+    {
         return E_POINTER;
-    }    
-    if (pmt->majortype != MEDIATYPE_Video || 
-        pmt->formattype != FORMAT_VideoInfo2 ||
-        pmt->cbFormat < sizeof(VIDEOINFOHEADER2)) {
+    }
+    if (pmt->majortype != MEDIATYPE_Video ||
+            pmt->formattype != FORMAT_VideoInfo2 ||
+            pmt->cbFormat < sizeof(VIDEOINFOHEADER2))
+    {
         return VFW_E_TYPE_NOT_ACCEPTED;
     }
-    const VIDEOINFOHEADER2 *pHeader = (const VIDEOINFOHEADER2 *)pmt->pbFormat;
+    const VIDEOINFOHEADER2* pHeader = (const VIDEOINFOHEADER2*)pmt->pbFormat;
     if (!ValidateBitmapInfoHeader(
-             &pHeader->bmiHeader, 
-             pmt->cbFormat - FIELD_OFFSET(VIDEOINFOHEADER2, bmiHeader))) {
+                &pHeader->bmiHeader,
+                pmt->cbFormat - FIELD_OFFSET(VIDEOINFOHEADER2, bmiHeader)))
+    {
         return VFW_E_TYPE_NOT_ACCEPTED;
     }
 

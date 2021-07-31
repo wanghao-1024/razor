@@ -14,30 +14,31 @@
 
 typedef unsigned __int64 u_int64_t;
 
-static u_int64_t filetime_to_unix_epoch(const FILETIME *ft)
+static u_int64_t filetime_to_unix_epoch(const FILETIME* ft)
 {
-	u_int64_t res = (u_int64_t)ft->dwHighDateTime << 32;
+    u_int64_t res = (u_int64_t)ft->dwHighDateTime << 32;
 
-	res |= ft->dwLowDateTime;
-	res /= 10; /* from 100 nano-sec periods to usec */
-	res -= DELTA_EPOCH_IN_USEC; /* from Win epoch to Unix epoch */
-	return (res);
+    res |= ft->dwLowDateTime;
+    res /= 10; /* from 100 nano-sec periods to usec */
+    res -= DELTA_EPOCH_IN_USEC; /* from Win epoch to Unix epoch */
+    return (res);
 }
 
-int gettimeofday(struct timeval *tv, void *tz)
+int gettimeofday(struct timeval* tv, void* tz)
 {
-	FILETIME ft;
-	u_int64_t tim;
+    FILETIME ft;
+    u_int64_t tim;
 
-	if (!tv) {
-		//errno = EINVAL;
-		return (-1);
-	}
-	GetSystemTimeAsFileTime(&ft);
-	tim = filetime_to_unix_epoch(&ft);
-	tv->tv_sec = (long)(tim / 1000000L);
-	tv->tv_usec = (long)(tim % 1000000L);
-	return (0);
+    if (!tv)
+    {
+        //errno = EINVAL;
+        return (-1);
+    }
+    GetSystemTimeAsFileTime(&ft);
+    tim = filetime_to_unix_epoch(&ft);
+    tv->tv_sec = (long)(tim / 1000000L);
+    tv->tv_usec = (long)(tim % 1000000L);
+    return (0);
 }
 
 #endif

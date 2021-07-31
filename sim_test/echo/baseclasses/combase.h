@@ -115,11 +115,11 @@ AMOVIESETUP_PIN, * PAMOVIESETUP_PIN, * FAR LPAMOVIESETUP_PIN;
 
 typedef struct _AMOVIESETUP_FILTER
 {
-  const CLSID * clsID;
-  const WCHAR * strName;
-  DWORD      dwMerit;
-  UINT       nPins;
-  const AMOVIESETUP_PIN * lpPin;
+    const CLSID* clsID;
+    const WCHAR* strName;
+    DWORD      dwMerit;
+    UINT       nPins;
+    const AMOVIESETUP_PIN* lpPin;
 }
 AMOVIESETUP_FILTER, * PAMOVIESETUP_FILTER, * FAR LPAMOVIESETUP_FILTER;
 
@@ -138,14 +138,14 @@ extern OSVERSIONINFO g_osInfo;     // Filled in by GetVersionEx
 #ifndef INONDELEGATINGUNKNOWN_DEFINED
 DECLARE_INTERFACE(INonDelegatingUnknown)
 {
-    STDMETHOD(NonDelegatingQueryInterface) (THIS_ REFIID, LPVOID *) PURE;
+    STDMETHOD(NonDelegatingQueryInterface) (THIS_ REFIID, LPVOID*) PURE;
     STDMETHOD_(ULONG, NonDelegatingAddRef)(THIS) PURE;
     STDMETHOD_(ULONG, NonDelegatingRelease)(THIS) PURE;
 };
 #define INONDELEGATINGUNKNOWN_DEFINED
 #endif
 
-typedef INonDelegatingUnknown *PNDUNKNOWN;
+typedef INonDelegatingUnknown* PNDUNKNOWN;
 
 
 /* This is the base object class that supports active object counting. As
@@ -187,7 +187,8 @@ public:
 
     /* Call this to find if there are any CUnknown derived objects active */
 
-    static LONG ObjectsActive() {
+    static LONG ObjectsActive()
+    {
         return m_cObjects;
     };
 };
@@ -198,7 +199,7 @@ public:
    support, and an implementation of the core non delegating IUnknown */
 
 class AM_NOVTABLE CUnknown : public INonDelegatingUnknown,
-                 public CBaseObject
+    public CBaseObject
 {
 private:
     const LPUNKNOWN m_pUnknown; /* Owner of this object */
@@ -213,15 +214,16 @@ public:
 
     // This is redundant, just use the other constructor
     //   as we never touch the HRESULT in this anyway
-    CUnknown(__in_opt LPCTSTR Name, __in_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr);
+    CUnknown(__in_opt LPCTSTR Name, __in_opt LPUNKNOWN pUnk, __inout_opt HRESULT* phr);
 #ifdef UNICODE
     CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk);
-    CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk,__inout_opt HRESULT *phr);
+    CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk,__inout_opt HRESULT* phr);
 #endif
 
     /* Return the owner of this object */
 
-    LPUNKNOWN GetOwner() const {
+    LPUNKNOWN GetOwner() const
+    {
         return m_pUnknown;
     };
 
@@ -232,7 +234,7 @@ public:
 
     /* Non delegating unknown implementation */
 
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID, __deref_out void **);
+    STDMETHODIMP NonDelegatingQueryInterface(REFIID, __deref_out void**);
     STDMETHODIMP_(ULONG) NonDelegatingAddRef();
     STDMETHODIMP_(ULONG) NonDelegatingRelease();
 };
@@ -240,11 +242,11 @@ public:
 /* Return an interface pointer to a requesting client
    performing a thread safe AddRef as necessary */
 
-STDAPI GetInterface(LPUNKNOWN pUnk, __out void **ppv);
+STDAPI GetInterface(LPUNKNOWN pUnk, __out void** ppv);
 
 /* A function that can create a new COM object */
 
-typedef CUnknown *(CALLBACK *LPFNNewCOMObject)(__in_opt LPUNKNOWN pUnkOuter, __inout_opt HRESULT *phr);
+typedef CUnknown* (CALLBACK* LPFNNewCOMObject)(__in_opt LPUNKNOWN pUnkOuter, __inout_opt HRESULT* phr);
 
 /*  A function (can be NULL) which is called from the DLL entrypoint
     routine for each factory template:
@@ -252,26 +254,29 @@ typedef CUnknown *(CALLBACK *LPFNNewCOMObject)(__in_opt LPUNKNOWN pUnkOuter, __i
     bLoading - TRUE on DLL load, FALSE on DLL unload
     rclsid   - the m_ClsID of the entry
 */
-typedef void (CALLBACK *LPFNInitRoutine)(BOOL bLoading, const CLSID *rclsid);
+typedef void (CALLBACK* LPFNInitRoutine)(BOOL bLoading, const CLSID* rclsid);
 
 /* Create one of these per object class in an array so that
    the default class factory code can create new instances */
 
-class CFactoryTemplate {
+class CFactoryTemplate
+{
 
 public:
 
-    const WCHAR *              m_Name;
-    const CLSID *              m_ClsID;
+    const WCHAR*               m_Name;
+    const CLSID*               m_ClsID;
     LPFNNewCOMObject           m_lpfnNew;
     LPFNInitRoutine            m_lpfnInit;
-    const AMOVIESETUP_FILTER * m_pAMovieSetup_Filter;
+    const AMOVIESETUP_FILTER* m_pAMovieSetup_Filter;
 
-    BOOL IsClassID(REFCLSID rclsid) const {
+    BOOL IsClassID(REFCLSID rclsid) const
+    {
         return (IsEqualCLSID(*m_ClsID,rclsid));
     };
 
-    CUnknown *CreateInstance(__inout_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr) const {
+    CUnknown* CreateInstance(__inout_opt LPUNKNOWN pUnk, __inout_opt HRESULT* phr) const
+    {
         CheckPointer(phr,NULL);
         return m_lpfnNew(pUnk, phr);
     };
@@ -295,7 +300,7 @@ public:
 
 
 
-HINSTANCE	LoadOLEAut32();
+HINSTANCE   LoadOLEAut32();
 
 
 #endif /* __COMBASE__ */

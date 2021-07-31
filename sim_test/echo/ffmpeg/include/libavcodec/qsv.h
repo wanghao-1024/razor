@@ -23,11 +23,12 @@
 
 #include <mfx/mfxvideo.h>
 
-typedef struct AVQSVContext {
+typedef struct AVQSVContext
+{
     mfxSession session;
     int iopattern;
 
-    mfxExtBuffer **ext_buffers;
+    mfxExtBuffer** ext_buffers;
     int         nb_ext_buffers;
 } AVQSVContext;
 
@@ -36,6 +37,6 @@ typedef struct AVQSVContext {
  *
  * It must be freed by the caller with av_free().
  */
-AVQSVContext *av_qsv_alloc_context(void);
+AVQSVContext* av_qsv_alloc_context(void);
 
 #endif /* AVCODEC_QSV_H */

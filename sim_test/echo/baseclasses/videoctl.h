@@ -30,7 +30,7 @@ LPWSTR WINAPI WideStringFromResource(__out_ecount(STR_MAX_LENGTH) LPWSTR pBuffer
 BOOL WINAPI GetDialogSize(int iResourceID,     // Dialog box resource identifier
                           DLGPROC pDlgProc,    // Pointer to dialog procedure
                           LPARAM lParam,       // Any user data wanted in pDlgProc
-                          __out SIZE *pResult);// Returns the size of dialog box
+                          __out SIZE* pResult);// Returns the size of dialog box
 
 // Class that aggregates an IDirectDraw interface
 
@@ -43,7 +43,7 @@ protected:
 public:
 
     DECLARE_IUNKNOWN
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,__deref_out void **ppv);
+    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,__deref_out void** ppv);
 
     // Constructor and destructor
 
@@ -54,28 +54,29 @@ public:
     virtual CAggDirectDraw::~CAggDirectDraw() { };
 
     // Set the object we should be aggregating
-    void SetDirectDraw(__inout LPDIRECTDRAW pDirectDraw) {
+    void SetDirectDraw(__inout LPDIRECTDRAW pDirectDraw)
+    {
         m_pDirectDraw = pDirectDraw;
     }
 
     // IDirectDraw methods
 
     STDMETHODIMP Compact();
-    STDMETHODIMP CreateClipper(DWORD dwFlags,__deref_out LPDIRECTDRAWCLIPPER *lplpDDClipper,__inout_opt IUnknown *pUnkOuter);
-    STDMETHODIMP CreatePalette(DWORD dwFlags,__in LPPALETTEENTRY lpColorTable,__deref_out LPDIRECTDRAWPALETTE *lplpDDPalette,__inout_opt IUnknown *pUnkOuter);
-    STDMETHODIMP CreateSurface(__in LPDDSURFACEDESC lpDDSurfaceDesc,__deref_out LPDIRECTDRAWSURFACE *lplpDDSurface,__inout_opt IUnknown *pUnkOuter);
-    STDMETHODIMP DuplicateSurface(__in LPDIRECTDRAWSURFACE lpDDSurface,__deref_out LPDIRECTDRAWSURFACE *lplpDupDDSurface);
+    STDMETHODIMP CreateClipper(DWORD dwFlags,__deref_out LPDIRECTDRAWCLIPPER* lplpDDClipper,__inout_opt IUnknown* pUnkOuter);
+    STDMETHODIMP CreatePalette(DWORD dwFlags,__in LPPALETTEENTRY lpColorTable,__deref_out LPDIRECTDRAWPALETTE* lplpDDPalette,__inout_opt IUnknown* pUnkOuter);
+    STDMETHODIMP CreateSurface(__in LPDDSURFACEDESC lpDDSurfaceDesc,__deref_out LPDIRECTDRAWSURFACE* lplpDDSurface,__inout_opt IUnknown* pUnkOuter);
+    STDMETHODIMP DuplicateSurface(__in LPDIRECTDRAWSURFACE lpDDSurface,__deref_out LPDIRECTDRAWSURFACE* lplpDupDDSurface);
     STDMETHODIMP EnumDisplayModes(DWORD dwSurfaceDescCount,__in LPDDSURFACEDESC lplpDDSurfaceDescList,__in LPVOID lpContext,__in LPDDENUMMODESCALLBACK lpEnumCallback);
     STDMETHODIMP EnumSurfaces(DWORD dwFlags,__in LPDDSURFACEDESC lpDDSD,__in LPVOID lpContext,__in LPDDENUMSURFACESCALLBACK lpEnumCallback);
     STDMETHODIMP FlipToGDISurface();
     STDMETHODIMP GetCaps(__out LPDDCAPS lpDDDriverCaps,__out LPDDCAPS lpDDHELCaps);
     STDMETHODIMP GetDisplayMode(__out LPDDSURFACEDESC lpDDSurfaceDesc);
     STDMETHODIMP GetFourCCCodes(__inout LPDWORD lpNumCodes,__out_ecount(*lpNumCodes) LPDWORD lpCodes);
-    STDMETHODIMP GetGDISurface(__deref_out LPDIRECTDRAWSURFACE *lplpGDIDDSurface);
+    STDMETHODIMP GetGDISurface(__deref_out LPDIRECTDRAWSURFACE* lplpGDIDDSurface);
     STDMETHODIMP GetMonitorFrequency(__out LPDWORD lpdwFrequency);
     STDMETHODIMP GetScanLine(__out LPDWORD lpdwScanLine);
     STDMETHODIMP GetVerticalBlankStatus(__out LPBOOL lpblsInVB);
-    STDMETHODIMP Initialize(__in GUID *lpGUID);
+    STDMETHODIMP Initialize(__in GUID* lpGUID);
     STDMETHODIMP RestoreDisplayMode();
     STDMETHODIMP SetCooperativeLevel(HWND hWnd,DWORD dwFlags);
     STDMETHODIMP SetDisplayMode(DWORD dwWidth,DWORD dwHeight,DWORD dwBpp);
@@ -94,7 +95,7 @@ protected:
 public:
 
     DECLARE_IUNKNOWN
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,__deref_out void **ppv);
+    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,__deref_out void** ppv);
 
     // Constructor and destructor
 
@@ -105,7 +106,8 @@ public:
     virtual ~CAggDrawSurface() { };
 
     // Set the object we should be aggregating
-    void SetDirectDrawSurface(__inout LPDIRECTDRAWSURFACE pDirectDrawSurface) {
+    void SetDirectDrawSurface(__inout LPDIRECTDRAWSURFACE pDirectDrawSurface)
+    {
         m_pDirectDrawSurface = pDirectDrawSurface;
     }
 
@@ -120,15 +122,15 @@ public:
     STDMETHODIMP EnumAttachedSurfaces(__in LPVOID lpContext,__in LPDDENUMSURFACESCALLBACK lpEnumSurfacesCallback);
     STDMETHODIMP EnumOverlayZOrders(DWORD dwFlags,__in LPVOID lpContext,__in LPDDENUMSURFACESCALLBACK lpfnCallback);
     STDMETHODIMP Flip(__in LPDIRECTDRAWSURFACE lpDDSurfaceTargetOverride,DWORD dwFlags);
-    STDMETHODIMP GetAttachedSurface(__in LPDDSCAPS lpDDSCaps,__deref_out LPDIRECTDRAWSURFACE *lplpDDAttachedSurface);
+    STDMETHODIMP GetAttachedSurface(__in LPDDSCAPS lpDDSCaps,__deref_out LPDIRECTDRAWSURFACE* lplpDDAttachedSurface);
     STDMETHODIMP GetBltStatus(DWORD dwFlags);
     STDMETHODIMP GetCaps(__out LPDDSCAPS lpDDSCaps);
-    STDMETHODIMP GetClipper(__deref_out LPDIRECTDRAWCLIPPER *lplpDDClipper);
+    STDMETHODIMP GetClipper(__deref_out LPDIRECTDRAWCLIPPER* lplpDDClipper);
     STDMETHODIMP GetColorKey(DWORD dwFlags,__out LPDDCOLORKEY lpDDColorKey);
-    STDMETHODIMP GetDC(__out HDC *lphDC);
+    STDMETHODIMP GetDC(__out HDC* lphDC);
     STDMETHODIMP GetFlipStatus(DWORD dwFlags);
     STDMETHODIMP GetOverlayPosition(__out LPLONG lpdwX,__out LPLONG lpdwY);
-    STDMETHODIMP GetPalette(__deref_out LPDIRECTDRAWPALETTE *lplpDDPalette);
+    STDMETHODIMP GetPalette(__deref_out LPDIRECTDRAWPALETTE* lplpDDPalette);
     STDMETHODIMP GetPixelFormat(__out LPDDPIXELFORMAT lpDDPixelFormat);
     STDMETHODIMP GetSurfaceDesc(__out LPDDSURFACEDESC lpDDSurfaceDesc);
     STDMETHODIMP Initialize(__in LPDIRECTDRAW lpDD,__in LPDDSURFACEDESC lpDDSurfaceDesc);

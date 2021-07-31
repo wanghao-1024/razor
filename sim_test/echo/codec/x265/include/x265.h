@@ -97,10 +97,10 @@ typedef struct x265_nal
 typedef struct x265_lookahead_data
 {
     int64_t   plannedSatd[X265_LOOKAHEAD_MAX + 1];
-    uint32_t  *vbvCost;
-    uint32_t  *intraVbvCost;
-    uint32_t  *satdForVbv;
-    uint32_t  *intraSatdForVbv;
+    uint32_t*  vbvCost;
+    uint32_t*  intraVbvCost;
+    uint32_t*  satdForVbv;
+    uint32_t*  intraSatdForVbv;
     int       keyframe;
     int       lastMiniGopBFrame;
     int       plannedType[X265_LOOKAHEAD_MAX + 1];
@@ -123,7 +123,7 @@ typedef struct x265_analysis_validate
     int     radl;
     int     lookaheadDepth;
     int     gopLookahead;
-}x265_analysis_validate;
+} x265_analysis_validate;
 
 /* Stores all analysis data for a single frame */
 typedef struct x265_analysis_data
@@ -177,7 +177,7 @@ typedef struct x265_analysis_2Pass
     uint32_t      poc;
     uint32_t      frameRecordSize;
     void*         analysisFramedata;
-}x265_analysis_2Pass;
+} x265_analysis_2Pass;
 
 /* Frame level statistics */
 typedef struct x265_frame_stats
@@ -242,18 +242,18 @@ typedef enum
     NO_CTU_INFO = 0,
     HAS_CTU_INFO = 1,
     CTU_INFO_CHANGE = 2,
-}CTUInfo;
+} CTUInfo;
 
 typedef enum
 {
     NO_INFO = 0,
     AVC_INFO = 1,
-}MVRefineType;
+} MVRefineType;
 
 /* Arbitrary User SEI
- * Payload size is in bytes and the payload pointer must be non-NULL. 
+ * Payload size is in bytes and the payload pointer must be non-NULL.
  * Payload types and syntax can be found in Annex D of the H.265 Specification.
- * SEI Payload Alignment bits as described in Annex D must be included at the 
+ * SEI Payload Alignment bits as described in Annex D must be included at the
  * end of the payload if needed. The payload should not be NAL-encapsulated.
  * Payloads are written in the order of input */
 
@@ -284,7 +284,7 @@ typedef enum
     REGION_REFRESH_INFO                  = 134,
     MASTERING_DISPLAY_INFO               = 137,
     CONTENT_LIGHT_LEVEL_INFO             = 144,
-	ALTERNATIVE_TRANSFER_CHARACTERISTICS = 147,
+    ALTERNATIVE_TRANSFER_CHARACTERISTICS = 147,
 } SEIPayloadType;
 
 typedef struct x265_sei_payload
@@ -297,7 +297,7 @@ typedef struct x265_sei_payload
 typedef struct x265_sei
 {
     int numPayloads;
-    x265_sei_payload *payloads;
+    x265_sei_payload* payloads;
 } x265_sei;
 
 /* Used to pass pictures into the encoder, and to get picture data back out of
@@ -366,7 +366,7 @@ typedef struct x265_picture
      * Adaptive quantization must be enabled to use this feature. These quantizer
      * offsets should be given for each 16x16 block (8x8 block, when qg-size is 8).
      * Behavior if quant offsets differ between encoding passes is undefined. */
-    float            *quantOffsets;
+    float*            quantOffsets;
 
     /* Frame level statistics */
     x265_frame_stats frameData;
@@ -375,7 +375,7 @@ typedef struct x265_picture
     x265_sei         userSEI;
 
     /* Ratecontrol statistics for collecting the ratecontrol information.
-     * It is not used for collecting the last pass ratecontrol data in 
+     * It is not used for collecting the last pass ratecontrol data in
      * multi pass ratecontrol mode. */
     void*  rcData;
 
@@ -568,20 +568,23 @@ typedef struct x265_stats
 } x265_stats;
 
 /* String values accepted by x265_param_parse() (and CLI) for various parameters */
-static const char * const x265_motion_est_names[] = { "dia", "hex", "umh", "star", "sea", "full", 0 };
-static const char * const x265_source_csp_names[] = { "i400", "i420", "i422", "i444", "nv12", "nv16", 0 };
-static const char * const x265_video_format_names[] = { "component", "pal", "ntsc", "secam", "mac", "unknown", 0 };
-static const char * const x265_fullrange_names[] = { "limited", "full", 0 };
-static const char * const x265_colorprim_names[] = { "reserved", "bt709", "unknown", "reserved", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020", "smpte428", "smpte431", "smpte432", 0 };
-static const char * const x265_transfer_names[] = { "reserved", "bt709", "unknown", "reserved", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100",
-                                                    "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12",
-                                                    "smpte2084", "smpte428", "arib-std-b67", 0 };
-static const char * const x265_colmatrix_names[] = { "gbr", "bt709", "unknown", "", "fcc", "bt470bg", "smpte170m", "smpte240m",
-                                                     "ycgco", "bt2020nc", "bt2020c", "smpte2085", "chroma-derived-nc", "chroma-derived-c", "ictcp", 0 };
-static const char * const x265_sar_names[] = { "unknown", "1:1", "12:11", "10:11", "16:11", "40:33", "24:11", "20:11",
-                                               "32:11", "80:33", "18:11", "15:11", "64:33", "160:99", "4:3", "3:2", "2:1", 0 };
-static const char * const x265_interlace_names[] = { "prog", "tff", "bff", 0 };
-static const char * const x265_analysis_names[] = { "off", "save", "load", 0 };
+static const char* const x265_motion_est_names[] = { "dia", "hex", "umh", "star", "sea", "full", 0 };
+static const char* const x265_source_csp_names[] = { "i400", "i420", "i422", "i444", "nv12", "nv16", 0 };
+static const char* const x265_video_format_names[] = { "component", "pal", "ntsc", "secam", "mac", "unknown", 0 };
+static const char* const x265_fullrange_names[] = { "limited", "full", 0 };
+static const char* const x265_colorprim_names[] = { "reserved", "bt709", "unknown", "reserved", "bt470m", "bt470bg", "smpte170m", "smpte240m", "film", "bt2020", "smpte428", "smpte431", "smpte432", 0 };
+static const char* const x265_transfer_names[] = { "reserved", "bt709", "unknown", "reserved", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100",
+                                                   "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12",
+                                                   "smpte2084", "smpte428", "arib-std-b67", 0
+                                                 };
+static const char* const x265_colmatrix_names[] = { "gbr", "bt709", "unknown", "", "fcc", "bt470bg", "smpte170m", "smpte240m",
+                                                    "ycgco", "bt2020nc", "bt2020c", "smpte2085", "chroma-derived-nc", "chroma-derived-c", "ictcp", 0
+                                                  };
+static const char* const x265_sar_names[] = { "unknown", "1:1", "12:11", "10:11", "16:11", "40:33", "24:11", "20:11",
+                                              "32:11", "80:33", "18:11", "15:11", "64:33", "160:99", "4:3", "3:2", "2:1", 0
+                                            };
+static const char* const x265_interlace_names[] = { "prog", "tff", "bff", 0 };
+static const char* const x265_analysis_names[] = { "off", "save", "load", 0 };
 
 /* Zones: override ratecontrol for specific sections of the video.
  * If zones overlap, whichever comes later in the list takes precedence. */
@@ -592,36 +595,36 @@ typedef struct x265_zone
     int   qp;
     float bitrateFactor;
 } x265_zone;
-    
+
 /* data to calculate aggregate VMAF score */
 typedef struct x265_vmaf_data
-{   
+{
     int width;
     int height;
-    size_t offset; 
+    size_t offset;
     int internalBitDepth;
-    FILE *reference_file; /* FILE pointer for input file */
-    FILE *distorted_file; /* FILE pointer for recon file generated*/
-}x265_vmaf_data;
+    FILE* reference_file; /* FILE pointer for input file */
+    FILE* distorted_file; /* FILE pointer for recon file generated*/
+} x265_vmaf_data;
 
 /* data to calculate frame level VMAF score */
 typedef struct x265_vmaf_framedata
 {
     int width;
     int height;
-    int frame_set; 
-    int internalBitDepth; 
-    void *reference_frame; /* points to fenc of particular frame */
-    void *distorted_frame; /* points to recon of particular frame */
-}x265_vmaf_framedata;
+    int frame_set;
+    int internalBitDepth;
+    void* reference_frame; /* points to fenc of particular frame */
+    void* distorted_frame; /* points to recon of particular frame */
+} x265_vmaf_framedata;
 
 /* common data needed to calculate both frame level and video level VMAF scores */
 typedef struct x265_vmaf_commondata
 {
-    char *format;
-    char *model_path;
-    char *log_path;
-    char *log_fmt;
+    char* format;
+    char* model_path;
+    char* log_path;
+    char* log_fmt;
     int disable_clip;
     int disable_avx;
     int enable_transform;
@@ -629,10 +632,10 @@ typedef struct x265_vmaf_commondata
     int psnr;
     int ssim;
     int ms_ssim;
-    char *pool;
-}x265_vmaf_commondata;
+    char* pool;
+} x265_vmaf_commondata;
 
-static const x265_vmaf_commondata vcd[] = { { NULL, (char *)"/usr/local/share/model/vmaf_v0.6.1.pkl", NULL, NULL, 0, 0, 0, 0, 0, 0, 0, NULL } };
+static const x265_vmaf_commondata vcd[] = { { NULL, (char*)"/usr/local/share/model/vmaf_v0.6.1.pkl", NULL, NULL, 0, 0, 0, 0, 0, 0, 0, NULL } };
 
 /* x265 input parameters
  *
@@ -807,7 +810,7 @@ typedef struct x265_param
     int       bHighTier;
 
     /* Enable UHD Blu-ray compatibility support. If specified, the encoder will
-     * attempt to modify/set the encode specifications. If the encoder is unable 
+     * attempt to modify/set the encode specifications. If the encoder is unable
      * to do so, this option will be turned OFF. */
     int       uhdBluray;
 
@@ -1025,7 +1028,7 @@ typedef struct x265_param
      * - all other strings indicate a filename containing custom scaling lists
      *   in the HM format. The encode will fail if the file is not parsed
      *   correctly. Custom lists must be signaled in the SPS. */
-    const char *scalingLists;
+    const char* scalingLists;
 
     /*== Intra Coding Tools ==*/
 
@@ -1131,9 +1134,9 @@ typedef struct x265_param
 
     /*== Analysis tools ==*/
 
-    /* A value between 1 and 6 (both inclusive) which determines the level of 
+    /* A value between 1 and 6 (both inclusive) which determines the level of
      * rate distortion optimizations to perform during mode and depth decisions.
-     * The more RDO the better the compression efficiency at a major cost of 
+     * The more RDO the better the compression efficiency at a major cost of
      * performance. Default is 3 */
     int       rdLevel;
 
@@ -1141,7 +1144,7 @@ typedef struct x265_param
      * skip blocks. Default is disabled */
     int       bEnableEarlySkip;
 
-    /* Enable early CU size decisions to avoid recursing to higher depths. 
+    /* Enable early CU size decisions to avoid recursing to higher depths.
      * Default is enabled */
     int bEnableRecursionSkip;
 
@@ -1179,7 +1182,7 @@ typedef struct x265_param
     double    psyRd;
 
     /* Strength of psycho-visual optimizations in quantization. Only has an
-     * effect when RDOQ is enabled (presets slow, slower and veryslow). The 
+     * effect when RDOQ is enabled (presets slow, slower and veryslow). The
      * value must be between 0 and 50, 1.0 is typical. Default 0 */
     double    psyRdoq;
 
@@ -1215,17 +1218,17 @@ typedef struct x265_param
      * Default is 0, which is recommended */
     int       crQpOffset;
 
-	/* Specifies the preferred transfer characteristics syntax element in the
-	 * alternative transfer characteristics SEI message (see. D.2.38 and D.3.38 of
-	 * JCTVC-W1005 http://phenix.it-sudparis.eu/jct/doc_end_user/documents/23_San%20Diego/wg11/JCTVC-W1005-v4.zip
-	 * */
-	int       preferredTransferCharacteristics;
-	
-	/*
-	 * Specifies the value for the pic_struc syntax element of the picture timing SEI message (See D2.3 and D3.3)
-	 * of the HEVC spec. for a detailed explanation
-	 * */
-	int       pictureStructure;	
+    /* Specifies the preferred transfer characteristics syntax element in the
+     * alternative transfer characteristics SEI message (see. D.2.38 and D.3.38 of
+     * JCTVC-W1005 http://phenix.it-sudparis.eu/jct/doc_end_user/documents/23_San%20Diego/wg11/JCTVC-W1005-v4.zip
+     * */
+    int       preferredTransferCharacteristics;
+
+    /*
+     * Specifies the value for the pic_struc syntax element of the picture timing SEI message (See D2.3 and D3.3)
+     * of the HEVC spec. for a detailed explanation
+     * */
+    int       pictureStructure;
 
     struct
     {
@@ -1511,7 +1514,7 @@ typedef struct x265_param
     /* Adaptive Quantization based on relative motion */
     int       bAQMotion;
     /* SSIM based RDO, based on residual divisive normalization scheme. Used for mode
-    * selection during analysis of CTUs, can achieve significant gain in terms of 
+    * selection during analysis of CTUs, can achieve significant gain in terms of
     * objective quality metrics SSIM and PSNR */
     int       bSsimRd;
 
@@ -1532,15 +1535,15 @@ typedef struct x265_param
     * level higher the information stored/reused. Default is 5 */
     int       analysisReuseLevel;
 
-     /* Limit Sample Adaptive Offset filter computation by early terminating SAO
-     * process based on inter prediction mode, CTU spatial-domain correlations,
-     * and relations between luma and chroma */
+    /* Limit Sample Adaptive Offset filter computation by early terminating SAO
+    * process based on inter prediction mode, CTU spatial-domain correlations,
+    * and relations between luma and chroma */
     int       bLimitSAO;
 
     /* File containing the tone mapping information */
     const char*     toneMapFile;
 
-    /* Insert tone mapping information only for IDR frames and when the 
+    /* Insert tone mapping information only for IDR frames and when the
      * tone mapping information changes. */
     int       bDhdr10opt;
 
@@ -1589,7 +1592,7 @@ typedef struct x265_param
     /* Disable lookahead */
     int       bDisableLookahead;
 
-    /* Use low-pass subband dct approximation 
+    /* Use low-pass subband dct approximation
     *  This DCT approximation is less computational intensive and gives results close to standard DCT */
     int       bLowPassDct;
 
@@ -1598,7 +1601,7 @@ typedef struct x265_param
     * than 1, then the final buffer available is vbv-end * vbvBufferSize.  Otherwise,
     * it is interpreted as the final buffer available in kbits. Default 0 (disabled) */
     double    vbvBufferEnd;
-    
+
     /* Frame from which qp has to be adjusted to hit final decode buffer emptiness.
     * Specified as a fraction of the total frames. Default 0 */
     double    vbvEndFrameAdjust;
@@ -1645,16 +1648,16 @@ typedef struct x265_param
  *  special in any way, but using this method together with x265_param_free()
  *  and x265_param_parse() to set values by name allows the application to treat
  *  x265_param as an opaque data struct for version safety */
-x265_param *x265_param_alloc(void);
+x265_param* x265_param_alloc(void);
 
 /* x265_param_free:
  *  Use x265_param_free() to release storage for an x265_param instance
  *  allocated by x265_param_alloc() */
-void x265_param_free(x265_param *);
+void x265_param_free(x265_param*);
 
 /* x265_param_default:
  *  Initialize an x265_param structure to default values */
-void x265_param_default(x265_param *param);
+void x265_param_default(x265_param* param);
 
 /* x265_param_parse:
  *  set one parameter by name.
@@ -1664,9 +1667,10 @@ void x265_param_default(x265_param *param);
  *  value=NULL means "true" for boolean options, but is a BAD_VALUE for non-booleans. */
 #define X265_PARAM_BAD_NAME  (-1)
 #define X265_PARAM_BAD_VALUE (-2)
-int x265_param_parse(x265_param *p, const char *name, const char *value);
+int x265_param_parse(x265_param* p, const char* name, const char* value);
 
-static const char * const x265_profile_names[] = {
+static const char* const x265_profile_names[] =
+{
     /* HEVC v1 */
     "main", "main10", "mainstillpicture", /* alias */ "msp",
 
@@ -1692,7 +1696,7 @@ static const char * const x265_profile_names[] = {
  *      function. This function will force the encoder parameters to fit within
  *      the specified profile, or fail if that is impossible.
  *      returns 0 on success, negative on failure (e.g. invalid profile name). */
-int x265_param_apply_profile(x265_param *, const char *profile);
+int x265_param_apply_profile(x265_param*, const char* profile);
 
 /* x265_param_default_preset:
  *      The same as x265_param_default, but also use the passed preset and tune
@@ -1700,7 +1704,7 @@ int x265_param_apply_profile(x265_param *, const char *profile);
  *      (either can be NULL, which implies no preset or no tune, respectively)
  *
  *      Currently available presets are, ordered from fastest to slowest: */
-static const char * const x265_preset_names[] = { "ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo", 0 };
+static const char* const x265_preset_names[] = { "ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo", 0 };
 
 /*      The presets can also be indexed numerically, as in:
  *      x265_param_default_preset( &param, "3", ... )
@@ -1712,28 +1716,28 @@ static const char * const x265_preset_names[] = { "ultrafast", "superfast", "ver
  *      100 times faster than placebo!
  *
  *      Currently available tunings are: */
-static const char * const x265_tune_names[] = { "psnr", "ssim", "grain", "zerolatency", "fastdecode", 0 };
+static const char* const x265_tune_names[] = { "psnr", "ssim", "grain", "zerolatency", "fastdecode", 0 };
 
 /*      returns 0 on success, negative on failure (e.g. invalid preset/tune name). */
-int x265_param_default_preset(x265_param *, const char *preset, const char *tune);
+int x265_param_default_preset(x265_param*, const char* preset, const char* tune);
 
 /* x265_picture_alloc:
  *  Allocates an x265_picture instance. The returned picture structure is not
  *  special in any way, but using this method together with x265_picture_free()
  *  and x265_picture_init() allows some version safety. New picture fields will
  *  always be added to the end of x265_picture */
-x265_picture *x265_picture_alloc(void);
+x265_picture* x265_picture_alloc(void);
 
 /* x265_picture_free:
  *  Use x265_picture_free() to release storage for an x265_picture instance
  *  allocated by x265_picture_alloc() */
-void x265_picture_free(x265_picture *);
+void x265_picture_free(x265_picture*);
 
 /* x265_picture_init:
  *       Initialize an x265_picture structure to default values. It sets the pixel
  *       depth and color space to the encoder's internal values and sets the slice
  *       type to auto - so the lookahead will determine slice type. */
-void x265_picture_init(x265_param *param, x265_picture *pic);
+void x265_picture_init(x265_param* param, x265_picture* pic);
 
 /* x265_max_bit_depth:
  *      Specifies the numer of bits per pixel that x265 uses internally to
@@ -1744,11 +1748,11 @@ X265_API extern const int x265_max_bit_depth;
 
 /* x265_version_str:
  *      A static string containing the version of this compiled x265 library */
-X265_API extern const char *x265_version_str;
+X265_API extern const char* x265_version_str;
 
 /* x265_build_info:
  *      A static string describing the compiler and target architecture */
-X265_API extern const char *x265_build_info_str;
+X265_API extern const char* x265_build_info_str;
 
 /* Force a link error in the case of linking against an incompatible API version.
  * Glue #defines exist to force correct macro expansion; the final output of the macro
@@ -1759,7 +1763,7 @@ X265_API extern const char *x265_build_info_str;
 
 /* x265_encoder_open:
  *      create a new encoder handler, all parameters from x265_param are copied */
-x265_encoder* x265_encoder_open(x265_param *);
+x265_encoder* x265_encoder_open(x265_param*);
 
 /* x265_encoder_parameters:
  *      copies the current internal set of parameters to the pointer provided
@@ -1767,14 +1771,14 @@ x265_encoder* x265_encoder_open(x265_param *);
  *      how x265_encoder_open has changed the parameters.
  *      note that the data accessible through pointers in the returned param struct
  *      (e.g. filenames) should not be modified by the calling application. */
-void x265_encoder_parameters(x265_encoder *, x265_param *);
+void x265_encoder_parameters(x265_encoder*, x265_param*);
 
 /* x265_encoder_headers:
  *      return the SPS and PPS that will be used for the whole stream.
  *      *pi_nal is the number of NAL units outputted in pp_nal.
  *      returns negative on error, total byte size of payload data on success
  *      the payloads of all output NALs are guaranteed to be sequential in memory. */
-int x265_encoder_headers(x265_encoder *, x265_nal **pp_nal, uint32_t *pi_nal);
+int x265_encoder_headers(x265_encoder*, x265_nal** pp_nal, uint32_t* pi_nal);
 
 /* x265_encoder_encode:
  *      encode one picture.
@@ -1784,7 +1788,7 @@ int x265_encoder_headers(x265_encoder *, x265_nal **pp_nal, uint32_t *pi_nal);
  *      the payloads of all output NALs are guaranteed to be sequential in memory.
  *      To flush the encoder and retrieve delayed output pictures, pass pic_in as NULL.
  *      Once flushing has begun, all subsequent calls must pass pic_in as NULL. */
-int x265_encoder_encode(x265_encoder *encoder, x265_nal **pp_nal, uint32_t *pi_nal, x265_picture *pic_in, x265_picture *pic_out);
+int x265_encoder_encode(x265_encoder* encoder, x265_nal** pp_nal, uint32_t* pi_nal, x265_picture* pic_in, x265_picture* pic_out);
 
 /* x265_encoder_reconfig:
  *      various parameters from x265_param are copied.
@@ -1799,20 +1803,20 @@ int x265_encoder_encode(x265_encoder *encoder, x265_nal **pp_nal, uint32_t *pi_n
  *      switched out of; using reconfig to switch between ultrafast and other
  *      presets is not recommended without a more fine-grained breakdown of
  *      parameters to take this into account. */
-int x265_encoder_reconfig(x265_encoder *, x265_param *);
+int x265_encoder_reconfig(x265_encoder*, x265_param*);
 
 /* x265_encoder_get_stats:
  *       returns encoder statistics */
-void x265_encoder_get_stats(x265_encoder *encoder, x265_stats *, uint32_t statsSizeBytes);
+void x265_encoder_get_stats(x265_encoder* encoder, x265_stats*, uint32_t statsSizeBytes);
 
 /* x265_encoder_log:
  *       write a line to the configured CSV file.  If a CSV filename was not
  *       configured, or file open failed, this function will perform no write. */
-void x265_encoder_log(x265_encoder *encoder, int argc, char **argv);
+void x265_encoder_log(x265_encoder* encoder, int argc, char** argv);
 
 /* x265_encoder_close:
  *      close an encoder handler */
-void x265_encoder_close(x265_encoder *);
+void x265_encoder_close(x265_encoder*);
 
 /* x265_encoder_intra_refresh:
  *      If an intra refresh is not in progress, begin one with the next P-frame.
@@ -1828,30 +1832,30 @@ void x265_encoder_close(x265_encoder *);
  *
  *      Should not be called during an x265_encoder_encode. */
 
-int x265_encoder_intra_refresh(x265_encoder *);
+int x265_encoder_intra_refresh(x265_encoder*);
 
 /* x265_encoder_ctu_info:
  *    Copy CTU information such as ctu address and ctu partition structure of all
  *    CTUs in each frame. The function is invoked only if "--ctu-info" is enabled and
  *    the encoder will wait for this copy to complete if enabled.
  */
-int x265_encoder_ctu_info(x265_encoder *, int poc, x265_ctu_info_t** ctu);
+int x265_encoder_ctu_info(x265_encoder*, int poc, x265_ctu_info_t** ctu);
 
 /* x265_get_slicetype_poc_and_scenecut:
  *     get the slice type, poc and scene cut information for the current frame,
  *     returns negative on error, 0 when access unit were output.
  *     This API must be called after(poc >= lookaheadDepth + bframes + 2) condition check */
-int x265_get_slicetype_poc_and_scenecut(x265_encoder *encoder, int *slicetype, int *poc, int* sceneCut);
+int x265_get_slicetype_poc_and_scenecut(x265_encoder* encoder, int* slicetype, int* poc, int* sceneCut);
 
 /* x265_get_ref_frame_list:
  *     returns negative on error, 0 when access unit were output.
  *     This API must be called after(poc >= lookaheadDepth + bframes + 2) condition check */
-int x265_get_ref_frame_list(x265_encoder *encoder, x265_picyuv**, x265_picyuv**, int, int, int*, int*);
+int x265_get_ref_frame_list(x265_encoder* encoder, x265_picyuv**, x265_picyuv**, int, int, int*, int*);
 
 /* x265_set_analysis_data:
  *     set the analysis data. The incoming analysis_data structure is assumed to be AVC-sized blocks.
  *     returns negative on error, 0 access unit were output. */
-int x265_set_analysis_data(x265_encoder *encoder, x265_analysis_data *analysis_data, int poc, uint32_t cuBytes);
+int x265_set_analysis_data(x265_encoder* encoder, x265_analysis_data* analysis_data, int poc, uint32_t cuBytes);
 
 /* x265_cleanup:
  *       release library static allocations, reset configured CTU size */
@@ -1862,21 +1866,21 @@ void x265_cleanup(void);
  * closed by the caller using fclose(). If csv-loglevel is 0, then no frame logging
  * header is written to the file. This function will return NULL if it is unable
  * to open the file for write or if it detects a structure size skew */
-FILE* x265_csvlog_open(const x265_param *);
+FILE* x265_csvlog_open(const x265_param*);
 
 /* Log frame statistics to the CSV file handle. csv-loglevel should have been non-zero
  * in the call to x265_csvlog_open() if this function is called. */
-void x265_csvlog_frame(const x265_param *, const x265_picture *);
+void x265_csvlog_frame(const x265_param*, const x265_picture*);
 
 /* Log final encode statistics to the CSV file handle. 'argc' and 'argv' are
  * intended to be command line arguments passed to the encoder. padx and pady are
  * padding offsets for conformance and can be given from sps settings. Encode
  * statistics should be queried from the encoder just prior to closing it. */
-void x265_csvlog_encode(const x265_param*, const x265_stats *, int padx, int pady, int argc, char** argv);
+void x265_csvlog_encode(const x265_param*, const x265_stats*, int padx, int pady, int argc, char** argv);
 
 /* In-place downshift from a bit-depth greater than 8 to a bit-depth of 8, using
  * the residual bits to dither each row. */
-void x265_dither_image(x265_picture *, int picWidth, int picHeight, int16_t *errorBuf, int bitDepth);
+void x265_dither_image(x265_picture*, int picWidth, int picHeight, int16_t* errorBuf, int bitDepth);
 #if ENABLE_LIBVMAF
 /* x265_calculate_vmafScore:
  *    returns VMAF score for the input video.
@@ -1890,7 +1894,7 @@ double x265_calculate_vmaf_framelevelscore(x265_vmaf_framedata*);
  *       write a line to the configured CSV file.  If a CSV filename was not
  *       configured, or file open failed, this function will perform no write.
  *       This api will be called only when ENABLE_LIBVMAF cmake option is set */
-void x265_vmaf_encoder_log(x265_encoder *encoder, int argc, char **argv, x265_param*, x265_vmaf_data*);
+void x265_vmaf_encoder_log(x265_encoder* encoder, int argc, char** argv, x265_param*, x265_vmaf_data*);
 
 #endif
 
@@ -1922,7 +1926,7 @@ typedef struct x265_api
     void          (*param_default)(x265_param*);
     int           (*param_parse)(x265_param*, const char*, const char*);
     int           (*param_apply_profile)(x265_param*, const char*);
-    int           (*param_default_preset)(x265_param*, const char*, const char *);
+    int           (*param_default_preset)(x265_param*, const char*, const char*);
     x265_picture* (*picture_alloc)(void);
     void          (*picture_free)(x265_picture*);
     void          (*picture_init)(x265_param*, x265_picture*);
@@ -1943,13 +1947,13 @@ typedef struct x265_api
     int           (*get_ref_frame_list)(x265_encoder*, x265_picyuv**, x265_picyuv**, int, int, int*, int*);
     FILE*         (*csvlog_open)(const x265_param*);
     void          (*csvlog_frame)(const x265_param*, const x265_picture*);
-    void          (*csvlog_encode)(const x265_param*, const x265_stats *, int, int, int, char**);
+    void          (*csvlog_encode)(const x265_param*, const x265_stats*, int, int, int, char**);
     void          (*dither_image)(x265_picture*, int, int, int16_t*, int);
-    int           (*set_analysis_data)(x265_encoder *encoder, x265_analysis_data *analysis_data, int poc, uint32_t cuBytes);
+    int           (*set_analysis_data)(x265_encoder* encoder, x265_analysis_data* analysis_data, int poc, uint32_t cuBytes);
 #if ENABLE_LIBVMAF
-    double        (*calculate_vmafscore)(x265_param *, x265_vmaf_data *);
-    double        (*calculate_vmaf_framelevelscore)(x265_vmaf_framedata *);
-    void          (*vmaf_encoder_log)(x265_encoder*, int, char**, x265_param *, x265_vmaf_data *);
+    double        (*calculate_vmafscore)(x265_param*, x265_vmaf_data*);
+    double        (*calculate_vmaf_framelevelscore)(x265_vmaf_framedata*);
+    void          (*vmaf_encoder_log)(x265_encoder*, int, char**, x265_param*, x265_vmaf_data*);
 #endif
     /* add new pointers to the end, or increment X265_MAJOR_VERSION */
 } x265_api;
@@ -2004,7 +2008,8 @@ const x265_api* x265_api_query(int bitDepth, int apiVersion, int* err);
 #define X265_API_QUERY_ERR_FUNC_NOT_FOUND 3 /* unable to bind x265_api_query    */
 #define X265_API_QUERY_ERR_WRONG_BITDEPTH 4 /* libx265_main10 not 10bit, for ex */
 
-static const char * const x265_api_query_errnames[] = {
+static const char* const x265_api_query_errnames[] =
+{
     "api queried from libx265",
     "libx265 version is not compatible with this application",
     "unable to bind a libx265 with requested bit depth",

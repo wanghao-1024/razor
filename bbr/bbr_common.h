@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -65,107 +65,108 @@
 
 typedef struct
 {
-	int64_t		at_time;
-	int32_t		min_rate;
-	int32_t		max_rate;
-}bbr_target_rate_constraint_t;
+    int64_t     at_time;
+    int32_t     min_rate;
+    int32_t     max_rate;
+} bbr_target_rate_constraint_t;
 
 typedef struct
 {
-	int64_t		send_time;
-	int64_t		recv_time;
-	size_t		size;
-	int64_t		seq;
-	size_t		data_in_flight;
-}bbr_packet_info_t;
+    int64_t     send_time;
+    int64_t     recv_time;
+    size_t      size;
+    int64_t     seq;
+    size_t      data_in_flight;
+} bbr_packet_info_t;
 
 typedef struct
 {
-	int64_t		receive_time;
-	int32_t		bandwidth;
-}bbr_remote_bitrate_report_t;
+    int64_t     receive_time;
+    int32_t     bandwidth;
+} bbr_remote_bitrate_report_t;
 
 typedef struct
 {
-	int64_t		receive_time;
-	int64_t		start_time;
-	int64_t		end_time;
-	uint64_t	packets_lost_delta;
-	uint64_t	packets_received_delta;
-}bbr_loss_report_t;
+    int64_t     receive_time;
+    int64_t     start_time;
+    int64_t     end_time;
+    uint64_t    packets_lost_delta;
+    uint64_t    packets_received_delta;
+} bbr_loss_report_t;
 
 typedef struct
 {
-	int64_t		receive_time;
-	int64_t		round_trip_time;
-	int			smoothed;
-}bbr_rtt_update_t;
+    int64_t     receive_time;
+    int64_t     round_trip_time;
+    int         smoothed;
+} bbr_rtt_update_t;
 
 typedef struct
 {
-	int64_t			at_time;
-	size_t			data_window;
-	int64_t			time_window;
-	size_t			pad_window;
-}bbr_pacer_config_t;
+    int64_t         at_time;
+    size_t          data_window;
+    int64_t         time_window;
+    size_t          pad_window;
+} bbr_pacer_config_t;
 
 static inline size_t bbr_pacer_data_rate(bbr_pacer_config_t* conf)
 {
-	return (size_t)(conf->data_window / conf->time_window);
+    return (size_t)(conf->data_window / conf->time_window);
 }
 
 static inline size_t bbr_pacer_pad_rate(bbr_pacer_config_t* conf)
 {
-	return (size_t)(conf->pad_window / conf->time_window);
+    return (size_t)(conf->pad_window / conf->time_window);
 }
 
 typedef struct
 {
-	int64_t			at_time;
-	int				network_available;
-}bbr_network_availability_t;
+    int64_t         at_time;
+    int             network_available;
+} bbr_network_availability_t;
 
 typedef struct
 {
-	int64_t			at_time;
-	int32_t			bandwidth;
-	int64_t			rtt;
-	int64_t			bwe_period;
-	float			loss_rate_ratio;
+    int64_t         at_time;
+    int32_t         bandwidth;
+    int64_t         rtt;
+    int64_t         bwe_period;
+    float           loss_rate_ratio;
 
-	int32_t			target_rate;
-}bbr_target_transfer_rate_t;
+    int32_t         target_rate;
+} bbr_target_transfer_rate_t;
 
 typedef struct
 {
-	size_t						congestion_window;
-	bbr_pacer_config_t			pacer_config;
-	bbr_target_transfer_rate_t  target_rate;
-}bbr_network_ctrl_update_t;
+    size_t                      congestion_window;
+    bbr_pacer_config_t          pacer_config;
+    bbr_target_transfer_rate_t  target_rate;
+} bbr_network_ctrl_update_t;
 
-#define MAX_BBR_FEELBACK_COUNT	128
+#define MAX_BBR_FEELBACK_COUNT  128
 
-enum{
-	bbr_loss_info_msg = 0x01,
-	bbr_acked_msg = 0x02
+enum
+{
+    bbr_loss_info_msg = 0x01,
+    bbr_acked_msg = 0x02
 };
 
 typedef struct
 {
-	uint16_t				seq;
-	uint16_t				delta_ts;
-}bbr_sampler_t;
+    uint16_t                seq;
+    uint16_t                delta_ts;
+} bbr_sampler_t;
 
 typedef struct
 {
-	uint8_t					flag;
-	/*loss info msg*/
-	uint8_t					fraction_loss;
-	int						packet_num;
-	/*proxy_ts_msg*/
-	uint8_t					sampler_num;
-	bbr_sampler_t			samplers[MAX_BBR_FEELBACK_COUNT];
-}bbr_feedback_msg_t;
+    uint8_t                 flag;
+    /*loss info msg*/
+    uint8_t                 fraction_loss;
+    int                     packet_num;
+    /*proxy_ts_msg*/
+    uint8_t                 sampler_num;
+    bbr_sampler_t           samplers[MAX_BBR_FEELBACK_COUNT];
+} bbr_feedback_msg_t;
 
 void bbr_feedback_msg_encode(bin_stream_t* strm, bbr_feedback_msg_t* msg);
 void bbr_feedback_msg_decode(bin_stream_t* strm, bbr_feedback_msg_t* msg);

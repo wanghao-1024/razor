@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 wenba, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -19,22 +19,22 @@
 
 enum
 {
-	el_change_bitrate,
-	el_pause,
-	el_resume,
+    el_change_bitrate,
+    el_pause,
+    el_resume,
 
-	el_connect,
-	el_disconnect,
-	el_timeout,
+    el_connect,
+    el_disconnect,
+    el_timeout,
 
-	el_unknown = 1000
+    el_unknown = 1000
 };
 
 typedef struct
 {
-	int			msg_id;
-	uint32_t	val;
-}thread_msg_t;
+    int         msg_id;
+    uint32_t    val;
+} thread_msg_t;
 
 static base_list_t* main_queue = NULL;
 su_mutex main_mutex;
@@ -42,61 +42,62 @@ su_mutex main_mutex;
 
 static void notify_callback(void* event, int type, uint32_t val)
 {
-	thread_msg_t* msg = (thread_msg_t*)calloc(1, sizeof(thread_msg_t));
-	msg->msg_id = el_unknown;
+    thread_msg_t* msg = (thread_msg_t*)calloc(1, sizeof(thread_msg_t));
+    msg->msg_id = el_unknown;
 
-	switch (type){
-	case sim_connect_notify:
-		msg->msg_id = el_connect;
-		msg->val = val;
-		break;
+    switch (type)
+    {
+        case sim_connect_notify:
+            msg->msg_id = el_connect;
+            msg->val = val;
+            break;
 
-	case sim_network_timout:
-		msg->msg_id = el_timeout;
-		msg->val = val;
-		break;
+        case sim_network_timout:
+            msg->msg_id = el_timeout;
+            msg->val = val;
+            break;
 
-	case sim_disconnect_notify:
-		msg->msg_id = el_disconnect;
-		msg->val = val;
-		break;
+        case sim_disconnect_notify:
+            msg->msg_id = el_disconnect;
+            msg->val = val;
+            break;
 
-	case net_interrupt_notify:
-		msg->msg_id = el_pause;
-		msg->val = val;
-		break;
+        case net_interrupt_notify:
+            msg->msg_id = el_pause;
+            msg->val = val;
+            break;
 
-	case net_recover_notify:
-		msg->msg_id = el_resume;
-		msg->val = val;
-		break;
+        case net_recover_notify:
+            msg->msg_id = el_resume;
+            msg->val = val;
+            break;
 
-	default:
-		free(msg);
-		return;
-	}
+        default:
+            free(msg);
+            return;
+    }
 
-	su_mutex_lock(main_mutex);
-	list_push(main_queue, msg);
-	su_mutex_unlock(main_mutex);
+    su_mutex_lock(main_mutex);
+    list_push(main_queue, msg);
+    su_mutex_unlock(main_mutex);
 }
 
 static void notify_change_bitrate(void* event, uint32_t bitrate_kbps, int lost)
 {
-	thread_msg_t* msg = (thread_msg_t*)calloc(1, sizeof(thread_msg_t));
-	msg->msg_id = el_change_bitrate;
-	msg->val = bitrate_kbps;
-	/*将消息递到主线程上*/
-	su_mutex_lock(main_mutex);
-	list_push(main_queue, msg);
-	su_mutex_unlock(main_mutex);
+    thread_msg_t* msg = (thread_msg_t*)calloc(1, sizeof(thread_msg_t));
+    msg->msg_id = el_change_bitrate;
+    msg->val = bitrate_kbps;
+    /*将消息递到主线程上*/
+    su_mutex_lock(main_mutex);
+    list_push(main_queue, msg);
+    su_mutex_unlock(main_mutex);
 }
 
 static char g_info[1024] = { 0 };
 
 static void notify_state(void* event, const char* info)
 {
-	strcpy(g_info, info);
+    strcpy(g_info, info);
 }
 
 #define MAX_SEND_BITRATE (2000 * 8 * 1000)
@@ -105,185 +106,199 @@ static void notify_state(void* event, const char* info)
 
 typedef struct
 {
-	uint32_t	bitrate_kbps;	/*当前发送的码率，kbps*/
-	int			record_flag;	/*是否可以开始录制发送*/
-	uint32_t	frame_rate;		/*帧率*/
-	int64_t		prev_ts;		/*上一次发送视频的时刻*/
-	int64_t		hb_ts;
+    uint32_t    bitrate_kbps;   /*当前发送的码率，kbps*/
+    int         record_flag;    /*是否可以开始录制发送*/
+    uint32_t    frame_rate;     /*帧率*/
+    int64_t     prev_ts;        /*上一次发送视频的时刻*/
+    int64_t     hb_ts;
 
-	uint32_t	total_bytes;
-	int			index;
-	uint8_t*	frame;
+    uint32_t    total_bytes;
+    int         index;
+    uint8_t*    frame;
 
-}video_sender_t;
+} video_sender_t;
 
 #define FRAME_SIZE (1024 * 1024 * 2)
 #define MAX_DATA_SIZE 1024 * 1024
 
 static void try_send_video(video_sender_t* sender, uint64_t now_ts)
 {
-	uint8_t* pos = sender->frame, ftype;
-	int64_t space;
-	size_t frame_size = 0;
-	if (sender->record_flag == 0)
-		return;
+    uint8_t* pos = sender->frame, ftype;
+    int64_t space;
+    size_t frame_size = 0;
+    if (sender->record_flag == 0)
+        return;
 
-	if (now_ts >= sender->prev_ts + 1000 / sender->frame_rate){
-		space = (now_ts - sender->prev_ts);
-		frame_size = sender->bitrate_kbps / 8 * space;
+    if (now_ts >= sender->prev_ts + 1000 / sender->frame_rate)
+    {
+        space = (now_ts - sender->prev_ts);
+        frame_size = sender->bitrate_kbps / 8 * space;
 
-		sender->prev_ts = now_ts;
-		if (frame_size > 200){
-			frame_size -= 200;
-			frame_size = frame_size + rand() % 400;
-		}
+        sender->prev_ts = now_ts;
+        if (frame_size > 200)
+        {
+            frame_size -= 200;
+            frame_size = frame_size + rand() % 400;
+        }
 
-		frame_size = frame_size > MAX_DATA_SIZE ? MAX_DATA_SIZE : frame_size;
+        frame_size = frame_size > MAX_DATA_SIZE ? MAX_DATA_SIZE : frame_size;
 
-		memcpy(pos, &frame_size, sizeof(frame_size));
-		pos += sizeof(frame_size);
-		memcpy(pos, &sender->index, sizeof(sender->index));
-		pos += sizeof(sender->index);
-		memcpy(pos, &now_ts, sizeof(now_ts));
-		pos += sizeof(now_ts);
+        memcpy(pos, &frame_size, sizeof(frame_size));
+        pos += sizeof(frame_size);
+        memcpy(pos, &sender->index, sizeof(sender->index));
+        pos += sizeof(sender->index);
+        memcpy(pos, &now_ts, sizeof(now_ts));
+        pos += sizeof(now_ts);
 
-		ftype = 0;
-		if (sender->index % (sender->frame_rate * 4) == 0) /*关键帧*/
-			ftype = 1;
+        ftype = 0;
+        if (sender->index % (sender->frame_rate * 4) == 0) /*关键帧*/
+            ftype = 1;
 
-		sim_send_video(0, ftype, sender->frame, frame_size);
+        sim_send_video(0, ftype, sender->frame, frame_size);
 
-		++sender->index;
-		/*只发送一帧试一试*/
-		/*if (++sender->index > 20000)
-			sender->record_flag = 0;*/
-	}
+        ++sender->index;
+        /*只发送一帧试一试*/
+        /*if (++sender->index > 20000)
+            sender->record_flag = 0;*/
+    }
 }
 
 static void main_loop_event()
 {
-	video_sender_t sender = {0};
+    video_sender_t sender = {0};
 
-	thread_msg_t* msg;
-	int run = 1;
-	int disconnecting = 0;
-	sender.frame = (uint8_t*)malloc(FRAME_SIZE);
-	int64_t prev_ts, now_ts;
+    thread_msg_t* msg;
+    int run = 1;
+    int disconnecting = 0;
+    sender.frame = (uint8_t*)malloc(FRAME_SIZE);
+    int64_t prev_ts, now_ts;
 
-	prev_ts = now_ts = GET_SYS_MS();
+    prev_ts = now_ts = GET_SYS_MS();
 
-	while (run){
-		su_mutex_lock(main_mutex);
-		if (main_queue->size > 0){
-			msg = (thread_msg_t*)list_front(main_queue);
-			list_pop(main_queue);
-			
-			su_mutex_unlock(main_mutex);
+    while (run)
+    {
+        su_mutex_lock(main_mutex);
+        if (main_queue->size > 0)
+        {
+            msg = (thread_msg_t*)list_front(main_queue);
+            list_pop(main_queue);
 
-			switch (msg->msg_id){
-			case el_connect:
-				if (msg->val == 0){
-					printf("connect success!\n");
-					sender.record_flag = 1;
-					sender.total_bytes = 0;
-					sender.frame_rate = 16;
-					sender.hb_ts = sender.prev_ts = GET_SYS_MS();
-					sender.bitrate_kbps = START_SEND_BITRATE / 1000;
-				}
-				else{
-					printf("connect failed, result = %u!\n", msg->val);
-					run = 0;
-					sender.record_flag = 0;
-				}
-				break;
+            su_mutex_unlock(main_mutex);
 
-			case el_timeout:
-				printf("network timeout!\n");
-				run = 0;
-				sender.record_flag = 0;
-				break;
+            switch (msg->msg_id)
+            {
+                case el_connect:
+                    if (msg->val == 0)
+                    {
+                        printf("connect success!\n");
+                        sender.record_flag = 1;
+                        sender.total_bytes = 0;
+                        sender.frame_rate = 16;
+                        sender.hb_ts = sender.prev_ts = GET_SYS_MS();
+                        sender.bitrate_kbps = START_SEND_BITRATE / 1000;
+                    }
+                    else
+                    {
+                        printf("connect failed, result = %u!\n", msg->val);
+                        run = 0;
+                        sender.record_flag = 0;
+                    }
+                    break;
 
-			case el_disconnect:
-				printf("connect failed!\n");
-				run = 0;
-				sender.record_flag = 0;
-				break;
+                case el_timeout:
+                    printf("network timeout!\n");
+                    run = 0;
+                    sender.record_flag = 0;
+                    break;
 
-			case el_pause:
-				printf("pause sender!\n");
-				sender.record_flag = 0;
-				break;
+                case el_disconnect:
+                    printf("connect failed!\n");
+                    run = 0;
+                    sender.record_flag = 0;
+                    break;
 
-			case el_resume:
-				printf("resume sender!\n");
-				sender.record_flag = 1;
-				break;
+                case el_pause:
+                    printf("pause sender!\n");
+                    sender.record_flag = 0;
+                    break;
 
-			case el_change_bitrate:
-				if (msg->val <= MAX_SEND_BITRATE / 1000){
-					sender.bitrate_kbps = msg->val;
-				}
-				else{
-					sender.bitrate_kbps = MAX_SEND_BITRATE / 1000;
-				}
+                case el_resume:
+                    printf("resume sender!\n");
+                    sender.record_flag = 1;
+                    break;
 
-				//printf("set bytes rate = %ukb/s\n", sender.bitrate_kbps / 8);
-				break;
-			}
-			free(msg);
-		}
-		else{
-			su_mutex_unlock(main_mutex);
-		}
-	
-		now_ts = GET_SYS_MS();
-		try_send_video(&sender, now_ts);
+                case el_change_bitrate:
+                    if (msg->val <= MAX_SEND_BITRATE / 1000)
+                    {
+                        sender.bitrate_kbps = msg->val;
+                    }
+                    else
+                    {
+                        sender.bitrate_kbps = MAX_SEND_BITRATE / 1000;
+                    }
 
-		if (now_ts >= 1000 + prev_ts){
-			printf("%s, frame id = %d\n", g_info, sender.index);
-			prev_ts = now_ts;
-		}
+                    //printf("set bytes rate = %ukb/s\n", sender.bitrate_kbps / 8);
+                    break;
+            }
+            free(msg);
+        }
+        else
+        {
+            su_mutex_unlock(main_mutex);
+        }
 
-		su_sleep(0, 10000);
-		if (sender.index >= 20000 && disconnecting == 0){
-			sim_disconnect();
-			disconnecting = 1;
-		}
-	}
+        now_ts = GET_SYS_MS();
+        try_send_video(&sender, now_ts);
 
-	free(sender.frame);
+        if (now_ts >= 1000 + prev_ts)
+        {
+            printf("%s, frame id = %d\n", g_info, sender.index);
+            prev_ts = now_ts;
+        }
+
+        su_sleep(0, 10000);
+        if (sender.index >= 20000 && disconnecting == 0)
+        {
+            sim_disconnect();
+            disconnecting = 1;
+        }
+    }
+
+    free(sender.frame);
 }
 
 int main(int argc, const char* argv[])
 {
 
-	srand((uint32_t)time(NULL));
+    srand((uint32_t)time(NULL));
 
-	if (open_win_log("sender.log") != 0){
-		assert(0);
-		return -1;
-	}
+    if (open_win_log("sender.log") != 0)
+    {
+        assert(0);
+        return -1;
+    }
 
-	main_mutex = su_create_mutex();
-	main_queue = create_list();
+    main_mutex = su_create_mutex();
+    main_queue = create_list();
 
-	sim_init(16000, NULL, log_win_write, notify_callback, notify_change_bitrate, notify_state);
-	sim_set_bitrates(MIN_SEND_BITRATE, START_SEND_BITRATE, MAX_SEND_BITRATE * 5/4);
+    sim_init(16000, NULL, log_win_write, notify_callback, notify_change_bitrate, notify_state);
+    sim_set_bitrates(MIN_SEND_BITRATE, START_SEND_BITRATE, MAX_SEND_BITRATE * 5/4);
 
-	if (sim_connect(1000, "127.0.0.1", 16001, gcc_transport, 0, 0) != 0){
-		printf("sim connect failed!\n");
-		goto err;
-	}
+    if (sim_connect(1000, "127.0.0.1", 16001, gcc_transport, 0, 0) != 0)
+    {
+        printf("sim connect failed!\n");
+        goto err;
+    }
 
-	main_loop_event();
+    main_loop_event();
 
 err:
-	sim_destroy();
-	su_destroy_mutex(main_mutex);
-	destroy_list(main_queue);
-	close_win_log();
+    sim_destroy();
+    su_destroy_mutex(main_mutex);
+    destroy_list(main_queue);
+    close_win_log();
 
-	return 0;
+    return 0;
 }
 
 

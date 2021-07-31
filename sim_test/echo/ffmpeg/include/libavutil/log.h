@@ -26,7 +26,8 @@
 #include "attributes.h"
 #include "version.h"
 
-typedef enum {
+typedef enum
+{
     AV_CLASS_CATEGORY_NA = 0,
     AV_CLASS_CATEGORY_INPUT,
     AV_CLASS_CATEGORY_OUTPUT,
@@ -45,7 +46,7 @@ typedef enum {
     AV_CLASS_CATEGORY_DEVICE_OUTPUT,
     AV_CLASS_CATEGORY_DEVICE_INPUT,
     AV_CLASS_CATEGORY_NB, ///< not part of ABI/API
-}AVClassCategory;
+} AVClassCategory;
 
 #define AV_IS_INPUT_DEVICE(category) \
     (((category) == AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT) || \
@@ -64,7 +65,8 @@ struct AVOptionRanges;
  * arbitrary struct of which the first field is a pointer to an
  * AVClass struct (e.g. AVCodecContext, AVFormatContext etc.).
  */
-typedef struct AVClass {
+typedef struct AVClass
+{
     /**
      * The name of the class; usually it is the same name as the
      * context structure type to which the AVClass is associated.
@@ -82,7 +84,7 @@ typedef struct AVClass {
      *
      * @see av_set_default_options()
      */
-    const struct AVOption *option;
+    const struct AVOption* option;
 
     /**
      * LIBAVUTIL_VERSION with which this structure was created.
@@ -110,7 +112,7 @@ typedef struct AVClass {
     /**
      * Return next AVOptions-enabled child or NULL
      */
-    void* (*child_next)(void *obj, void *prev);
+    void* (*child_next)(void* obj, void* prev);
 
     /**
      * Return an AVClass corresponding to the next potential
@@ -120,7 +122,7 @@ typedef struct AVClass {
      * child_next iterates over _already existing_ objects, while
      * child_class_next iterates over _all possible_ children.
      */
-    const struct AVClass* (*child_class_next)(const struct AVClass *prev);
+    const struct AVClass* (*child_class_next)(const struct AVClass* prev);
 
     /**
      * Category used for visualization (like color)
@@ -139,7 +141,7 @@ typedef struct AVClass {
      * Callback to return the supported/allowed ranges.
      * available since version (52.12)
      */
-    int (*query_ranges)(struct AVOptionRanges **, void *obj, const char *key, int flags);
+    int (*query_ranges)(struct AVOptionRanges**, void* obj, const char* key, int flags);
 } AVClass;
 
 /**
@@ -231,7 +233,7 @@ typedef struct AVClass {
  * @param fmt The format string (printf-compatible) that specifies how
  *        subsequent arguments are converted to output.
  */
-void av_log(void *avcl, int level, const char *fmt, ...) av_printf_format(3, 4);
+void av_log(void* avcl, int level, const char* fmt, ...) av_printf_format(3, 4);
 
 
 /**
@@ -249,7 +251,7 @@ void av_log(void *avcl, int level, const char *fmt, ...) av_printf_format(3, 4);
  *        subsequent arguments are converted to output.
  * @param vl The arguments referenced by the format string.
  */
-void av_vlog(void *avcl, int level, const char *fmt, va_list vl);
+void av_vlog(void* avcl, int level, const char* fmt, va_list vl);
 
 /**
  * Get the current log level
@@ -294,7 +296,7 @@ void av_log_set_callback(void (*callback)(void*, int, const char*, va_list));
  *        subsequent arguments are converted to output.
  * @param vl The arguments referenced by the format string.
  */
-void av_log_default_callback(void *avcl, int level, const char *fmt,
+void av_log_default_callback(void* avcl, int level, const char* fmt,
                              va_list vl);
 
 /**
@@ -305,7 +307,7 @@ void av_log_default_callback(void *avcl, int level, const char *fmt,
  * @return The AVClass class_name
  */
 const char* av_default_item_name(void* ctx);
-AVClassCategory av_default_get_category(void *ptr);
+AVClassCategory av_default_get_category(void* ptr);
 
 /**
  * Format a line of log the same way as the default callback.
@@ -314,8 +316,8 @@ AVClassCategory av_default_get_category(void *ptr);
  * @param print_prefix  used to store whether the prefix must be printed;
  *                      must point to a persistent integer initially set to 1
  */
-void av_log_format_line(void *ptr, int level, const char *fmt, va_list vl,
-                        char *line, int line_size, int *print_prefix);
+void av_log_format_line(void* ptr, int level, const char* fmt, va_list vl,
+                        char* line, int line_size, int* print_prefix);
 
 #if FF_API_DLOG
 /**

@@ -43,7 +43,8 @@
  * Its size is not a part of the public ABI, it must be allocated with
  * av_videotoolbox_alloc_context() and freed with av_free().
  */
-typedef struct AVVideotoolboxContext {
+typedef struct AVVideotoolboxContext
+{
     /**
      * Videotoolbox decompression session object.
      * Created and freed the caller.
@@ -88,7 +89,7 @@ typedef struct AVVideotoolboxContext {
  *
  * @return the newly allocated context or NULL on failure
  */
-AVVideotoolboxContext *av_videotoolbox_alloc_context(void);
+AVVideotoolboxContext* av_videotoolbox_alloc_context(void);
 
 /**
  * This is a convenience function that creates and sets up the Videotoolbox context using
@@ -98,7 +99,7 @@ AVVideotoolboxContext *av_videotoolbox_alloc_context(void);
  *
  * @return >= 0 on success, a negative AVERROR code on failure
  */
-int av_videotoolbox_default_init(AVCodecContext *avctx);
+int av_videotoolbox_default_init(AVCodecContext* avctx);
 
 /**
  * This is a convenience function that creates and sets up the Videotoolbox context using
@@ -109,7 +110,7 @@ int av_videotoolbox_default_init(AVCodecContext *avctx);
  *
  * @return >= 0 on success, a negative AVERROR code on failure
  */
-int av_videotoolbox_default_init2(AVCodecContext *avctx, AVVideotoolboxContext *vtctx);
+int av_videotoolbox_default_init2(AVCodecContext* avctx, AVVideotoolboxContext* vtctx);
 
 /**
  * This function must be called to free the Videotoolbox context initialized with
@@ -117,7 +118,7 @@ int av_videotoolbox_default_init2(AVCodecContext *avctx, AVVideotoolboxContext *
  *
  * @param avctx the corresponding codec context
  */
-void av_videotoolbox_default_free(AVCodecContext *avctx);
+void av_videotoolbox_default_free(AVCodecContext* avctx);
 
 /**
  * @}

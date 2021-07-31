@@ -28,7 +28,8 @@
 /**
  * List of possible 3D Types
  */
-enum AVStereo3DType {
+enum AVStereo3DType
+{
     /**
      * Video is not stereoscopic (and metadata has to be there).
      */
@@ -120,7 +121,8 @@ enum AVStereo3DType {
  * @note The struct must be allocated with av_stereo3d_alloc() and
  *       its size is not a part of the public ABI.
  */
-typedef struct AVStereo3D {
+typedef struct AVStereo3D
+{
     /**
      * How views are packed within the video.
      */
@@ -138,7 +140,7 @@ typedef struct AVStereo3D {
  *
  * @return An AVStereo3D filled with default values or NULL on failure.
  */
-AVStereo3D *av_stereo3d_alloc(void);
+AVStereo3D* av_stereo3d_alloc(void);
 
 /**
  * Allocate a complete AVFrameSideData and add it to the frame.
@@ -147,6 +149,6 @@ AVStereo3D *av_stereo3d_alloc(void);
  *
  * @return The AVStereo3D structure to be filled by caller.
  */
-AVStereo3D *av_stereo3d_create_side_data(AVFrame *frame);
+AVStereo3D* av_stereo3d_create_side_data(AVFrame* frame);
 
 #endif /* AVUTIL_STEREO3D_H */

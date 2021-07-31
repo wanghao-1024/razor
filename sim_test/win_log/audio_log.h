@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -17,11 +17,11 @@ extern "C" {
 #endif
 
 /*windows系统下简单的log模块*/
-int			open_win_log(const char* filename);
+int         open_win_log(const char* filename);
 
-int			log_win_write(int level, const char* file, int line, const char* fmt, va_list vl);
+int         log_win_write(int level, const char* file, int line, const char* fmt, va_list vl);
 
-void		close_win_log();
+void        close_win_log();
 
 #ifdef __cplusplus
 }

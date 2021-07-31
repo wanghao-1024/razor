@@ -1,6 +1,6 @@
 /*-
 * Copyright (c) 2017-2018 Razor, Inc.
-*	All rights reserved.
+*   All rights reserved.
 *
 * See the file LICENSE for redistribution information.
 */
@@ -20,7 +20,7 @@ H264Decoder::~H264Decoder()
 
 void H264Decoder::set_codec_id()
 {
-	codec_id_ = CODEC_ID_H264;
+    codec_id_ = CODEC_ID_H264;
 }
 
 
